@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- Demo测试Mapper -->
+<!-- namespace是自定义的，但请规范它，规范在帮助文档中有所提及 -->
+<mapper namespace="Info-UserServiceImpl-0-Mapper">
+	<select id="demo6" resultType="User">
+		select * from `qm_user`
+	</select>
+</mapper>

@@ -1,0 +1,192 @@
+package com.qm.frame.mybatis.base;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.qm.frame.basic.util.ConvertUtil;
+import com.qm.frame.mybatis.dto.QmBaseDto;
+
+/**
+ * Mybatis封装类
+ * @author 浅梦
+ */
+@Component
+public final class QmBaseImpl implements QmBase {
+
+	// 获取Mybatis SqlSession
+	@Autowired
+	private SqlSessionFactory sqlSessionFactory;
+
+	
+	/**
+	 * 命名空间
+	 */
+	private static final String QM_NAMESPACE = "QmBaseMapper.";
+
+	/**
+	 * 注入sqlSessionFactory
+	 * @param sqlSessionFactory
+	 */
+	protected void setSqlSessionFactory(SqlSessionFactory sqlSessionFactory) {
+		this.sqlSessionFactory = sqlSessionFactory;
+	}
+
+	@Override
+	public <M> List<M> selectList(String sqlName, Object params) {
+		SqlSession session = sqlSessionFactory.openSession();
+		List<M> list = null;
+		try {
+			sqlName = sqlName.substring(sqlName.indexOf("Mapper") + 6);
+			list = session.selectList(sqlName, 
+					new HashMap<String,Object>().put("QM", params));
+			session.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			session.close();
+		}
+		return list;
+	}
+
+	@Override
+	public <M> M selectOne(String sqlName, Object params) {
+		SqlSession session = sqlSessionFactory.openSession();
+		M obj = null;
+		try {
+			sqlName = sqlName.substring(sqlName.indexOf("Mapper") + 6);
+			obj = session.selectOne(sqlName, 
+					new HashMap<String,Object>().put("QM", params));
+			session.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			session.close();
+		}
+		return obj;
+	}
+
+	@Override
+	public int insert(String sqlName, Object params) {
+		SqlSession session = sqlSessionFactory.openSession();
+		int result = 0;
+		try {
+			sqlName = sqlName.substring(sqlName.indexOf("Mapper") + 6);
+			result = session.insert(sqlName,
+					new HashMap<String,Object>().put("QM", params));
+			session.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			session.close();
+		}
+		return result;
+	}
+
+	@Override
+	public int update(String sqlName, Object params) {
+		SqlSession session = sqlSessionFactory.openSession();
+		int result = 0;
+		try {
+			sqlName = sqlName.substring(sqlName.indexOf("Mapper") + 6);
+			Map<String,Object> map = new HashMap<String,Object>();
+			map.put("QM", params);
+			result = session.update(sqlName, map);
+			session.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			session.close();
+		}
+		return result;
+	}
+
+	@Override
+	public int delete(String sqlName, Object params) {
+		SqlSession session = sqlSessionFactory.openSession();
+		int result = 0;
+		try {
+			sqlName = sqlName.substring(sqlName.indexOf("Mapper") + 6);
+			Map<String,Object> map = new HashMap<String,Object>();
+			map.put("QM", params);
+			result = session.delete(sqlName, map);
+			session.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			session.close();
+		}
+		return result;
+	}
+
+	@Override
+	public <Q> List<Q> autoSelectList(Q entity,Class<Q> clamm) {
+		SqlSession session = sqlSessionFactory.openSession();
+		List<Q> list = null;
+		try {
+			List<Map<String,Object>> mapLis;
+			mapLis = session.selectList(QM_NAMESPACE + "selectAuto", 
+					new QmBaseDto(entity).getParamsMap());
+			session.commit();
+			list = ConvertUtil.mapsToObjects(mapLis,clamm);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		return list;
+	}
+
+	@Override
+	public <Q> int autoInsert(Q entity) {
+		SqlSession session = sqlSessionFactory.openSession();
+		int result = 0;
+		try {
+			result = session.insert(QM_NAMESPACE + "insertAuto",
+					new QmBaseDto(entity).getParamsMap());
+			session.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			session.close();
+		}
+		return result;
+	}
+
+	@Override
+	public <Q> int autoUpdate(Q entity) {
+		SqlSession session = sqlSessionFactory.openSession();
+		int result = 0;
+		try {
+			result = session.update(QM_NAMESPACE + "updateAuto",
+					new QmBaseDto(entity).getParamsMap());
+			session.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			session.close();
+		}
+		return result;
+	}
+	
+	@Override
+	public <Q> int autoDelete(Q entity) {
+		SqlSession session = sqlSessionFactory.openSession();
+		int result = 0;
+		try {
+			result = session.delete(QM_NAMESPACE + "deleteAuto", 
+					new QmBaseDto(entity).getParamsMap());
+			session.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			session.close();
+		}
+		return result;
+	}
+}
