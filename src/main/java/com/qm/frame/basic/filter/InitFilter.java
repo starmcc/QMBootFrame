@@ -40,7 +40,7 @@ public @Component class InitFilter extends QmController implements Filter{
 		response.setContentType("text/html;charset=utf-8");
 		HttpServletRequest req = (HttpServletRequest)request;
 		//版本控制
-		boolean is = verify(req);
+		boolean is = verifyVersion(req);
 		if(!is) {
 			response.getWriter().write(super.sendJSON(QmCode._102));
 			return;
@@ -60,7 +60,7 @@ public @Component class InitFilter extends QmController implements Filter{
 	 * @throws IOException
 	 * @Description: 版本验证工具
 	 */
-	public boolean verify(HttpServletRequest request) throws IOException {
+	public boolean verifyVersion(HttpServletRequest request) throws IOException {
 		//不开启版本控制
 		if(! super.qmConstant.getQmVersionConstant().isStart()) return true;
 		//目前版本号
@@ -74,7 +74,6 @@ public @Component class InitFilter extends QmController implements Filter{
 		LOG.debug("进入版本控制判断");
 //		String[] versionPermit = QmConstant.version_permit.split(",");
 		List<String> versionPermit = super.qmConstant.getQmVersionConstant().getPermitVersions();
-		
 		if(versionPermit != null && versionPermit.size() > 0) {
 			for (String version : versionPermit) {
 				if(version.equals(versionRequest)) {
