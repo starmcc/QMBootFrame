@@ -11,7 +11,7 @@ spring:
   datasource: #主数据源
     type: 'com.alibaba.druid.pool.DruidDataSource'
     driverClassName: 'com.mysql.cj.jdbc.Driver'
-    url: 'jdbc:mysql://127.0.0.1:3306/test3?useUnicode=true&characterEncoding=utf8&autoReconnect=true&useSSL=true' #?useUnicode=true&characterEncoding=utf8&autoReconnect=true&useSSL=true
+    url: 'jdbc:mysql://localhost:3306/test2?useUnicode=true&characterEncoding=utf8&autoReconnect=true&useSSL=true' #?useUnicode=true&characterEncoding=utf8&autoReconnect=true&useSSL=true
     username: 'root'
     password: '123456'
     #下面为连接池的补充设置，应用到上面所有数据源中

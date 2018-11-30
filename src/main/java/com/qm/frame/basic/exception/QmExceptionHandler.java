@@ -9,7 +9,6 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.NoHandlerFoundException;
@@ -29,15 +28,26 @@ import com.qm.frame.basic.controller.QmController;
 public class QmExceptionHandler extends QmController{
  
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    @ResponseBody
     public String httpRequestMethodNotSupportedException(HttpServletResponse response,
     		Exception e) {
     	response.setStatus(200);
     	 return super.sendJSON(QmCode._405);
     }
-
+    
+    @ExceptionHandler(IllegalArgumentException.class)
+    public String IllegalArgumentException(HttpServletResponse response,
+    		Exception e) {
+    	response.setStatus(200);
+    	 return super.sendJSON(QmCode._100);
+    }
+    
+    @ExceptionHandler(InstantiationException.class)
+    public String InstantiationException(HttpServletResponse response,
+    		Exception e) {
+    	response.setStatus(200);
+    	 return super.sendJSON(QmCode._100);
+    }
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-    @ResponseBody
     public String httpMediaTypeNotSupportedException(HttpServletResponse response,
     		Exception e) {
         response.setStatus(200);
@@ -53,7 +63,6 @@ public class QmExceptionHandler extends QmController{
     }
     
     @ExceptionHandler(Exception.class)
-    @ResponseBody
     public String defaultException(HttpServletResponse response,Exception e) {
     	e.printStackTrace();
         response.setStatus(200);

@@ -82,7 +82,7 @@ public @Component class QmSecurityInterceptor extends QmController implements Ha
 				//存储到request,提供在其他地方获取该对象。
 				req.setAttribute(QmSecurityParam.CONTEXT_QMSECINFO, qmSecInfo);
 				LOG.info("※※※※※※※※※Token已通过校验※※※※※※※※※");
-				if (verifyPowers(api,qmSecInfo)) {
+				if (!verifyPowers(api,qmSecInfo)) {
 					LOG.info("※※※※※※※※※用户鉴权失败※※※※※※※※※");
 					return false;
 				}

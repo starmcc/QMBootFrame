@@ -27,6 +27,7 @@
 	</properties>
 
 	<dependencies>
+	<!-- 框架依赖包Start -->
 		<!-- SpringBoot-Web依赖相关 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -130,6 +131,19 @@
 		    <artifactId>google-collect</artifactId>
 		    <version>snapshot-20080530</version>
 		</dependency>
+		<!-- 好用的commons-io工具类 -->
+		<dependency>
+		    <groupId>commons-io</groupId>
+		    <artifactId>commons-io</artifactId>
+		    <version>2.6</version>
+		</dependency>
+	<!-- 框架依赖包End -->
+	<!-- 开发依赖下面进行粘贴 -->
+	<!-- 	xxxxx
+			xxx	xxx
+					xxx...	  -->
+		
+		
 	</dependencies>
 
 
