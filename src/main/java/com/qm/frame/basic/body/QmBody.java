@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)//运行时注解
 public @interface QmBody {
     /**
-     * 是否必须出现的参数
+     * 是否必须传递的参数
      */
     boolean required() default true;
  

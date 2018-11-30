@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,11 +28,13 @@ public @Component class QmController {
 	private static final Logger LOG = LoggerFactory.getLogger(QmController.class);
 	
 	@Autowired
-	public HttpServletRequest request;
+	protected HttpServletRequest request;
 	@Autowired
-	public HttpServletResponse response;
+	protected HttpServletResponse response;
 	@Autowired
-	public QmConstant qmConstant;
+	protected HttpSession session;
+	@Autowired
+	protected QmConstant qmConstant;
 	
 	/**
 	 * 接口回调方法
@@ -113,8 +116,5 @@ public @Component class QmController {
 		responseMap.put(qmConstant.getSendConstant().getResponseDataKey(), value);
 		return JSON.toJSONString(responseMap);
 	}
-	
-	
-	
 	
 }

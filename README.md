@@ -52,11 +52,13 @@
 
   > 在请求时拦截，获取body参数并对其进行解密格式化，把格式化后的body原路放置。
 
+- RequestBody自定义注解@QmBody
+
+  > 在请求时对请求body中的json数据进行自动装配,在controller中参数列表可直接获取对应类型的参数。
+
 - 百度地图工具类（未测试）
 
 - 微信工具类（未完善）
-
-
 
 ### 架构目录
 
@@ -114,12 +116,9 @@
 
       > 微信工具包
 
-
-
 ### 详细说明
 
 请移步【[帮助文档](https://github.com/starmcc/QMBootFrame/wiki)】进行阅读。
-
 
 
 ### 更新日志
@@ -127,10 +126,10 @@
 请移步【[更新日志](https://github.com/starmcc/QMBootFrame/wiki/version)】进行阅读。
 
 
-
 ### 关于作者
 
 - 小生不才,黄阶中级,跪求各路大仙路过指点迷津
-- 浅梦在此感谢各位的Star,QQ:1140526018
+- 浅梦在此感谢各位的Star
+- email:starczt1992@163.com
 - 一个纯粹的Java农民
 

@@ -8,12 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.qm.code.entity.User;
 import com.qm.code.service.UserService;
+import com.qm.frame.basic.body.QmBody;
 import com.qm.frame.basic.controller.QmCode;
 import com.qm.frame.basic.controller.QmController;
 import com.qm.frame.qmsecurity.entity.QmSecInfo;
@@ -60,8 +60,8 @@ public class ResController extends QmController{
 	 * @return
 	 */
 	@PostMapping("/demo2")
-	public String demo2 (@RequestBody Map<?,?> map) {
-		return super.sendJSON(QmCode._1,map);
+	public String demo2 (@QmBody String testParams) {
+		return super.sendJSON(QmCode._1,testParams);
 	}
 	
 	
@@ -85,7 +85,6 @@ public class ResController extends QmController{
 			//调用login方法，会自动生成对应的token，token会存放在QmSecInfo
 			qmSecInfo = qmSecurityManager.login(qmSecInfo, 5, 111);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return super.sendJSON(QmCode._500);
 			
