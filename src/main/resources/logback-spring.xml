@@ -11,9 +11,13 @@
     <property name="log_dir" value="/logs/" />  
     <!-- 日志最大的历史 30天 -->  
     <property name="maxHistory" value="30"/>  
-  	<!-- 日志颜色格式 -->
-  	<property name="CONSOLE_LOG_PATTERN" value="QM控制台[%-5level][%d{yyyy-MM-dd HH:mm:ss}] [%thread] [%logger]%msg%n"/>
-    <!-- ConsoleAppender 控制台输出日志 -->  
+  	<!-- 无颜色格式 -->
+  	<!--<property name="CONSOLE_LOG_PATTERN" value="QM控制台 >> %-5level| %d{yyyy-MM-dd HH:mm:ss} | %thread | %logger | %msg%n"/>-->
+    <!-- 有颜色格式 -->
+    <property name="CONSOLE_LOG_PATTERN"
+              value="QM控制台 >> %highlight(%-5level)| %date{yyyy-MM-dd HH:mm:ss} | %boldYellow(%thread) | %boldGreen(%logger) | %msg%n"/>
+    <!-- 注意：生产环境务必使用没有颜色的日志,不然会增加服务器的压力,造成未知的后果自己负责 -->
+    <!-- ConsoleAppender 控制台输出日志 -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">  
         <!-- 对日志进行格式化 -->  
         <encoder>  
