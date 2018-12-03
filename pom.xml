@@ -25,7 +25,33 @@
 		<!-- JDK版本 -->
 		<java.version>1.8</java.version>
 	</properties>
-
+	<!-- 配置编译文件 -->
+	<build>
+		<!-- SpringBoot在打包jar时添加项目中的xml和properties -->
+		<!-- 最主要是某些开发软件不能自动将这些文件打包 -->
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+				<!--配置添加xml和properties-->
+				<includes>
+					<include>**/*.xml</include>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+		</resources>
+		<plugins>
+			<!-- 这是spring boot devtool plugin -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<!-- fork : 如果没有该项配置，该devTools不会起作用，即应用不会restart -->
+					<fork>true</fork>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<!-- 项目集成第三方依赖库 -->
 	<dependencies>
 	<!-- 框架依赖包Start -->
 		<!-- SpringBoot-Web依赖相关 -->
@@ -145,20 +171,5 @@
 		
 		
 	</dependencies>
-
-
-	<build>
-		<plugins>
-			<!-- 这是spring boot devtool plugin -->
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<!--fork : 如果没有该项配置，该devTools不会起作用，即应用不会restart -->
-					<fork>true</fork>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 
 </project>
