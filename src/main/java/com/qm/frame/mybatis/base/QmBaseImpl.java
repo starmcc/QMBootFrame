@@ -1,8 +1,10 @@
 package com.qm.frame.mybatis.base;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.qm.code.entity.User;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,6 +145,25 @@ public final class QmBaseImpl implements QmBase {
 		}
 		return list;
 	}
+
+	@Override
+	public <Q> Q autoSelectOne(Q entity, Class<Q> clamm) {
+		SqlSession session = sqlSessionFactory.openSession();
+		try {
+			Q obj = clamm.newInstance();
+			Map<String, Object> map;
+			map = session.selectOne(QM_NAMESPACE + "selectAuto", new QmBaseDto(entity).getParamsMap());
+			session.commit();
+			ConvertUtil.mapToBean(map, obj);
+			return obj;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		return null;
+	}
+
 
 	@Override
 	public <Q> int autoInsert(Q entity) {
