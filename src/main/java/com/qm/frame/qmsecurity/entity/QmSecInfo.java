@@ -14,9 +14,13 @@ public final class QmSecInfo {
 	 */
 	private String loginCode;
 	/**
-	 * 角色名
+	 * 角色id
 	 */
-	private String roleName;
+	private Integer roleId;
+	/**
+	 * 是否为超级管理员
+	 */
+	private boolean superUser;
 	/**
 	 * 附加信息
 	 */
@@ -51,13 +55,19 @@ public final class QmSecInfo {
 		this.infoMap = infoMap;
 	}
 
-	public String getRoleName() {
-		return roleName;
+	public Integer getRoleId() {
+		return roleId;
 	}
 
-	public void setRoleName(String roleName) {
-		this.roleName = roleName;
+	public void setRoleId(int roleId) {
+		this.roleId = roleId;
 	}
-	
-	
+
+	public boolean isSuperUser() {
+		return superUser;
+	}
+
+	public void setSuperUser(boolean superUser) {
+		this.superUser = superUser;
+	}
 }

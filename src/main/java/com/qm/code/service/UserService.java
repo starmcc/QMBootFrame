@@ -37,4 +37,5 @@ public interface UserService {
 
 	int insert(User user);
 
+	User login(String userName,String password);
 }

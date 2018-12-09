@@ -1,7 +1,5 @@
 package com.qm.frame.qmsecurity.connector;
 
-import java.util.List;
-
 import com.qm.frame.qmsecurity.entity.QmSecInfo;
 import com.qm.frame.qmsecurity.entity.QmSecRole;
 
@@ -20,21 +18,19 @@ import com.qm.frame.qmsecurity.entity.QmSecRole;
  * 		读取缓存中的角色列表→
  * 		与注解上的powerName进行权限鉴定→允许访问
  */
-public interface QmSecurityService {
+public abstract class QmSecurityManager {
 	
 	/**
-	 * QmSecurity验证Token的具体实现。
-	 * 注意：实现该方法最好使用缓存技术，提高访问速度。
-	 * 包括用户登录时存放的所有信息
-	 * @param qmSecInfo 该方法会回调一个QmSecInfo的对象
+	 * QmSecurity验证Token的多方接口，提供给开发者拓展验证token。
+	 * @param qmSecInfo 该参数会回调一个QmSecInfo的对象，包括用户登录时存放的所有信息
 	 * @return
 	 */
-	boolean verifyInfo(QmSecInfo qmSecInfo);
+	public abstract boolean verifyInfo(QmSecInfo qmSecInfo);
 
 	/**
-	 * QmSecurity调用此方法来获取系统角色表信息,系统会在启动时调用加载.
-	 * @Title: getQmSecRoles
+	 * QmSecurity调用此方法来获取用户角色的信息
+	 * 请提供最新的角色信息,它将自动对新权限进行装配
 	 * @return List<QmSecRole> 返回角色实体，该实体必须包含所属权限
 	 */
-	List<QmSecRole> getQmSecRoles();
+	public abstract QmSecRole getQmSecRole(int roleId);
 }

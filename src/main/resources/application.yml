@@ -70,8 +70,8 @@ spring:
 mybatis:
   type-aliases-package: com.qm.code.entity
   mapper-locations: 
-  - 'classpath:com/qm/frame/mybatis/mapper/**Mapper.xml'
-  - 'classpath:com/qm/code/sql/**Mapper.xml'
+  - 'classpath*:com/qm/frame/mybatis/mapper/QmMapper.xml'
+  - 'classpath*:com/qm/code/sql/**Mapper.xml'
 #※※※※※※※※※※※※Logger※※※※※※※※※※※※
 logging:
   config: 'classpath:logback-spring.xml'
@@ -80,7 +80,7 @@ logging:
 qmframe: 
   #※※※QmSecurityManager※※※
   security: 
-    start: false #是否开启权限框架
+    start: true #是否开启权限框架
     secret: sahdwaohxicxzoc #Token秘钥
     requestHeaderTokenKey: token #请求数据时,请求头的tokenkey名
   #※※※请求数据设置※※※

@@ -1,9 +1,10 @@
-package com.qm.code.service;
+package com.qm.code.service.impl;
 
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.qm.code.service.UserService;
 import org.springframework.stereotype.Service;
 
 import com.qm.code.entity.User;
@@ -17,7 +18,7 @@ public class UserServiceImpl implements UserService {
 	/**
 	 * mapper的命名空间，请按照约定格式书写，相对应的是sql包中的Mapper的namescapse
 	 */
-	private static final String NAMESCAPSE = "Info-UserServiceImpl-0-Mapper";
+	private static final String NAMESCAPSE = "User-UserServiceImpl-0-Mapper";
 
 	@Override
 	public List<User> getAutoList(User user) {
@@ -37,6 +38,18 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public int insert(User user) {
 		return qmBase.autoInsert(user);
+	}
+
+	@Override
+	public User login(String userName, String password) {
+		User user = new User();
+		user.setUserName(userName);
+		user.setPassword(password);
+		List<User> users = this.getAutoList(user);
+		if (users.size() == 0) {
+		    return null;
+		}
+		return users.get(0);
 	}
 
 	@Override

@@ -14,8 +14,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface QmSecurityAPI {
 	/**
-	 * 权限名
+	 * 权限key名
 	 * @return
 	 */
-	public String powerName() default "QmSecurity-ordinary";
+	public String key() default "";
 }

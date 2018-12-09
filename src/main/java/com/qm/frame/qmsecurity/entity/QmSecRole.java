@@ -12,30 +12,29 @@ public final class QmSecRole {
 	/**
 	 * 角色id
 	 */
-	private int id;
-	/**
-	 * 角色名
-	 */
-	private String roleName;
+	private int roleId;
+
+	private Object roleInfo;
 	/**
 	 * 角色权限列表
 	 */
 	private List<String> rolePowers;
 
-	public int getId() {
-		return id;
+
+	public int getRoleId() {
+		return roleId;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setRoleId(int roleId) {
+		this.roleId = roleId;
 	}
 
-	public String getRoleName() {
-		return roleName;
+	public Object getRoleInfo() {
+		return roleInfo;
 	}
 
-	public void setRoleName(String roleName) {
-		this.roleName = roleName;
+	public void setRoleInfo(Object roleInfo) {
+		this.roleInfo = roleInfo;
 	}
 
 	public List<String> getRolePowers() {

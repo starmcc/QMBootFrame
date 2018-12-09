@@ -5,18 +5,16 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import com.qm.frame.qmsecurity.manager.QmSecurity;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
-
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -27,7 +25,6 @@ import com.qm.frame.basic.controller.QmCode;
 import com.qm.frame.basic.controller.QmController;
 import com.qm.frame.basic.util.HttpApiUtil;
 import com.qm.frame.qmsecurity.config.QmSecurityParam;
-import com.qm.frame.qmsecurity.connector.QmSecurityService;
 import com.qm.frame.qmsecurity.entity.QmSecInfo;
 import com.qm.frame.qmsecurity.entity.QmSecRole;
 import com.qm.frame.qmsecurity.note.QmSecurityAPI;
@@ -41,12 +38,9 @@ import com.qm.frame.qmsecurity.note.QmSecurityAPI;
 public @Component class QmSecurityInterceptor extends QmController implements HandlerInterceptor {
 
 	private static final Logger LOG = LoggerFactory.getLogger(QmSecurityInterceptor.class);
-
 	@Autowired
-	private QmSecurityService qmSecurityService;
+    private QmSecurity qmSecurity;
 	@Autowired
-	private ServletContext servletContext;
-	@Autowired(required=false)
 	private QmConstant qmConstant;
 	
 	@Override
@@ -69,6 +63,7 @@ public @Component class QmSecurityInterceptor extends QmController implements Ha
 					token = req.getHeader(qmConstant.getSecurityConstant().getRequestHeaderTokenKey());
 				} catch (Exception e) {
 					new Exception("※※※※※※※※※Token为空※※※※※※※※※").printStackTrace();
+					response.getWriter().write(super.sendJSON(QmCode._105));
 					return false;
 				}
 				String ip = HttpApiUtil.getHttpIp(req);
@@ -82,8 +77,10 @@ public @Component class QmSecurityInterceptor extends QmController implements Ha
 				//存储到request,提供在其他地方获取该对象。
 				req.setAttribute(QmSecurityParam.CONTEXT_QMSECINFO, qmSecInfo);
 				LOG.info("※※※※※※※※※Token已通过校验※※※※※※※※※");
-				if (!verifyPowers(api,qmSecInfo)) {
+				//超级用户，无需鉴权isSuperUser
+				if (!qmSecInfo.isSuperUser() && !verifyPowers(api,qmSecInfo)) {
 					LOG.info("※※※※※※※※※用户鉴权失败※※※※※※※※※");
+					response.getWriter().write(super.sendJSON(QmCode._105));
 					return false;
 				}
 				LOG.info("※※※※※※※※※用户通过鉴权※※※※※※※※※");
@@ -105,7 +102,7 @@ public @Component class QmSecurityInterceptor extends QmController implements Ha
 				return null;
 			}
 			qmSecInfo = getTokenInfo(token);
-			boolean is = qmSecurityService.verifyInfo(qmSecInfo);
+			boolean is = qmSecurity.verifyInfo(qmSecInfo);
 			// 如果为fasle则拦截,token不通过
 			if (!is) {
 				return null;
@@ -136,12 +133,15 @@ public @Component class QmSecurityInterceptor extends QmController implements Ha
 			throw new Exception("Token已过期！");
 		}
 		//这里是一个坑，jwt.getClaims()的不是HashMap,调用remove方法报错,直接给他新的HashMap;
+		//下面是还原一个QmSecInfo的内容
 		Map<String, Claim> claimMap = new HashMap<>(jwt.getClaims());
 		QmSecInfo qmSecInfo = new QmSecInfo();
 		qmSecInfo.setLoginCode(claimMap.get("loginCode").asString());
 		claimMap.remove("loginCode");
-		qmSecInfo.setRoleName(claimMap.get("roleName").asString());
-		claimMap.remove("roleName");
+		qmSecInfo.setRoleId(claimMap.get("roleId").asInt());
+		claimMap.remove("roleId");
+		qmSecInfo.setSuperUser(claimMap.get("superUser").asBoolean());
+		claimMap.remove("superUser");
 		qmSecInfo.setToken(token);
 		Map<String, String> infoMap = new HashMap<String, String>();
 		for (String key : claimMap.keySet()) {
@@ -153,52 +153,31 @@ public @Component class QmSecurityInterceptor extends QmController implements Ha
 	
 	/**
 	 * 鉴权方法
-	 * @param QmSecurityAPI
+	 * @param api
+	 * @param qmSecInfo
 	 * @return
 	 */
 	private boolean verifyPowers(QmSecurityAPI api,QmSecInfo qmSecInfo) {
-		if (api.powerName().equals("QmSecurity-ordinary")) {
-			//普通用户权限
+		if (StringUtils.isEmpty(api.key())) {
 			return true;
 		}
-		if (api.powerName() != null && !api.powerName().trim().equals("")) {
-			//缓存中获取系统角色信息和对应的权限列表
-			@SuppressWarnings("unchecked")
-			List<QmSecRole> secRoles = (List<QmSecRole>) servletContext.getAttribute("QmSecurityRoles");
-			//缓存中找不到该数据
-			if (secRoles == null || secRoles.size() == 0) {
-				LOG.info("※※※※※※※※※error:角色数据为空※※※※※※※※※");
-				return false;
-			}
-			String roleName = qmSecInfo.getRoleName();
-			// 遍历缓存中的角色权限
-			int a = 0;
-			for (QmSecRole qmSecRole : secRoles) {
-				a++;
-				// 找到该角色对应名称
-				if (qmSecRole.getRoleName().equals(roleName)) {
-					// 进入鉴权
-					// 遍历该角色中的权限列表
-					List<String> powers = qmSecRole.getRolePowers();
-					for (int i = 0; i < powers.size(); i++) {
-						// 如果存在该权限,放行
-						if (powers.get(i).equals(api.powerName())) {
-							break;
-						}
-						// 找不到该权限,拦截
-						if (i + 1 >= powers.size()) {
-							return false;
-						}
-					}
-					break;
-				}
-				// 找不到该角色
-				if (a + 1 >= secRoles.size()) {
-					LOG.info("※※※※※※※※※找不到该角色【"+ roleName +"】的信息※※※※※※※※※");
-					return false;
-				}
+		int roleId = qmSecInfo.getRoleId();
+		// 获取设定的权限信息
+		QmSecRole qmSecRole = qmSecurity.extractQmSecRole(roleId,false);
+		if (qmSecRole == null) {
+			LOG.info("※※※※※※※※※error:角色数据为空※※※※※※※※※");
+			return false;
+		}
+		// 进入鉴权
+		// 遍历该角色中的权限列表
+		List<String> powers = qmSecRole.getRolePowers();
+		for (int i = 0; i < powers.size(); i++) {
+			// 如果存在该权限,放行
+			if (powers.get(i).equals(api.key())) {
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
+
 }
