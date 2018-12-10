@@ -4,7 +4,7 @@
 
 ### [[帮助文档]](https://github.com/starmcc/QMBootFrame/wiki)
 
-### [[更新日志](https://github.com/starmcc/QMBootFrame/wiki/Version)]
+### [[更新日志]](https://github.com/starmcc/QMBootFrame/wiki/Version)
 
 ## 关于作者
 
