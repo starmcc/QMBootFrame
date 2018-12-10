@@ -3,11 +3,12 @@ package com.qm.frame.basic.controller;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public @Component class QmController {
 	
 	@Autowired
 	protected HttpServletRequest request;
-	@Autowired
+	@Autowired(required = false)
 	protected HttpServletResponse response;
 	@Autowired
 	protected HttpSession session;
@@ -42,6 +43,7 @@ public @Component class QmController {
 	 * @return
 	 */
 	public String sendJSON(QmCode code) {
+		JSONObject resultJson = new JSONObject();
 		QmResponse qmResponse = new QmResponse();
 		qmResponse.setCode(code.getCode());
 		qmResponse.setMsg(QmCode.getMsg(code));
@@ -52,16 +54,25 @@ public @Component class QmController {
 		try {
 			if(qmConstant.getDes3Constant().isStart()) {
 				value = Des3Util.encode(value);
+				resultJson.put(qmConstant.getSendConstant().getResponseDataKey(),value);
+			}else{
+				resultJson.put(qmConstant.getSendConstant().getResponseDataKey(),qmResponse);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			LOG.debug("加密失败");
 		}
-		Map<String,Object> responseMap = new HashMap<String,Object>();
-		responseMap.put(qmConstant.getSendConstant().getResponseDataKey(), value);
-		return JSON.toJSONString(responseMap);
+		return resultJson.toJSONString();
 	}
+	/**
+	 * main
+	 */
+	public static void main (String[] args){
+	    //...start...
+		Map<String, Object> map = new HashMap<>();
+		map.put("test","test");
 
+	}
 	/**
 	 * 接口回调方法
 	 * @param code QmCode
@@ -69,6 +80,7 @@ public @Component class QmController {
 	 * @return
 	 */
 	public String sendJSON(QmCode code,Object data) {
+		JSONObject resultJson = new JSONObject();
 		QmResponse qmResponse = new QmResponse();
 		qmResponse.setCode(code.getCode());
 		qmResponse.setMsg(QmCode.getMsg(code));
@@ -79,16 +91,17 @@ public @Component class QmController {
 		try {
 			if(qmConstant.getDes3Constant().isStart()) {
 				value = Des3Util.encode(value);
+				resultJson.put(qmConstant.getSendConstant().getResponseDataKey(),value);
+			}else{
+				resultJson.put(qmConstant.getSendConstant().getResponseDataKey(),qmResponse);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			LOG.debug("加密失败");
 		}
-		Map<String,Object> responseMap = new HashMap<String,Object>();
-		responseMap.put(qmConstant.getSendConstant().getResponseDataKey(), value);
-		return JSON.toJSONString(responseMap);
+		return resultJson.toJSONString();
 	}
-	
+
 	/**
 	 * 接口回调方法
 	 * @param code QmCode
@@ -97,6 +110,7 @@ public @Component class QmController {
 	 * @return
 	 */
 	public String sendJSON(QmCode code,String msg,Object data) {
+		JSONObject resultJson = new JSONObject();
 		QmResponse qmResponse = new QmResponse();
 		qmResponse.setCode(code.getCode());
 		qmResponse.setMsg(msg);
@@ -107,14 +121,15 @@ public @Component class QmController {
 		try {
 			if(qmConstant.getDes3Constant().isStart()) {
 				value = Des3Util.encode(value);
+				resultJson.put(qmConstant.getSendConstant().getResponseDataKey(),value);
+			}else{
+				resultJson.put(qmConstant.getSendConstant().getResponseDataKey(),qmResponse);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			LOG.debug("加密失败");
 		}
-		Map<String,Object> responseMap = new HashMap<String,Object>();
-		responseMap.put(qmConstant.getSendConstant().getResponseDataKey(), value);
-		return JSON.toJSONString(responseMap);
+		return resultJson.toJSONString();
 	}
 	
 }

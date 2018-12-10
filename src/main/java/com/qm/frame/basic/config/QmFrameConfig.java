@@ -40,15 +40,6 @@ public class QmFrameConfig implements WebMvcConfigurer {
 	@Autowired
 	private QmConstant qmConstant;
 
-//	/**
-//	 * 添加类型转换器和格式化器
-//	 * @param registry
-//	 */
-//	@Override
-//	public void addFormatters(FormatterRegistry registry) {
-//		registry.addFormatterForFieldType(LocalDate.class, new USLocalDateFormatter());
-//	}
-
 	/**
 	 * 添加静态资源--过滤
 	 */
@@ -79,9 +70,13 @@ public class QmFrameConfig implements WebMvcConfigurer {
 		FastJsonHttpMessageConverter fastJsonHttpMessageConverter = new FastJsonHttpMessageConverter();
 		// 2.添加fastJson的配置信息，比如：是否要格式化返回的json数据;
 		FastJsonConfig fastJsonConfig = new FastJsonConfig();
-		fastJsonConfig.setSerializerFeatures(SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue,
-				SerializerFeature.WriteNullStringAsEmpty, SerializerFeature.DisableCircularReferenceDetect,
-				SerializerFeature.WriteNullListAsEmpty, SerializerFeature.WriteDateUseDateFormat);
+		fastJsonConfig.setSerializerFeatures(
+				SerializerFeature.PrettyFormat,
+				SerializerFeature.WriteMapNullValue,
+				SerializerFeature.WriteNullStringAsEmpty,
+				SerializerFeature.DisableCircularReferenceDetect,
+				SerializerFeature.WriteNullListAsEmpty,
+				SerializerFeature.WriteDateUseDateFormat);
 		// 3处理中文乱码问题
 		List<MediaType> fastMediaTypes = new ArrayList<>();
 		fastMediaTypes.add(MediaType.APPLICATION_JSON_UTF8);
@@ -111,18 +106,5 @@ public class QmFrameConfig implements WebMvcConfigurer {
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
 		argumentResolvers.add(new JsonPathArgumentResolver());
 	}
-
-	/**
-	 * QmSecurity权限框架拦截器依赖
-	 */
-//	@Bean
-//	public FilterRegistrationBean<InitFilter> initFilter() {
-//		FilterRegistrationBean<InitFilter> filterRegistrationBean = new FilterRegistrationBean<InitFilter>();
-//		filterRegistrationBean.setOrder(1);
-//		filterRegistrationBean.setFilter(new InitFilter());
-//		filterRegistrationBean.setName("initFilter");
-//		filterRegistrationBean.addUrlPatterns("/*");
-//		return filterRegistrationBean;
-//	}
 
 }
