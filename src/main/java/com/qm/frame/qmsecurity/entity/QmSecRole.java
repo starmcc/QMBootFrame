@@ -13,7 +13,9 @@ public final class QmSecRole {
 	 * 角色id
 	 */
 	private int roleId;
-
+	/**
+	 * 附加角色信息对象
+	 */
 	private Object roleInfo;
 	/**
 	 * 角色权限列表

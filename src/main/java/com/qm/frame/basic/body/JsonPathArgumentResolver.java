@@ -3,7 +3,6 @@ package com.qm.frame.basic.body;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.qm.frame.basic.controller.QmController;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.MethodParameter;
@@ -15,6 +14,8 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -71,6 +72,11 @@ public class JsonPathArgumentResolver extends QmController implements HandlerMet
 		if (value != null) {
 			if (isBasicDataTypes(parameterType)) {
 				return value;
+			}
+			// 解析Date时间
+			if (parameterType == Date.class) {
+				return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+						.parse(value.toString());
 			}
 			return JSON.parseObject(value.toString(), parameterType);
 		}

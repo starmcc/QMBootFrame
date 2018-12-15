@@ -1,15 +1,5 @@
 package com.qm.frame.qmsecurity.manager;
 
-import java.util.*;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-
-import com.qm.frame.qmsecurity.connector.QmSecurityManager;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator.Builder;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -18,6 +8,13 @@ import com.qm.frame.basic.util.HttpApiUtil;
 import com.qm.frame.qmsecurity.config.QmSecurityParam;
 import com.qm.frame.qmsecurity.entity.QmSecInfo;
 import com.qm.frame.qmsecurity.entity.QmSecRole;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
@@ -124,10 +121,11 @@ public final class QmSecurityImpl implements QmSecurity {
 	}
 
 	/**
-	 * 获取系统缓存中的角色信息
+	 * 获取系统缓存中的角色信息集合
 	 * @return 返回角色列表
 	 */
-	private List<QmSecRole> getQmSecRoles() {
+	@Override
+	public List<QmSecRole> extractAllQmSecRole() {
 		List<QmSecRole> roles = null;
 		try {
 			roles = (List<QmSecRole>) servletContext.getAttribute(QmSecurityParam.CONTEXT_QMSECROLES);
@@ -148,40 +146,39 @@ public final class QmSecurityImpl implements QmSecurity {
 		servletContext.setAttribute(QmSecurityParam.CONTEXT_QMSECROLES, qmSecRoleList);
 	}
 
+
 	@Override
 	public QmSecRole extractQmSecRole(int roleId,boolean isNewInfo) {
-		try {
-			List<QmSecRole> qmSecRoles = this.getQmSecRoles();
-			for (QmSecRole qmSecRole : qmSecRoles) {
-				if (roleId == qmSecRole.getRoleId()) {
+		List<QmSecRole> qmSecRoles = this.extractAllQmSecRole();
+		for (int i = 0; i < qmSecRoles.size(); i++) {
+			// 遍历该角色的id是否一致
+			if (roleId == qmSecRoles.get(i).getRoleId()) {
+				if (isNewInfo) {
+					// 如果isNewInfo=true，则直接调用使用者提供方法并更新缓存。
 					try {
-						if (isNewInfo) {
-							qmSecRoles.remove(qmSecRole);
-							qmSecRole = qmSecurityManager.getQmSecRole(roleId);
-							if (qmSecRole != null) {
-								qmSecRoles.add(qmSecRole);
-								this.setQmSecRoles(qmSecRoles);
-							}
+						QmSecRole qmSecRole = qmSecurityManager.getQmSecRole(roleId);
+						if (qmSecRole != null) {
+							qmSecRoles.set(i,qmSecRole);
+							// 该处设置回去最新的角色集合
+							this.setQmSecRoles(qmSecRoles);
 						}
 					} catch (Exception e) {
 						new Exception("继承QmSecurityManager的getQmSecRole方法发生了异常").printStackTrace();
+						return null;
 					}
-					return qmSecRole;
 				}
+				return qmSecRoles.get(i);
 			}
-			QmSecRole qmSecRole = null;
-			try {
-				qmSecRole = qmSecurityManager.getQmSecRole(roleId);
-				if (qmSecRole != null) {
-					qmSecRoles.add(qmSecRole);
-					this.setQmSecRoles(qmSecRoles);
-				}
-			} catch (Exception e) {
-				new Exception("继承QmSecurityManager的getQmSecRole方法发生了异常").printStackTrace();
+		}
+		try {
+			QmSecRole qmSecRole = qmSecurityManager.getQmSecRole(roleId);
+			if (qmSecRole != null) {
+				qmSecRoles.add(qmSecRole);
+				this.setQmSecRoles(qmSecRoles);
 			}
 			return qmSecRole;
 		} catch (Exception e) {
-			e.printStackTrace();
+			new Exception("继承QmSecurityManager的getQmSecRole方法发生了异常").printStackTrace();
 			return null;
 		}
 	}

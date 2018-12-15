@@ -1,4 +1,4 @@
-package com.qm.frame.qmsecurity.connector;
+package com.qm.frame.qmsecurity.manager;
 
 import com.qm.frame.qmsecurity.entity.QmSecInfo;
 import com.qm.frame.qmsecurity.entity.QmSecRole;
@@ -8,7 +8,7 @@ import com.qm.frame.qmsecurity.entity.QmSecRole;
  * @author: 浅梦
  * @date: 2018年11月26日 上午12:55:28
  * @Description: 
- * QM权限管理业务接口，该接口提供的方法必须全部实现。该类提供的方法在提供了鉴权注解时会全部调用。
+ * QM权限管理业务抽象类，该抽象类提供的方法必须全部实现。该类提供的方法在提供了鉴权注解时会全部调用。
  * 过程：
  * 		系统启动时加载getSystemRoles获取角色列表→
  * 		用户请求→
