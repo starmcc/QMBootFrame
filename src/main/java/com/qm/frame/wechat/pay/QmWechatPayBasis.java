@@ -1,5 +1,6 @@
 package com.qm.frame.wechat.pay;
 
+import com.qm.frame.wechat.WechatConfig;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -32,10 +33,9 @@ public final class QmWechatPayBasis {
 	 * 微信签名换算
 	 * @param Encoding 编码格式
 	 * @param qmWechatPayInfo 微信支付参数信息
-	 * @param apiKey 微信【商户】秘钥,该值请在微信公众号关联的商户号中进行获取
 	 * @return
 	 */
-	public static String createSign(String Encoding,QmWechatPayInfo qmWechatPayInfo,String apiKey) {
+	public static String createSign(String Encoding,QmWechatPayInfo qmWechatPayInfo) {
 		try {
 			SortedMap<String, Object> params = new TreeMap<String, Object>();
 			Field[] fields = qmWechatPayInfo.getClass().getDeclaredFields();
@@ -43,10 +43,13 @@ public final class QmWechatPayBasis {
 				field.setAccessible(true);
 				Object value = field.get(qmWechatPayInfo);
 				String key = field.getName();
-				if (value != null && !value.equals("") && !key.equals("sign")) {
+				if (value != null && !value.equals("")) {
 					params.put(key, value);
 				}
 			}
+			params.put("appid", WechatConfig.APPID);
+			params.put("mch_id",WechatConfig.MCH_ID);
+			params.put("notify_url",WechatConfig.NOTIFY_URL);
 			StringBuffer sb = new StringBuffer();
 			Set<Map.Entry<String, Object>> entrySet = params.entrySet();
 			Iterator<Map.Entry<String, Object>> it = entrySet.iterator();
@@ -56,7 +59,7 @@ public final class QmWechatPayBasis {
 				Object v = entry.getValue();
 				sb.append(k + "=" + v + "&");
 			}
-			sb.append("key=" + apiKey);
+			sb.append("key=" + WechatConfig.MCH_KEY);
 			System.out.println("参与签名的参数：" + sb.toString());
 			return MD5Util.MD5Encode(sb.toString(), Encoding).toUpperCase();
 		} catch (SecurityException e) {
@@ -78,7 +81,7 @@ public final class QmWechatPayBasis {
 	 * @return
 	 * @throws IOException
 	 */
-	protected static String httpsRequest(String requestUrl, String requestMethod, String outputStr) throws IOException {
+	public static String httpsRequest(String requestUrl, String requestMethod, String outputStr) throws IOException {
 		URL url = new URL(requestUrl);
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setDoOutput(true);
@@ -107,6 +110,7 @@ public final class QmWechatPayBasis {
 		return buffer.toString();
 	}
 
+
 	/**
 	 * 将微信信息类转换成转XML报文
 	 * @param qmWechatPayInfo
@@ -114,23 +118,28 @@ public final class QmWechatPayBasis {
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
 	 */
-	protected static String getRequestXml(QmWechatPayInfo qmWechatPayInfo)
+	public static String getRequestXml(QmWechatPayInfo qmWechatPayInfo,String sign)
 			throws IllegalArgumentException, IllegalAccessException {
 		StringBuffer xmlStrBuf = new StringBuffer();
 		xmlStrBuf.append("<xml>");
+		// 填入appid和mch_id
+		xmlStrBuf.append("<appid>" + WechatConfig.APPID + "</appid>");
+		xmlStrBuf.append("<mch_id>" + WechatConfig.MCH_ID + "</mch_id>");
+		xmlStrBuf.append("<notify_url>" + WechatConfig.NOTIFY_URL + "</notify_url>");
 		Field[] fields = qmWechatPayInfo.getClass().getDeclaredFields();
 		for (Field field : fields) {
 			field.setAccessible(true);
 			Object value = field.get(qmWechatPayInfo);
 			String key = field.getName();
 			if (value != null) {
-				if (key.equalsIgnoreCase("attach") || key.equalsIgnoreCase("body") || key.equalsIgnoreCase("sign")) {
+				if (key.equalsIgnoreCase("attach")) {
 					xmlStrBuf.append("<" + key + ">" + "<![CDATA[" + value + "]]></" + key + ">");
 				} else {
 					xmlStrBuf.append("<" + key + ">" + value + "</" + key + ">");
 				}
 			}
 		}
+		xmlStrBuf.append("<sign>" + sign + "</sign>");
 		xmlStrBuf.append("</xml>");
 		return xmlStrBuf.toString();
 	}
@@ -142,7 +151,7 @@ public final class QmWechatPayBasis {
 	 * @throws IOException
 	 * @throws JDOMException
 	 */
-	protected static Map<String, String> doXMLParse(String strxml) throws IOException, JDOMException {
+	public static Map<String, String> doXMLParse(String strxml) throws IOException, JDOMException {
 		strxml = strxml.replaceFirst("encoding=\".*\"", "encoding=\"UTF-8\"");
 		if (null == strxml || "".equals(strxml)) {
 			return null;
@@ -177,7 +186,7 @@ public final class QmWechatPayBasis {
 	 * @param children
 	 * @return
 	 */
-	protected static String getChildrenText(List<?> children) {
+	public static String getChildrenText(List<?> children) {
 		StringBuffer sb = new StringBuffer();
 		if (!children.isEmpty()) {
 			Iterator<?> it = children.iterator();

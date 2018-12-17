@@ -12,10 +12,6 @@ import java.util.UUID;
  * @author 浅梦
  */
 public final class QmWechatPayInfo {
-	// APPID,该值请在微信公众号中获取。
-	private String appid;
-	// 商户ID,该值请在微信公众号关联的商户号中进行获取，一般为10个数字
-	private String mch_id;
 	// 随机字符串，不长于32位。
 	private String nonce_str = getRandomString(32);
 	// 调用接口提交的终端设备号
@@ -40,8 +36,6 @@ public final class QmWechatPayInfo {
 	private String time_expire;
 	// 订单优惠标记，代金券或立减优惠功能的参数
 	private String goods_tag;
-	// 接收微信支付异步通知回调地址，通知url必须为直接可访问的url，不能携带参数。
-	private String notify_url;
 	// 支付类型 JSAPI 公众号支付 NATIVE 扫码支付 APP APP支付
 	private String trade_type;
 	// trade_type=NATIVE时（即扫码支付），此参数必传。此参数为二维码中包含的商品ID，商户自行定义。
@@ -52,16 +46,6 @@ public final class QmWechatPayInfo {
 	private String openid;
 	// 场景信息 详见官网接口文档
 	private String scene_info;
-	// 签名
-	private String sign;
-
-	public String getSign() {
-		return sign;
-	}
-
-	protected void setSign(String sign) {
-		this.sign = sign;
-	}
 
 	public String getNonce_str() {
 		return nonce_str;
@@ -69,22 +53,6 @@ public final class QmWechatPayInfo {
 
 	public void setNonce_str(String nonce_str) {
 		this.nonce_str = nonce_str;
-	}
-
-	public String getMch_id() {
-		return mch_id;
-	}
-
-	public void setMch_id(String mch_id) {
-		this.mch_id = mch_id;
-	}
-
-	public String getAppid() {
-		return appid;
-	}
-
-	public void setAppid(String appid) {
-		this.appid = appid;
 	}
 
 	public String getDevice_info() {
@@ -173,14 +141,6 @@ public final class QmWechatPayInfo {
 
 	public void setGoods_tag(String goods_tag) {
 		this.goods_tag = goods_tag;
-	}
-
-	public String getNotify_url() {
-		return notify_url;
-	}
-
-	public void setNotify_url(String notify_url) {
-		this.notify_url = notify_url;
 	}
 
 	public String getTrade_type() {
