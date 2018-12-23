@@ -14,27 +14,16 @@ import com.qm.frame.basic.util.QmSpringManager;
  */
 public @Component class QmConstant {
 	@Autowired
-	private SecurityConstant securityConstant;
-	@Autowired
 	private SendConstant sendConstant;
 	@Autowired
 	private QmVersionConstant qmVersionConstant;
 	@Autowired
 	private DruidConstant druidConstant;
 	@Autowired
-	private Des3Constant des3Constant;
+	private AesConstant aesConstant;
 	
 	public static QmConstant getQmConstantByContext() {
 		return QmSpringManager.getBean(QmConstant.class);
-	}
-	
-	
-	public SecurityConstant getSecurityConstant() {
-		return securityConstant;
-	}
-
-	public void setSecurityConstant(SecurityConstant securityConstant) {
-		this.securityConstant = securityConstant;
 	}
 
 	public SendConstant getSendConstant() {
@@ -61,12 +50,12 @@ public @Component class QmConstant {
 		this.druidConstant = druidConstant;
 	}
 
-	public Des3Constant getDes3Constant() {
-		return des3Constant;
+	public AesConstant getAesConstant() {
+		return aesConstant;
 	}
 
-	public void setDes3Constant(Des3Constant des3Constant) {
-		this.des3Constant = des3Constant;
+	public void setAesConstant(AesConstant aesConstant) {
+		this.aesConstant = aesConstant;
 	}
 
 }

@@ -77,12 +77,7 @@ logging:
   config: 'classpath:logback-spring.xml'
 
 #※※※※※※※※※※※※QmFrame※※※※※※※※※※※※
-qmframe: 
-  #※※※QmSecurityManager※※※
-  security: 
-    start: true #是否开启权限框架
-    secret: sahdwaohxicxzoc #Token秘钥
-    requestHeaderTokenKey: token #请求数据时,请求头的tokenkey名
+qmframe:
   #※※※请求数据设置※※※
   send: 
     requestDataKey: value #请求数据时，根据该key名解析数据(Rest风格)
@@ -94,12 +89,12 @@ qmframe:
     loginUsername: admin #账号
     loginPassword: 123 #密码
     resetEnable: false #是否可重置数据
-  #※※※3DES加密设置※※※
-  des3: 
-    start: false #是否启用3DES对称加密传输
-    key: '2018PinganVitality015522628888ForShenZhenBelter075561869839' #3DES秘钥
-    iv: 12101754 #向量  需要8位数字
+  #※※※AES加密设置※※※
+  aes:
+    start: false #是否启用AES对称加密传输
+    key: 'asdhaisodwasihcosancoiwasn' #AES秘钥
     encoding: UTF-8 #统一使用的编码方式
+    number: 1 #加密次数
   
   #※※※版本控制※※※
   version: 

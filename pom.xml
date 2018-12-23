@@ -164,7 +164,12 @@
 			<artifactId>jdom</artifactId>
 			<version>1.0</version>
 		</dependency>
-	<!-- 框架依赖包End -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>1.55</version>
+        </dependency>
+        <!-- 框架依赖包End -->
 	<!-- 开发依赖下面进行粘贴 -->
 	<!-- 	xxxxx
 			xxx	xxx

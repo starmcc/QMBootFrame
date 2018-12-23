@@ -23,7 +23,7 @@ import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import com.qm.frame.basic.Constant.QmConstant;
 import com.qm.frame.basic.body.JsonPathArgumentResolver;
 import com.qm.frame.basic.util.QmSpringManager;
-import com.qm.frame.qmsecurity.interceptor.QmSecurityInterceptor;
+//import com.qm.frame.qmsecurity.basic.QmSecurityInterceptor;
 
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
@@ -88,23 +88,20 @@ public class QmFrameConfig implements WebMvcConfigurer {
 	}
 
 	/**
-	 * 权限管理器
-	 */
-	@Override
-	public void addInterceptors(InterceptorRegistry registry) {
-		// 检查是否开启权限管理器
-		boolean start = qmConstant.getSecurityConstant().isStart();
-		if (start) {
-			registry.addInterceptor(QmSpringManager.getBean(QmSecurityInterceptor.class)).addPathPatterns("/**");
-		}
-	}
-
-	/**
 	 * QmBody自定义参数管理器
 	 */
 	@Override
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
 		argumentResolvers.add(new JsonPathArgumentResolver());
 	}
+
+
+	///**
+	// * 添加拦截器
+	// */
+	//@Override
+	//public void addInterceptors(InterceptorRegistry registry) {
+	//}
+
 
 }

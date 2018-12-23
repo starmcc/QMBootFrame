@@ -14,7 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import com.alibaba.fastjson.JSONObject;
 import com.qm.frame.basic.Constant.QmConstant;
-import com.qm.frame.basic.util.Des3Util;
+import com.qm.frame.basic.util.AESUtil;
+import org.bouncycastle.jcajce.provider.symmetric.AES;
 
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
@@ -46,8 +47,7 @@ public class QmRequestWrapper extends HttpServletRequestWrapper {
 
 		}
 		String bodyTemp = getBodyString(request);
-		body =  getBodyByDes(bodyTemp).getBytes(Charset.forName("UTF-8"));
-//		body =  getBodyString(request).getBytes(Charset.forName("UTF-8"));
+		body =  getBodyByAes(bodyTemp).getBytes(Charset.forName("UTF-8"));
 	}
 	
 	/**
@@ -56,14 +56,14 @@ public class QmRequestWrapper extends HttpServletRequestWrapper {
 	 * @return
 	 * @Description: 请求解析，解析格式为{"配置的key名":{"param":"xxx","param2":"xxx"}}的JSON参数
 	 */
-	private String getBodyByDes(String body){
+	private String getBodyByAes(String body){
 		if (body == null || body.trim().equals("")) return body;
 		JSONObject jsonObject = JSONObject.parseObject(body);
 		QmConstant config = QmConstant.getQmConstantByContext();
 		String json = jsonObject.getString(config.getSendConstant().getRequestDataKey());
-		if (config.getDes3Constant().isStart()) {
+		if (config.getAesConstant().isStart()) {
 			try {
-				json = Des3Util.decode(json);
+				json = AESUtil.decryptAES(json);
 			} catch (Exception e) {
 				e.printStackTrace();
 				return null;

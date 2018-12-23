@@ -12,7 +12,7 @@ import java.util.List;
  * @date 2018/12/9 20:14
  * @Description: 角色实体
  */
-@Table(name="qm_role")
+@Table(name = "qm_role")
 public class Role {
     @Id
     private Integer roleId;

@@ -7,14 +7,22 @@ import org.springframework.stereotype.Component;
  * Copyright © 2018浅梦工作室. All rights reserved.
  * @author: 浅梦
  * @date: 2018年11月24日 上午1:38:18
- * @Description: 3DES全局信息配置类
+ * @Description: AES全局信息配置类
  */
-@ConfigurationProperties(prefix="qmframe.des3")
-public @Component class Des3Constant {
+@ConfigurationProperties(prefix="qmframe.aes")
+public @Component class AesConstant {
 	private boolean start;
 	private String key;
-	private String iv;
-	private String encoding;
+	private String encoding = "UTF-8";
+	private int number;
+
+	public int getNumber() {
+		return number;
+	}
+
+	public void setNumber(int number) {
+		this.number = number;
+	}
 
 	public boolean isStart() {
 		return start;
@@ -30,14 +38,6 @@ public @Component class Des3Constant {
 
 	public void setKey(String key) {
 		this.key = key;
-	}
-
-	public String getIv() {
-		return iv;
-	}
-
-	public void setIv(String iv) {
-		this.iv = iv;
 	}
 
 	public String getEncoding() {
