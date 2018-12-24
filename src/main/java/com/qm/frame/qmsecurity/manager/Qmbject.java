@@ -20,7 +20,7 @@ public interface Qmbject {
     /**
      * 登录
      * @param qmTokenInfo 参与签名的信息对象
-     * @param expireTime  过期时间(秒单位)
+     * @param expireTime  有效时长(秒单位)
      * @return
      */
     String login(final QmTokenInfo qmTokenInfo,final long expireTime);
@@ -33,7 +33,7 @@ public interface Qmbject {
      * 如果存在则直接获取该对象。
      *
      * isNew=true：
-     * 则无论如何都从自定义的realm的authorizationPermissions方法获取最新信息。并更新到缓存中。
+     * 则无论如何都从自定义的realm的authorizationPermissions方法获取最新信息，并更新到缓存中。
      * @param roleId 角色id
      * @param isNew 是否一定获取最新信息
      * @return QmPermissions 返回角色权限对象

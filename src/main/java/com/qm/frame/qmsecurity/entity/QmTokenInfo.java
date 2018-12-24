@@ -12,7 +12,7 @@ import java.util.Map;
 public class QmTokenInfo {
 
     private String userName;
-    private Integer roleId;
+    private int roleId;
     private String requestIp;
     private Map<String, String> infoMap;
 
@@ -32,11 +32,11 @@ public class QmTokenInfo {
         this.userName = userName;
     }
 
-    public Integer getRoleId() {
+    public int getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(Integer roleId) {
+    public void setRoleId(int roleId) {
         this.roleId = roleId;
     }
 

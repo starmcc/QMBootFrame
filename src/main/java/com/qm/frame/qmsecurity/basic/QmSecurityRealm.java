@@ -1,6 +1,6 @@
 package com.qm.frame.qmsecurity.basic;
 
-import com.qm.frame.qmsecurity.entity.QmPermissions;
+import java.util.List;
 
 /**
  * Copyright © 2018浅梦工作室}. All rights reserved.
@@ -18,5 +18,5 @@ public interface QmSecurityRealm {
      * @param token
      * @return
      */
-    QmPermissions authorizationPermissions(int roleId);
+    List<String> authorizationPermissions(int roleId);
 }

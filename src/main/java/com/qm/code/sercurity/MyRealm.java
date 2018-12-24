@@ -16,12 +16,9 @@ import java.util.List;
 public class MyRealm implements QmSecurityRealm {
 
     @Override
-    public QmPermissions authorizationPermissions(int roleId) {
-        QmPermissions qmPermissions = new QmPermissions();
+    public List<String> authorizationPermissions(int roleId) {
         List<String> permission = new ArrayList<>();
         permission.add("/**");
-        qmPermissions.setRoleId(roleId);
-        qmPermissions.setMatchUrls(permission);
-        return qmPermissions;
+        return permission;
     }
 }

@@ -10,8 +10,15 @@ import java.lang.annotation.Target;
  *
  * @author 浅梦
  * @date 2018/12/22 21:55
- * @Description: 忽略安全认证过滤注解
+ * @Description: 忽略安全认证、授权的注解
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface QmPass {}
+public @interface QmPass {
+    /**
+     * 是否需要登录(标注了该注解且该字段为true时,QmSecurity只做登录校验)
+     * 默认为false，则忽略所有安全认证。
+     * @return
+     */
+    boolean needLogin() default false;
+}

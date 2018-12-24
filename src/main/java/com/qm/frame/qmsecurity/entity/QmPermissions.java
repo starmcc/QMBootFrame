@@ -11,14 +11,14 @@ import java.util.List;
  */
 public class QmPermissions {
 
-    private Integer roleId;
+    private int roleId;
     private List<String> matchUrls;
 
-    public Integer getRoleId() {
+    public int getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(Integer roleId) {
+    public void setRoleId(int roleId) {
         this.roleId = roleId;
     }
 

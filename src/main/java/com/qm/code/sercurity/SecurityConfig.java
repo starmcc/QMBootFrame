@@ -17,12 +17,15 @@ public class SecurityConfig {
 
     @Bean
     public QmSercurityContent setQmSecurityBasic() {
+        // 创建一个QmSecurityContent初始配置
         QmSercurityContent qmSercurityContent = new QmSercurityContent();
-        qmSercurityContent.setTokenSecret("test");
+        // setTokenSecret 设置token加密秘钥
+        qmSercurityContent.setTokenSecret("key2018starmcc");
+        // setQmSecurityRealm 设置自定义的Realm
         qmSercurityContent.setQmSecurityRealm(new MyRealm());
-        qmSercurityContent.setTokenSecret("ashdiowaoi");
-        // x
+        // 设置加密次数
         qmSercurityContent.setEncryptNumber(1);
+        // 返回该对象交由Spring容器
         return qmSercurityContent;
     }
 

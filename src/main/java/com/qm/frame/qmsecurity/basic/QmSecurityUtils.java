@@ -70,9 +70,7 @@ public class QmSecurityUtils implements Qmbject {
         builder.withHeader(headerClaims);
         // 创建主体信息
         builder.withClaim("qm_security_userName", qmTokenInfo.getUserName());
-        if (qmTokenInfo.getRoleId() != null) {
-            builder.withClaim("qm_security_roleId", qmTokenInfo.getRoleId());
-        }
+        builder.withClaim("qm_security_roleId", qmTokenInfo.getRoleId());
         // 封装ip
         String requestIp = HttpApiUtil.getHttpIp(request);
         builder.withClaim("qm_security_requestIp", requestIp);
@@ -119,8 +117,9 @@ public class QmSecurityUtils implements Qmbject {
                     // 如果是真，则肯定会更新信息。
                     QmSecurityRealm qmSecurityRealm = QmSpringManager.getBean(QmSecurityRealm.class);
                     // 将该对象保存起来
-                    qmPermissions = qmSecurityRealm.authorizationPermissions(roleId);
+                    List<String> matchUrls = qmSecurityRealm.authorizationPermissions(roleId);
                     // 替换该对象
+                    qmPermissions.setMatchUrls(matchUrls);
                     QmPermissionsLis.set(i,qmPermissions);
                     // 将该集合缓存起来
                     application.setAttribute(QM_PERMISSIONS_KEY,QmPermissionsLis);
@@ -130,7 +129,10 @@ public class QmSecurityUtils implements Qmbject {
         }
         // 如果是空的则也使用调用者提供的方法去获取
         if (qmPermissions == null) {
-            qmPermissions = QmSercurityContent.qmSecurityRealm.authorizationPermissions(roleId);
+            qmPermissions = new QmPermissions();
+            List<String> matchUrls = QmSercurityContent.qmSecurityRealm.authorizationPermissions(roleId);
+            qmPermissions.setRoleId(roleId);
+            qmPermissions.setMatchUrls(matchUrls);
             QmPermissionsLis.add(qmPermissions);
             application.setAttribute(QM_PERMISSIONS_KEY,QmPermissionsLis);
         }
