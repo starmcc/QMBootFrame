@@ -7,9 +7,9 @@ import java.util.Properties;
 
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
- * @author: 浅梦
- * @date: 2018年11月24日 上午2:09:11
- * @Description: properties工具类，默认读取config.properties配置文件
+ * @author 浅梦
+ * @date 2018年11月24日 上午2:09:11
+ * @Description properties工具类，默认读取config.properties配置文件
  */
 public class PropertiesUtil {
 
@@ -46,10 +46,10 @@ public class PropertiesUtil {
 	}
 
 	/**
-	 * @Title: get
+	 * @Title get
 	 * @param key
 	 * @return
-	 * @Description: 从properties文件中读取出一个key对应的value
+	 * @Description 从properties文件中读取出一个key对应的value
 	 */
 	public static String get(String key) {
 		String value = properties.getProperty(key);
@@ -57,11 +57,11 @@ public class PropertiesUtil {
 	}
 	
 	/**
-	 * @Title: get
+	 * @Title get
 	 * @param key
 	 * @param defaultValue
 	 * @return
-	 * @Description: 从properties文件中读取出一个key对应的value,如果该value为空返回默认文本
+	 * @Description 从properties文件中读取出一个key对应的value,如果该value为空返回默认文本
 	 */
     public static String get(String key,String defaultValue){
     	String value= properties.getProperty(key,defaultValue);
@@ -72,11 +72,11 @@ public class PropertiesUtil {
 	}
     
     /**
-     * @Title: getValueByFileName
+     * @Title getValueByFileName
      * @param key
      * @param fileName
      * @return
-     * @Description: 根据文件名读取
+     * @Description 根据文件名读取
      */
     public static String getValueByFileName(String key,String fileName) {
     	Properties pro = new Properties();

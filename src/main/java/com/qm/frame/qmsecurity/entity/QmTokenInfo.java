@@ -7,7 +7,7 @@ import java.util.Map;
  *
  * @author 浅梦
  * @date 2018/12/22 19:58
- * @Description: 用于token签名的实体类
+ * @Description 用于token签名的实体类
  */
 public class QmTokenInfo {
 

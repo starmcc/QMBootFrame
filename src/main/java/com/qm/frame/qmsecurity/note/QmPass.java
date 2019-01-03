@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  *
  * @author 浅梦
  * @date 2018/12/22 21:55
- * @Description: 忽略安全认证、授权的注解
+ * @Description 忽略安全认证、授权的注解
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

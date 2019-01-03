@@ -22,7 +22,7 @@ import java.util.*;
  *
  * @author 浅梦
  * @date 2018/12/22 16:59
- * @Description: QmSecurity核心工具类
+ * @Description QmSecurity核心工具类
  */
 public class QmSecurityUtils implements Qmbject {
 

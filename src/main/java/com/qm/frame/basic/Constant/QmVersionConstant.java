@@ -7,9 +7,9 @@ import org.springframework.stereotype.Component;
 
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
- * @author: 浅梦
- * @date: 2018年11月24日 上午1:39:43
- * @Description: 版本全局信息配置类
+ * @author 浅梦
+ * @date 2018年11月24日 上午1:39:43
+ * @Description 版本全局信息配置类
  */
 @ConfigurationProperties(prefix = "qmframe.version")
 public @Component class QmVersionConstant {

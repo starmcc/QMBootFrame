@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author 浅梦
  * @date 2018/12/9 20:14
- * @Description: 角色实体
+ * @Description 角色实体
  */
 @Table(name = "qm_role")
 public class Role {

@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author 浅梦
  * @date 2018/12/9 20:19
- * @Description: 角色权限实现类
+ * @Description 角色权限实现类
  */
 @Service
 public class RoleServiceImpl implements RoleService {

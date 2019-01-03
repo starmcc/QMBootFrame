@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class QmApplication {
 	
 	/**
-	 * SpringBoot启动主函数
+	 * Spring Boot 启动主函数
 	 * @param args
 	 */
 	public static void main(String[] args) {

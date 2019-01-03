@@ -5,17 +5,17 @@ import java.util.UUID;
 
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
- * @author: 浅梦
- * @date: 2018年11月24日 上午2:06:55
- * @Description: 这是随机生成工具类
+ * @author 浅梦
+ * @date 2018年11月24日 上午2:06:55
+ * @Description 这是随机生成工具类
  */
 public class NumberUtil {
 
 	/**
-	 * @Title: createUUID
+	 * @Title createUUID
 	 * @param prefix 前缀，如果不需要请传递null
 	 * @return
-	 * @Description: 生成UUID
+	 * @Description 生成UUID
 	 */
 	public static String createUUID(String prefix) {
 		UUID uuid = UUID.randomUUID();
@@ -30,10 +30,10 @@ public class NumberUtil {
 	}
 	
 	/**
-	 * @Title: createRandom
+	 * @Title createRandom
 	 * @param size
 	 * @return
-	 * @Description: 获取随机数字符串
+	 * @Description 获取随机数字符串
 	 */
 	public static String createRandom(int size) {
 		Random random = new Random();

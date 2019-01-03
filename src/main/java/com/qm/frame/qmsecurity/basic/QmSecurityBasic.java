@@ -19,7 +19,7 @@ import java.util.Map;
  *
  * @author 浅梦
  * @date 2018/12/23 1:14
- * @Description: QmSecurity安全框架底层
+ * @Description QmSecurity安全框架底层
  */
 public class QmSecurityBasic {
 

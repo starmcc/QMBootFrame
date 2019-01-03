@@ -13,7 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  *
  * @author 浅梦
  * @date 2018/12/23 2:42
- * @Description: QmSecurity基础设置
+ * @Description QmSecurity基础设置
  */
 @Configuration
 public class QmSecurityConfig implements WebMvcConfigurer {

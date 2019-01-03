@@ -5,9 +5,9 @@ import java.util.Date;
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
  *
- * @author: 浅梦
- * @date: 2018年11月24日 上午1:53:30
- * @Description: 回调实体类
+ * @author 浅梦
+ * @date 2018年11月24日 上午1:53:30
+ * @Description 回调实体类
  */
 public class QmResponse {
 

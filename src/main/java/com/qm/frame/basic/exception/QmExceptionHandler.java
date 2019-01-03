@@ -18,9 +18,9 @@ import com.qm.frame.basic.controller.QmController;
 
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
- * @author: 浅梦
- * @date: 2018年11月24日 上午1:30:20
- * @Description: 异常处理类、将程序中可能出现的错误进行捕获，然后返回JSON格式的错误信息
+ * @author 浅梦
+ * @date 2018年11月24日 上午1:30:20
+ * @Description 异常处理类、将程序中可能出现的错误进行捕获，然后返回JSON格式的错误信息
  */
 @ControllerAdvice
 @RestController

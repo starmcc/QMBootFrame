@@ -14,9 +14,9 @@ import javax.persistence.Transient;
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
  * 
- * @author: 浅梦
- * @date: 2018年11月24日 上午2:31:35
- * @Description: 数据持久层封装DTO
+ * @author 浅梦
+ * @date 2018年11月24日 上午2:31:35
+ * @Description 数据持久层封装DTO
  */
 public final class QmBaseDto {
 	private final Object bean;

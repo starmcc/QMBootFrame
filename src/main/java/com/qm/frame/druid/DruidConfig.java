@@ -15,9 +15,9 @@ import com.qm.frame.basic.Constant.QmConstant;
 
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
- * @author: 浅梦
- * @date: 2018年11月24日 上午2:14:29
- * @Description: Druid连接池配置类
+ * @author 浅梦
+ * @date 2018年11月24日 上午2:14:29
+ * @Description Druid连接池配置类
  */
 public @Configuration class DruidConfig {
 

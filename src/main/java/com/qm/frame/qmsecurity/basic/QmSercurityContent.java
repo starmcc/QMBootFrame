@@ -5,7 +5,7 @@ package com.qm.frame.qmsecurity.basic;
  *
  * @author 浅梦
  * @date 2018/12/23 18:26
- * @Description: 提供给调用者注入使用
+ * @Description 提供给调用者注入使用
  */
 public class QmSercurityContent {
 

@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
  
 /**
- * Title:      QmBody
+ * @Title      QmBody
  * @date       2018年11月30日14:46:28
  * @version    V1.0
  * Description: 自定义请求json数据解析注解（主要解决单参数传递）
@@ -27,5 +27,5 @@ public @interface QmBody {
     /**
      * 解析时用到的JSON的key
      */
-    String value() default "";
+    String key() default "";
 }

@@ -7,7 +7,7 @@ import java.util.List;
  *
  * @author 浅梦
  * @date 2018/12/22 17:06
- * @Description: QmSecurity授权接口
+ * @Description QmSecurity授权接口
  */
 public interface QmSecurityRealm {
 

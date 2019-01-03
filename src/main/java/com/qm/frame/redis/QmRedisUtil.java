@@ -14,9 +14,9 @@ import org.springframework.util.CollectionUtils;
 
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
- * @author: 浅梦
- * @date: 2018年11月24日 上午2:33:49
- * @Description: Redis工具类
+ * @author 浅梦
+ * @date 2018年11月24日 上午2:33:49
+ * @Description Redis工具类
  */
 @Component
 public final class QmRedisUtil {

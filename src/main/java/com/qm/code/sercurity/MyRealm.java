@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author 浅梦
  * @date 2018/12/23 2:20
- * @Description: 自定义realm
+ * @Description 自定义realm
  */
 public class MyRealm implements QmSecurityRealm {
 

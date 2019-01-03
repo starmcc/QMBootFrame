@@ -7,7 +7,7 @@ import java.util.List;
  *
  * @author 浅梦
  * @date 2018/12/22 17:15
- * @Description: 角色权限实体类
+ * @Description 角色权限实体类
  */
 public class QmPermissions {
 

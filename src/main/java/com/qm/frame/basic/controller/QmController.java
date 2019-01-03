@@ -20,9 +20,9 @@ import java.util.Map;
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
  *
- * @author: 浅梦
- * @date: 2018年11月24日 上午1:42:26
- * @Description: 父类Controller, 编写Controller请继承该类。
+ * @author 浅梦
+ * @date 2018年11月24日 上午1:42:26
+ * @Description 父类Controller, 编写Controller请继承该类。
  */
 public @Component
 class QmController {

@@ -20,9 +20,9 @@ import com.qm.frame.basic.controller.QmController;
 
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
- * @author: 浅梦
- * @date: 2018年11月24日 上午1:15:27
- * @Description: 该过滤器主要实现版本控制、重写RequestBody、实现3DES对称无痕解密
+ * @author 浅梦
+ * @date 2018年11月24日 上午1:15:27
+ * @Description 该过滤器主要实现版本控制、重写RequestBody、实现3DES对称无痕解密
  */
 @WebFilter(urlPatterns="/*",filterName="InitFilter")
 @Order(1)
@@ -57,8 +57,8 @@ public @Component class InitFilter extends QmController implements Filter{
      * @param request
      * @return
      * @throws IOException
-     * @Title: verify
-     * @Description: 版本验证工具
+     * @Title verify
+     * @Description 版本验证工具
      */
     public boolean verifyVersion(HttpServletRequest request) throws IOException {
         //不开启版本控制
@@ -72,7 +72,6 @@ public @Component class InitFilter extends QmController implements Filter{
             return true;
         }
         LOG.debug("进入版本控制判断");
-//		String[] versionPermit = QmConstant.version_permit.split(",");
         List<String> versionPermit = super.qmConstant.getQmVersionConstant().getPermitVersions();
         if (versionPermit != null && versionPermit.size() > 0) {
             for (String version : versionPermit) {

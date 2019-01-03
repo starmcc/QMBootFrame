@@ -24,7 +24,7 @@ import java.lang.reflect.Method;
  *
  * @author 浅梦
  * @date 2018/12/22 16:56
- * @Description: QmSecurity安全拦截器
+ * @Description QmSecurity安全拦截器
  */
 public class QmSecurityInterceptor extends QmController implements HandlerInterceptor {
 

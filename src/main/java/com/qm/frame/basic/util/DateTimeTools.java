@@ -8,18 +8,18 @@ import java.util.Date;
 
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
- * @author: 浅梦
- * @date: 2018年11月24日 上午1:57:42
- * @Description: 时间日期工具
+ * @author 浅梦
+ * @date 2018年11月24日 上午1:57:42
+ * @Description 时间日期工具
  */
 public class DateTimeTools {
 
 	/**
-	 * @Title: getFormatDate
+	 * @Title getFormatDate
 	 * @param aDate
 	 * @param aFormat
 	 * @return
-	 * @Description: 获取指定日期的字符串
+	 * @Description 获取指定日期的字符串
 	 */
 	public static String getFormatDate(Date aDate, String aFormat) {
 
@@ -36,11 +36,11 @@ public class DateTimeTools {
 	}
 
 	/**
-	 * @Title: compareDate
+	 * @Title compareDate
 	 * @param dt1
 	 * @param dt2
 	 * @return
-	 * @Description: 按照年月日比较两个 日期时间的大小
+	 * @Description 按照年月日比较两个 日期时间的大小
 	 */
 	public static int compareDate(Date dt1, Date dt2) {
 
@@ -111,9 +111,9 @@ public class DateTimeTools {
     }
 
     /**
-     * @Title: getTodayTime
+     * @Title getTodayTime
      * @return
-     * @Description: 获取当前日期时间
+     * @Description 获取当前日期时间
      */
     public static String getTodayTime() {
         Date sellTime = new Date();
@@ -128,9 +128,9 @@ public class DateTimeTools {
     }
 
     /**
-     * @Title: getTodayDate
+     * @Title getTodayDate
      * @return
-     * @Description: 获取当天日期(短日期)
+     * @Description 获取当天日期(短日期)
      */
     public static String getTodayDate() {
         Date sellTime = new Date();
@@ -148,9 +148,9 @@ public class DateTimeTools {
     }
 
     /**
-     * @Title: getTodayDateLong
+     * @Title getTodayDateLong
      * @return
-     * @Description: 获取当天日期(长日期)
+     * @Description 获取当天日期(长日期)
      */
     public static String getTodayDateLong() {
         Date sellTime = new Date();
@@ -159,9 +159,9 @@ public class DateTimeTools {
     }
 
     /**
-     * @Title: currentYear
+     * @Title currentYear
      * @return
-     * @Description: 获取当前年份
+     * @Description 获取当前年份
      */
     public static int currentYear() {
 
@@ -176,11 +176,11 @@ public class DateTimeTools {
     }
 
     /**
-     * @Title: format
+     * @Title format
      * @param date
      * @param arg
      * @return
-     * @Description: 将日期格式化
+     * @Description 将日期格式化
      */
     public static String format(Date date, String arg) {
         if (date == null)
@@ -206,11 +206,11 @@ public class DateTimeTools {
     }
 
     /**
-     * @Title: countDays
+     * @Title countDays
      * @param begin
      * @param end
      * @return
-     * @Description: 计算俩个日期之间有多少天
+     * @Description 计算俩个日期之间有多少天
      */
     public static int countDays(String begin,String end){
           int days = 0;
@@ -236,11 +236,11 @@ public class DateTimeTools {
         } 
     
     /**
-     * @Title: addCalendarDay
+     * @Title addCalendarDay
      * @param calDate
      * @param addDate
      * @return
-     * @Description: 计算当前距离当前日期之后的某个日期
+     * @Description 计算当前距离当前日期之后的某个日期
      */
     public static String addCalendarDay(Date calDate, long addDate) {
         long time = calDate.getTime();
@@ -258,11 +258,11 @@ public class DateTimeTools {
     }
     
     /**
-     * @Title: reduceDay
+     * @Title reduceDay
      * @param calDate
      * @param addDate
      * @return
-     * @Description: 计算距离执行日期提前多少天的日期
+     * @Description 计算距离执行日期提前多少天的日期
      */
     public static Date reduceDay(Date calDate, long addDate) {
         long time = calDate.getTime();

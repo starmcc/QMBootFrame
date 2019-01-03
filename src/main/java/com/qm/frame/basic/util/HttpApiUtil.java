@@ -24,9 +24,9 @@ import org.apache.http.util.EntityUtils;
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
  * 
- * @author: 浅梦
- * @date: 2018年11月24日 上午2:01:35
- * @Description: HttpApi工具类
+ * @author 浅梦
+ * @date 2018年11月24日 上午2:01:35
+ * @Description HttpApi工具类
  */
 public class HttpApiUtil {
 	// 提交方式
@@ -63,7 +63,7 @@ public class HttpApiUtil {
 	/**
 	 * @param ip
 	 * @return
-	 * @Description: 获取ip地址的归属地 
+	 * @Description 获取ip地址的归属地
 	 * localAddress={city:"广州市", province:"广东省"}
 	 */
 	public static String getIpAddress(String ip) {
@@ -82,7 +82,7 @@ public class HttpApiUtil {
 	/**
 	 * @param request
 	 * @return
-	 * @Description: 
+	 * @Description
 	 * 获取用户真实IP地址，不使用request.getRemoteAddr();的原因是有可能用户使用了代理软件方式避免真实IP地址,
 	 * 可是，如果通过了多级反向代理的话，X-Forwarded-For的值并不止一个，而是一串IP值，究竟哪个才是真正的用户端的真实IP呢？
 	 * 答案是取X-Forwarded-For中第一个非unknown的有效IP字符串。
@@ -115,7 +115,7 @@ public class HttpApiUtil {
 	 * @param params
 	 * @param encoding
 	 * @return
-	 * @Description: POST提交，指定字符编码
+	 * @Description POST提交，指定字符编码
 	 */
 	public static String sendPost(String url, Map<String, Object> params, String encoding) {
 		CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -144,7 +144,7 @@ public class HttpApiUtil {
 	 * @param url
 	 * @param params
 	 * @return
-	 * @Description: POST提交，使用默认字符编码UTF-8
+	 * @Description POST提交，使用默认字符编码UTF-8
 	 */
 	public static String sendPost(String url, Map<String, Object> params) {
 		return sendPost(url, params, ENCODING);
@@ -155,7 +155,7 @@ public class HttpApiUtil {
 	 * @param params
 	 * @param encoding
 	 * @return
-	 * @Description: GET提交，指定字符编码
+	 * @Description GET提交，指定字符编码
 	 */
 	public static String sendGet(String url, Map<String, Object> params, String encoding) {
 		CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -189,7 +189,7 @@ public class HttpApiUtil {
 	 * @param url
 	 * @param params
 	 * @return
-	 * @Description: GET提交，使用默认字符编码UTF-8
+	 * @Description GET提交，使用默认字符编码UTF-8
 	 */
 	public static String sendGet(String url, Map<String, Object> params) {
 		return sendGet(url, params, ENCODING);
@@ -201,7 +201,7 @@ public class HttpApiUtil {
 	 * @param params   请求参数
 	 * @param encoding 请求编码格式
 	 * @return
-	 * @Description: 提交请求，指定字符编码
+	 * @Description 提交请求，指定字符编码
 	 */
 	public static String service(String type, String url, Map<String, Object> params, String encoding) {
 		if (POST.equals(type)) {
@@ -218,7 +218,7 @@ public class HttpApiUtil {
 	 * @param url    请求URL
 	 * @param params 请求参数
 	 * @return
-	 * @Description: 提交请求，使用默认字符编码UTF-8
+	 * @Description 提交请求，使用默认字符编码UTF-8
 	 */
 	public static String service(String type, String url, Map<String, Object> params) {
 		return service(type, url, params, ENCODING);
@@ -228,7 +228,7 @@ public class HttpApiUtil {
 	 * @param params   请求参数
 	 * @param encoding 请求编码格式
 	 * @return
-	 * @Description: 处理参数
+	 * @Description 处理参数
 	 */
 	private static HttpEntity handleParam(Map<String, Object> params, String encoding) {
 		List<NameValuePair> pList = new ArrayList<NameValuePair>();
@@ -258,7 +258,7 @@ public class HttpApiUtil {
 	/**
 	 * @param response
 	 * @param httpClient
-	 * @Description: 关闭
+	 * @Description 关闭
 	 */
 	private static void close(CloseableHttpResponse response, CloseableHttpClient httpClient) {
 		try {
@@ -277,7 +277,7 @@ public class HttpApiUtil {
 	 * @param args
 	 * @throws ParseException
 	 * @throws IOException
-	 * @Description: 测试工具方法
+	 * @Description 测试工具方法
 	 */
 	public static void main(String[] args) throws ParseException, IOException {
 		Map<String, Object> params = new HashMap<String, Object>();

@@ -17,8 +17,8 @@ public @Component class InitStartApi {
 	private final static Logger LOG = LoggerFactory.getLogger(InitStartApi.class);
 	
 	/**
-	 * @Title: init
-	 * @Description: 项目启动时，只执行一次
+	 * @Title init
+	 * @Description 项目启动时，只执行一次
 	 */
 	@PostConstruct
 	public void init() {

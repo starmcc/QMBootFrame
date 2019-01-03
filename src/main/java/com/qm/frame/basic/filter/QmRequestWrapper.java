@@ -19,22 +19,22 @@ import org.bouncycastle.jcajce.provider.symmetric.AES;
 
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
- * @author: 浅梦
- * @date: 2018年11月24日 上午1:23:44
- * @Description: 实现重写RequestBody,并实现3DES对称无缝解密
+ * @author 浅梦
+ * @date 2018年11月24日 上午1:23:44
+ * @Description 实现重写RequestBody,并实现3DES对称无缝解密
  */
 public class QmRequestWrapper extends HttpServletRequestWrapper {
-	
+
 	/**
 	 * body
 	 */
 	private final byte[] body;
-	
+
 	/**
-	 * @Title:QmRequestWrapper
+	 * @Title QmRequestWrapper
 	 * @param request
 	 * @throws IOException
-	 * @Description: 主要通过构造方法实现
+	 * @Description 主要通过构造方法实现
 	 */
 	public QmRequestWrapper(HttpServletRequest request) throws IOException {
 		super(request);
@@ -49,12 +49,12 @@ public class QmRequestWrapper extends HttpServletRequestWrapper {
 		String bodyTemp = getBodyString(request);
 		body =  getBodyByAes(bodyTemp).getBytes(Charset.forName("UTF-8"));
 	}
-	
+
 	/**
-	 * @Title: getBodyByDes
+	 * @Title getBodyByDes
 	 * @param body
 	 * @return
-	 * @Description: 请求解析，解析格式为{"配置的key名":{"param":"xxx","param2":"xxx"}}的JSON参数
+	 * @Description 请求解析，解析格式为{"配置的key名":{"param":"xxx","param2":"xxx"}}的JSON参数
 	 */
 	private String getBodyByAes(String body){
 		if (body == null || body.trim().equals("")) return body;
@@ -71,21 +71,21 @@ public class QmRequestWrapper extends HttpServletRequestWrapper {
 		}
     	return json;
     }
-	
-	
+
+
 	public static void main(String[] args) {
 		String text = "{'value':{'abc':1,'test':'2'}}";
 		JSONObject json = JSONObject.parseObject(text);
 		System.out.println(json.getString("value"));
 	}
-	
-	
-	
+
+
+
 	/**
-	 * @Title: getBodyString
+	 * @Title getBodyString
 	 * @param request
 	 * @return
-	 * @Description: 获取请求Body
+	 * @Description 获取请求Body
 	 */
     public String getBodyString(ServletRequest request) {
         StringBuilder sb = new StringBuilder();
@@ -117,7 +117,7 @@ public class QmRequestWrapper extends HttpServletRequestWrapper {
             }
         }
         return sb.toString();
-    }  
+    }
 	@Override
 	public BufferedReader getReader() throws IOException {
 		return new BufferedReader(new InputStreamReader(getInputStream()));
@@ -146,7 +146,7 @@ public class QmRequestWrapper extends HttpServletRequestWrapper {
 
 			@Override
 			public void setReadListener(ReadListener listener) {
-				
+
 			}
 		};
 	}

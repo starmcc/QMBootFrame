@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author 浅梦
  * @date 2018/12/22 18:08
- * @Description: QM安全管理器，主体控制类
+ * @Description QM安全管理器，主体控制类
  */
 public interface Qmbject {
 

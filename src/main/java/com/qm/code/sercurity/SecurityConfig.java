@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
  *
  * @author 浅梦
  * @date 2018/12/23 3:40
- * @Description: 实现配置QmSecurity示例
+ * @Description 实现配置QmSecurity示例
  */
 @Configuration
 public class SecurityConfig {

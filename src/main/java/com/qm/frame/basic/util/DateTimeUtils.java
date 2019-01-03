@@ -11,9 +11,9 @@ import org.apache.commons.lang3.time.DateUtils;
 
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
- * @author: 浅梦
- * @date: 2018年11月24日 上午1:59:41
- * @Description: 日期处理工具类
+ * @author 浅梦
+ * @date 2018年11月24日 上午1:59:41
+ * @Description 日期处理工具类
  */
 public class DateTimeUtils extends DateUtils{
 	

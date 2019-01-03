@@ -110,7 +110,7 @@ public enum QmCode {
 	}
 
 	/**
-	 * 根据code获取对应msg
+	 * 根据code获取对应msg信息
 	 * @param code
 	 * @return msg
 	 */

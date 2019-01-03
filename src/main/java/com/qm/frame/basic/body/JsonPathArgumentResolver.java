@@ -20,8 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Title: JsonPathArgumentResolver
- * 
+ * @Title JsonPathArgumentResolver
  * @date 2018年9月10日
  * @version V1.0 Description: 自定义解析json数据
  */
@@ -52,7 +51,7 @@ public class JsonPathArgumentResolver extends QmController implements HandlerMet
 		// 根据@RequestJson注解value作为json解析的key
 		QmBody parameterAnnotation = parameter.getParameterAnnotation(QmBody.class);
 		// 注解的value是JSON的key
-		String key = parameterAnnotation.value();
+		String key = parameterAnnotation.key();
 		Object value = null;
 		// 如果@RequestJson注解没有设置value，则取参数名FrameworkServlet作为json解析的key
 		if (StringUtils.isNotEmpty(key)) {

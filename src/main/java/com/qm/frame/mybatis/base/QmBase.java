@@ -4,9 +4,9 @@ import java.util.List;
 
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
- * @author: 浅梦
- * @date: 2018年11月24日 上午2:16:16
- * @Description: Mybatis数据持久层封装工具
+ * @author 浅梦
+ * @date 2018年11月24日 上午2:16:16
+ * @Description Mybatis数据持久层封装工具
  */
 public interface QmBase {
 	/**

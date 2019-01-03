@@ -16,9 +16,9 @@ import org.springframework.stereotype.Component;
 
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
- * @author: 浅梦
- * @date: 2018年11月24日 上午1:34:28
- * @Description: 接口日志，返回请求时间，参数，返回值等信息。
+ * @author 浅梦
+ * @date 2018年11月24日 上午1:34:28
+ * @Description 接口日志，返回请求时间，参数，返回值等信息。
  */
 @Aspect // 等同于<aop:aspect ref="loggerWhole">
 public @Component class LoggerWholeAOP {

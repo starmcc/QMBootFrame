@@ -27,9 +27,9 @@ import com.qm.frame.basic.util.QmSpringManager;
 
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
- * @author: 浅梦
- * @date: 2018年11月24日 上午1:33:11
- * @Description: QMFrame框架的基础配置类
+ * @author 浅梦
+ * @date 2018年11月24日 上午1:33:11
+ * @Description QMFrame框架的基础配置类
  */
 @Configuration
 @WebFilter(urlPatterns = "/*")

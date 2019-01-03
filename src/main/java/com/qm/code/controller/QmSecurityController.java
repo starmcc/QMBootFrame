@@ -16,14 +16,15 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author 浅梦
  * @date 2018/12/23 3:00
- * @Description: QmSecurity权限框架测试用例
+ * @Description QmSecurity权限框架测试用例
  */
 @RestController
 @RequestMapping("/system")
 public class QmSecurityController extends QmController {
 
+    @QmPass
     @GetMapping("/login")
-    public @QmPass String login() {
+    public String login() {
         // 利用QmSecurityUtils获取qmbject实例。
         Qmbject qmbject = QmSecurityUtils.getQmbject();
         // 创建token签名信息QmTokenInfo，并配置该对象的信息
@@ -38,8 +39,9 @@ public class QmSecurityController extends QmController {
         return super.sendJSON(QmCode._1, token);
     }
 
+    @QmPass(needLogin = true)
     @GetMapping("/hello")
-    public @QmPass(needLogin = true) String hello() {
+    public String hello() {
         return super.sendJSON(QmCode._1, "hello");
     }
 

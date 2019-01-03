@@ -7,10 +7,10 @@ import com.qm.frame.basic.util.QmSpringManager;
 
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
- * @author: 浅梦
- * @date: 2018年11月24日 上午1:36:20
- * @Description: 全局Bean依赖配置类 - 该类提供框架中所定义的自定义属性配置。
- * @Description: 获取该类可使用注入方式也可以调用静态方法getQmConstantByContext获取该实例。
+ * @author 浅梦
+ * @date 2018年11月24日 上午1:36:20
+ * @Description 全局Bean依赖配置类 - 该类提供框架中所定义的自定义属性配置。
+ * @Description 获取该类可使用注入方式也可以调用静态方法getQmConstantByContext获取该实例。
  */
 public @Component class QmConstant {
 	@Autowired

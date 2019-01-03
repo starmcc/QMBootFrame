@@ -6,9 +6,9 @@ import javax.persistence.Table;
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
  *
- * @author: 浅梦
- * @date: 2018年11月26日 上午1:36:32
- * @Description: 测试user实体类
+ * @author 浅梦
+ * @date 2018年11月26日 上午1:36:32
+ * @Description 测试user实体类
  */
 @Table(name = "qm_user")
 public class User {

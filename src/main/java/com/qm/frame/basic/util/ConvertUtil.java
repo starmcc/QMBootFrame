@@ -9,15 +9,15 @@ import java.util.Map;
 
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
- * @author: 浅梦
- * @date: 2018年11月24日 上午1:57:19
- * @Description: List、Map工具类
+ * @author 浅梦
+ * @date 2018年11月24日 上午1:57:19
+ * @Description List、Map工具类
  */
 public class ConvertUtil {
 	/**
 	 * @param bean
 	 * @return
-	 * @Description: 将对象装换为map
+	 * @Description 将对象装换为map
 	 */
 	public static <T> Map<String, Object> beanToMap(T bean) {
 		Map<String, Object> map = Maps.newHashMap();
@@ -35,7 +35,7 @@ public class ConvertUtil {
 	 * @param map
 	 * @param bean
 	 * @return
-	 * @Description: 将map装换为javabean对象
+	 * @Description 将map装换为javabean对象
 	 */
 	public static <T> void mapToBean(Map<String, Object> map, T bean) {
 		BeanMap beanMap = BeanMap.create(bean);
@@ -45,7 +45,7 @@ public class ConvertUtil {
 	/**
 	 * @param objList
 	 * @return
-	 * @Description: 将List<T>转换为List<Map<String, Object>>
+	 * @Description 将List<T>转换为List<Map<String, Object>>
 	 */
 	public static <T> List<Map<String, Object>> objectsToMaps(List<T> objList) {
 		List<Map<String, Object>> list = Lists.newArrayList();
@@ -67,7 +67,7 @@ public class ConvertUtil {
 	 * @return
 	 * @throws InstantiationException
 	 * @throws IllegalAccessException
-	 * @Description: 将List<Map<String,Object>>转换为List<T>
+	 * @Description 将List<Map<String,Object>>转换为List<T>
 	 */
 	public static <T> List<T> mapsToObjects(List<Map<String, Object>> maps, Class<T> clazz)
 			throws InstantiationException, IllegalAccessException {

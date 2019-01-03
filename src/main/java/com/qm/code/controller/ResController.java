@@ -18,9 +18,9 @@ import com.qm.frame.basic.controller.QmController;
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
  *
- * @author: 浅梦
- * @date: 2018年11月24日 下午9:06:39
- * @Description: Controller控制器示例
+ * @author 浅梦
+ * @date 2018年11月24日 下午9:06:39
+ * @Description Controller控制器示例
  */
 @RestController
 @RequestMapping("/restful")

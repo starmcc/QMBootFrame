@@ -12,9 +12,9 @@ import javax.imageio.ImageIO;
 
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
- * @author: 浅梦
- * @date: 2018年11月24日 上午2:12:12
- * @Description: 验证码生成器
+ * @author 浅梦
+ * @date 2018年11月24日 上午2:12:12
+ * @Description 验证码生成器
  */
 public class ValidateCodeUtil {
 	// 图片的宽度。
@@ -35,15 +35,15 @@ public class ValidateCodeUtil {
 			'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 
 	/**
-	 * @Title: ValidateCodeUtil
-	 * @Description: 默认构造函数,设置默认参数
+	 * @Title ValidateCodeUtil
+	 * @Description 默认构造函数,设置默认参数
 	 */
 	public ValidateCodeUtil() {
 		this.createCode();
 	}
 
 	/**
-	 * @Title: ValidateCodeUtil
+	 * @Title ValidateCodeUtil
 	 * @param width 图片宽
 	 * @param height  图片高
 	 */
@@ -54,7 +54,7 @@ public class ValidateCodeUtil {
 	}
 
 	/**
-	 * @Title: ValidateCodeUtil
+	 * @Title ValidateCodeUtil
 	 * @param width 图片宽
 	 * @param height 图片高
 	 * @param codeCount 字符个数

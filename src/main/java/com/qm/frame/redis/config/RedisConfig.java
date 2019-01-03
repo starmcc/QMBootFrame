@@ -12,9 +12,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
- * @author: 浅梦
- * @date: 2018年11月24日 上午2:34:08
- * @Description: redis配置类
+ * @author 浅梦
+ * @date 2018年11月24日 上午2:34:08
+ * @Description redis配置类
  */
 @Configuration
 public class RedisConfig {
