@@ -22,7 +22,7 @@ import com.qm.frame.basic.controller.QmController;
  * Copyright © 2018浅梦工作室. All rights reserved.
  * @author 浅梦
  * @date 2018年11月24日 上午1:15:27
- * @Description 该过滤器主要实现版本控制、重写RequestBody、实现3DES对称无痕解密
+ * @Description 该过滤器主要实现版本控制、重写RequestBody、实现AES对称无痕解密
  */
 @WebFilter(urlPatterns="/*",filterName="InitFilter")
 @Order(1)
@@ -46,7 +46,7 @@ public @Component class InitFilter extends QmController implements Filter{
             return;
         }
         /**
-         * 重写RequestBody,并对body进行对称3DES解密。
+         * 重写RequestBody,并对body进行对称AES解密。
          */
         ServletRequest requestWrapper = new QmRequestWrapper(req);
         chain.doFilter(requestWrapper, response);

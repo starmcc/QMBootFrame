@@ -21,7 +21,7 @@ import org.bouncycastle.jcajce.provider.symmetric.AES;
  * Copyright © 2018浅梦工作室. All rights reserved.
  * @author 浅梦
  * @date 2018年11月24日 上午1:23:44
- * @Description 实现重写RequestBody,并实现3DES对称无缝解密
+ * @Description 实现重写RequestBody,并实现AES对称无缝解密
  */
 public class QmRequestWrapper extends HttpServletRequestWrapper {
 
