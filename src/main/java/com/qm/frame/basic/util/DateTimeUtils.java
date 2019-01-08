@@ -1,12 +1,13 @@
 package com.qm.frame.basic.util;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
 
 
 /**
@@ -15,7 +16,7 @@ import org.apache.commons.lang3.time.DateUtils;
  * @date 2018年11月24日 上午1:59:41
  * @Description 日期处理工具类
  */
-public class DateTimeUtils extends DateUtils{
+public class DateTimeUtils extends DateUtils {
 	
 	/**
 	 * yyyy-MM-dd HH:mm:ss

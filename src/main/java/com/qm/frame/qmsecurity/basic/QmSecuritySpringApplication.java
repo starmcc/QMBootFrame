@@ -1,4 +1,4 @@
-package com.qm.frame.basic.util;
+package com.qm.frame.qmsecurity.basic;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,18 +14,18 @@ import org.springframework.stereotype.Component;
  * @Description Spring工具管理器
  */
 @Component
-public class QmSpringManager implements ApplicationContextAware {
+public class QmSecuritySpringApplication implements ApplicationContextAware {
 
-	private static final Logger LOG = LoggerFactory.getLogger(QmSpringManager.class);
+	private static final Logger LOG = LoggerFactory.getLogger(QmSecuritySpringApplication.class);
 	
     private static ApplicationContext applicationContext;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        if(QmSpringManager.applicationContext == null) {
-        	QmSpringManager.applicationContext = applicationContext;
+        if(QmSecuritySpringApplication.applicationContext == null) {
+        	QmSecuritySpringApplication.applicationContext = applicationContext;
         }
-        LOG.info("※※※※※※QmSpringManager设置ApplicationContext成功※※※※※※");
+        LOG.info("※※※※※※QmSpringSecurity设置ApplicationContext成功※※※※※※");
     }
 
     /**

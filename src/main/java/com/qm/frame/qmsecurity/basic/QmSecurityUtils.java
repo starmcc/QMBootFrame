@@ -4,14 +4,13 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.qm.frame.basic.util.HttpApiUtil;
-import com.qm.frame.basic.util.QmSpringManager;
-import com.qm.frame.qmsecurity.config.QmSecurityConfig;
 import com.qm.frame.qmsecurity.entity.QmPermissions;
 import com.qm.frame.qmsecurity.entity.QmTokenInfo;
 import com.qm.frame.qmsecurity.manager.Qmbject;
-import org.apache.commons.lang3.StringUtils;
+import io.netty.util.internal.StringUtil;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.thymeleaf.util.StringUtils;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -115,7 +114,7 @@ public class QmSecurityUtils implements Qmbject {
                 qmPermissions = QmPermissionsLis.get(i);
                 if (isNew) {
                     // 如果是真，则肯定会更新信息。
-                    QmSecurityRealm qmSecurityRealm = QmSpringManager.getBean(QmSecurityRealm.class);
+                    QmSecurityRealm qmSecurityRealm = QmSecuritySpringApplication.getBean(QmSecurityRealm.class);
                     // 将该对象保存起来
                     List<String> matchUrls = qmSecurityRealm.authorizationPermissions(roleId);
                     // 替换该对象

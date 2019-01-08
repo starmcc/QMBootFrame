@@ -16,13 +16,18 @@ import org.springframework.context.annotation.Configuration;
 public class SecurityConfig {
 
     @Bean
-    public QmSercurityContent setQmSecurityBasic() {
+    public MyRealm settingRealm(){
+        return new MyRealm();
+    }
+
+    @Bean
+    public QmSercurityContent setQmSecurityBasic(MyRealm myRealm) {
         // 创建一个QmSecurityContent初始配置
         QmSercurityContent qmSercurityContent = new QmSercurityContent();
         // setTokenSecret 设置token加密秘钥
-        qmSercurityContent.setTokenSecret("key2018starmcc");
+        qmSercurityContent.setTokenSecret("key2018s2312tarmcc");
         // setQmSecurityRealm 设置自定义的Realm
-        qmSercurityContent.setQmSecurityRealm(new MyRealm());
+        qmSercurityContent.setQmSecurityRealm(myRealm);
         // 设置加密次数
         qmSercurityContent.setEncryptNumber(1);
         // 返回该对象交由Spring容器

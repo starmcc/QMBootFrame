@@ -2,7 +2,9 @@ package com.qm.code.sercurity;
 
 import com.qm.frame.qmsecurity.entity.QmPermissions;
 import com.qm.frame.qmsecurity.basic.QmSecurityRealm;
+import org.aspectj.weaver.ast.Test;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 

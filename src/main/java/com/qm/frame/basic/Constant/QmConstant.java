@@ -3,7 +3,7 @@ package com.qm.frame.basic.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.qm.frame.basic.util.QmSpringManager;
+import com.qm.frame.qmsecurity.basic.QmSecuritySpringApplication;
 
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
@@ -23,7 +23,7 @@ public @Component class QmConstant {
 	private AesConstant aesConstant;
 	
 	public static QmConstant getQmConstantByContext() {
-		return QmSpringManager.getBean(QmConstant.class);
+		return QmSecuritySpringApplication.getBean(QmConstant.class);
 	}
 
 	public SendConstant getSendConstant() {

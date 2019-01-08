@@ -1,10 +1,10 @@
 package com.qm.frame.basic.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.qm.frame.basic.Constant.QmConstant;
 import com.qm.frame.basic.util.AESUtil;
+import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +24,7 @@ import java.util.Map;
  * @date 2018年11月24日 上午1:42:26
  * @Description 父类Controller, 编写Controller请继承该类。
  */
-public @Component
-class QmController {
+public @Component class QmController {
 
     private static final Logger LOG = LoggerFactory.getLogger(QmController.class);
 
@@ -45,36 +44,12 @@ class QmController {
      * @return
      */
     public String sendJSON(QmCode code) {
-        JSONObject resultJson = new JSONObject();
-        QmResponse qmResponse = new QmResponse();
-        qmResponse.setCode(code.getCode());
-        qmResponse.setMsg(QmCode.getMsg(code));
-        qmResponse.setData(null);
-        qmResponse.setResponseTime(new Date());
-        //SerializerFeature.WriteMapNullValue设置后,返回Bean时字段为空时默认返回null
-        String value = JSON.toJSONString(qmResponse, SerializerFeature.WriteMapNullValue);
-        try {
-            if (qmConstant.getAesConstant().isStart()) {
-                value = AESUtil.encryptAES(value);
-                resultJson.put(qmConstant.getSendConstant().getResponseDataKey(), value);
-            } else {
-                resultJson.put(qmConstant.getSendConstant().getResponseDataKey(), qmResponse);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            LOG.debug("加密失败");
-        }
-        return resultJson.toJSONString();
-    }
-
-    /**
-     * main
-     */
-    public static void main(String[] args) {
-        //...start...
-        Map<String, Object> map = new HashMap<>();
-        map.put("test", "test");
-
+        Map<String,Object> responseMap = new HashMap<>();
+        responseMap.put("code",code.getCode());
+        responseMap.put("msg",QmCode.getMsg(code));
+        responseMap.put("data",null);
+        responseMap.put("responseTime",new Date());
+        return this.parseJsonToResponse(responseMap);
     }
 
     /**
@@ -85,26 +60,12 @@ class QmController {
      * @return
      */
     public String sendJSON(QmCode code, Object data) {
-        JSONObject resultJson = new JSONObject();
-        QmResponse qmResponse = new QmResponse();
-        qmResponse.setCode(code.getCode());
-        qmResponse.setMsg(QmCode.getMsg(code));
-        qmResponse.setData(data);
-        qmResponse.setResponseTime(new Date());
-        //SerializerFeature.WriteMapNullValue设置后,返回Bean时字段为空时默认返回null
-        String value = JSON.toJSONString(qmResponse, SerializerFeature.WriteMapNullValue);
-        try {
-            if (qmConstant.getAesConstant().isStart()) {
-                value = AESUtil.encryptAES(value);
-                resultJson.put(qmConstant.getSendConstant().getResponseDataKey(), value);
-            } else {
-                resultJson.put(qmConstant.getSendConstant().getResponseDataKey(), qmResponse);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            LOG.debug("加密失败");
-        }
-        return resultJson.toJSONString();
+        Map<String,Object> responseMap = new HashMap<>();
+        responseMap.put("code",code.getCode());
+        responseMap.put("msg",QmCode.getMsg(code));
+        responseMap.put("data",data);
+        responseMap.put("responseTime",new Date());
+        return this.parseJsonToResponse(responseMap);
     }
 
     /**
@@ -116,26 +77,37 @@ class QmController {
      * @return
      */
     public String sendJSON(QmCode code, String msg, Object data) {
-        JSONObject resultJson = new JSONObject();
-        QmResponse qmResponse = new QmResponse();
-        qmResponse.setCode(code.getCode());
-        qmResponse.setMsg(msg);
-        qmResponse.setData(data);
-        qmResponse.setResponseTime(new Date());
+        Map<String,Object> responseMap = new HashMap<>();
+        responseMap.put("code",code.getCode());
+        responseMap.put("msg",msg);
+        responseMap.put("data",data);
+        responseMap.put("responseTime",new Date());
+        return this.parseJsonToResponse(responseMap);
+    }
+
+
+    /**
+     * 转换json
+     * @param responseMap
+     * @return
+     */
+    private String parseJsonToResponse(Map<String,Object> responseMap){
         //SerializerFeature.WriteMapNullValue设置后,返回Bean时字段为空时默认返回null
-        String value = JSON.toJSONString(qmResponse, SerializerFeature.WriteMapNullValue);
+        String value = JSONObject.toJSONString(responseMap, SerializerFeature.WriteMapNullValue);
+        value = StringEscapeUtils.unescapeJava(value);
         try {
             if (qmConstant.getAesConstant().isStart()) {
                 value = AESUtil.encryptAES(value);
-                resultJson.put(qmConstant.getSendConstant().getResponseDataKey(), value);
-            } else {
-                resultJson.put(qmConstant.getSendConstant().getResponseDataKey(), qmResponse);
+                Map<String,String> resMap = new HashMap<>();
+                resMap.put(qmConstant.getSendConstant().getResponseDataKey(),value);
+                return StringEscapeUtils.unescapeJava(JSONObject.toJSONString(resMap,SerializerFeature.WriteMapNullValue));
             }
         } catch (Exception e) {
             e.printStackTrace();
             LOG.debug("加密失败");
         }
-        return resultJson.toJSONString();
+        Map<String,Map<String,Object>> resMap = new HashMap<>();
+        resMap.put(qmConstant.getSendConstant().getResponseDataKey(),responseMap);
+        return StringEscapeUtils.unescapeJava(JSONObject.toJSONString(resMap,SerializerFeature.WriteMapNullValue));
     }
-
 }

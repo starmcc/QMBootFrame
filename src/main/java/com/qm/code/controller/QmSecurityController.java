@@ -34,7 +34,7 @@ public class QmSecurityController extends QmController {
         // 角色id为必须字段，用户角色唯一id
         qmTokenInfo.setRoleId(1);
         // 调用login方法，并设置他的过期时间，生成token
-        String token = qmbject.login(qmTokenInfo, 100);
+        String token = qmbject.login(qmTokenInfo, 60 * 60);
         // 将token返回给前端
         return super.sendJSON(QmCode._1, token);
     }
