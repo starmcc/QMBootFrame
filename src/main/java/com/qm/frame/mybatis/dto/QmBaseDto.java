@@ -1,19 +1,15 @@
 package com.qm.frame.mybatis.dto;
 
+import com.qm.frame.mybatis.note.QmId;
+import com.qm.frame.mybatis.note.QmParams;
+import com.qm.frame.mybatis.note.QmTable;
+import org.apache.commons.lang3.StringUtils;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import java.util.*;
 
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
- * 
+ *
  * @author 浅梦
  * @date 2018年11月24日 上午2:31:35
  * @Description 数据持久层封装DTO
@@ -45,11 +41,11 @@ public final class QmBaseDto {
 		try {
 			final Class<?> clamm = bean.getClass();
 			// 获取该实体的表名
-			Table table = clamm.getAnnotation(Table.class);
-			if (table != null && !table.name().equals("")) {
-				tableName = table.name();
-			} else {
+			QmTable table = clamm.getAnnotation(QmTable.class);
+			if (table == null || StringUtils.isEmpty(table.name())) {
 				tableName = clamm.getSimpleName();
+			} else {
+				tableName = table.name();
 			}
 			// 获取该实体的字段进行操作
 			final Field[] fields = clamm.getDeclaredFields();
@@ -86,7 +82,7 @@ public final class QmBaseDto {
 	 * @return
 	 */
 	private boolean isPrimaryKey(Field id) {
-		Id idKey = id.getAnnotation(Id.class);
+		QmId idKey = id.getAnnotation(QmId.class);
 		if (idKey == null) {
 			return false;
 		}
@@ -98,7 +94,7 @@ public final class QmBaseDto {
 	 * @param id
 	 */
 	private void setPrimaryKey(Field id) {
-		Id idKey = id.getAnnotation(Id.class);
+		QmId idKey = id.getAnnotation(QmId.class);
 		if (idKey == null) {
 			return;
 		}
@@ -108,13 +104,29 @@ public final class QmBaseDto {
 		} catch (Exception e) {
 			return;
 		}
+		if (primaryKey == null) {
+			primaryKey = new HashMap<String, Object>();
+		}
+		// 判断是否设置别名
+		if (StringUtils.isEmpty(idKey.name())) {
+			primaryKey.put("key", id.getName());
+		}else {
+			primaryKey.put("key", idKey.name());
+		}
 		if (obj != null) {
-			if (primaryKey == null) {
-				primaryKey = new HashMap<String, Object>();
-			}
-			primaryKey.put("key", getFieldKeyName(id));
 			primaryKey.put("value", obj);
 			primaryKeyautoIncrement = false;
+		}else {
+			// 如果没有值，则直接默认为是增加或删除调用，所以直接判断uuid规则还是自增规则
+			// 判断是否为uuid策略
+			if (idKey.uuid()) {
+				primaryKey.put("value", UUID.randomUUID().toString().replace("-", ""));
+				primaryKeyautoIncrement = false;
+				return;
+			}else{
+				// 自增id策略
+				primaryKeyautoIncrement = true;
+			}
 		}
 	}
 
@@ -124,8 +136,8 @@ public final class QmBaseDto {
 	 * @return
 	 */
 	private boolean isField(Field field) {
-		Transient trans = field.getAnnotation(Transient.class);
-		if (trans != null) {
+		QmParams qmParams = field.getAnnotation(QmParams.class);
+		if (qmParams != null && qmParams.except()) {
 			return false;
 		}
 		return true;
@@ -142,29 +154,23 @@ public final class QmBaseDto {
 		} catch (Exception e) {
 			return;
 		}
+
 		if (obj != null) {
 			if (params == null) {
 				params = new ArrayList<Map<String, Object>>();
 			}
+			QmParams qmParams = field.getAnnotation(QmParams.class);
 			Map<String, Object> fieldMap = new HashMap<String, Object>();
-			fieldMap.put("key", getFieldKeyName(field));
+			if (StringUtils.isEmpty(qmParams.name())) {
+				fieldMap.put("key", field.getName());
+			}else{
+				fieldMap.put("key", qmParams.name());
+			}
 			fieldMap.put("value", obj);
 			params.add(fieldMap);
 		}
 	}
 
-	/**
-	 * 获取该字段的key名
-	 * @param field
-	 * @return
-	 */
-	private String getFieldKeyName(Field field) {
-		Column column = field.getAnnotation(Column.class);
-		if (column == null || column.name().equals("")) {
-			return field.getName();
-		}
-		return column.name();
-	}
 
 	/**
 	 * 获取实体类参数封装Map

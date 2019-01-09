@@ -23,7 +23,7 @@ public interface QmBase {
 	 * @param params 参数
 	 * @return 根据返回指定的类型进行嵌套数据
 	 */
-	<M> M selectOne(String sqlName,Object params);
+	<M> M selectOne(String sqlName, Object params);
 	
 	
 	/**
@@ -53,39 +53,39 @@ public interface QmBase {
 
 	/**
 	 * 通用查询列表
-	 * @param entity 实体类(必须带有@Table)
+	 * @param entity 实体类(必须带有@QmTable)
 	 * @param clamm 实体类class对象
 	 * @return 根据参数指定的类型进行嵌套数据
 	 */
-	<Q> List<Q> autoSelectList(Q entity,Class<Q> clamm);
+	<Q> List<Q> autoSelectList(Q entity, Class<Q> clamm);
 
 
 	/**
 	 * 通用查询单条记录
-	 * @param entity 实体类(必须带有@Table)
+	 * @param entity 实体类(必须带有@QmTable)
 	 * @param clamm 实体类class对象
 	 * @return 根据参数指定的类型进行嵌套数据
 	 */
-	<Q> Q autoSelectOne(Q entity,Class<Q> clamm);
+	<Q> Q autoSelectOne(Q entity, Class<Q> clamm);
 	
 
 	/**
 	 * 通用插入记录
-	 * @param entity 实体类(必须带有@Table和@Id)
+	 * @param entity 实体类(必须带有@Table和@QmId)
 	 * @return 影响行数
 	 */
 	<Q> int autoInsert(Q entity);
 	
 	/**
 	 * 通用修改记录
-	 * @param entity 实体类(必须带有@Table和@Id)
+	 * @param entity 实体类(必须带有@Table和@QmId)
 	 * @return 影响行数
 	 */
 	<Q> int autoUpdate(Q entity);
 	
 	/**
 	 * 通用删除记录
-	 * @param entity 实体类(必须带有@Table和@Id)
+	 * @param entity 实体类(必须带有@Table和@QmId)
 	 * @return 影响行数
 	 */
 	<Q> int autoDelete(Q entity);

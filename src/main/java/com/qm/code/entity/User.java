@@ -1,7 +1,7 @@
 package com.qm.code.entity;
 
-import javax.persistence.Id;
-import javax.persistence.Table;
+import com.qm.frame.mybatis.note.QmId;
+import com.qm.frame.mybatis.note.QmTable;
 
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
@@ -10,9 +10,9 @@ import javax.persistence.Table;
  * @date 2018年11月26日 上午1:36:32
  * @Description 测试user实体类
  */
-@Table(name = "qm_user")
+@QmTable(name = "qm_user")
 public class User {
-    @Id
+    @QmId
     private Integer id;
     private String userName;
     private String password;

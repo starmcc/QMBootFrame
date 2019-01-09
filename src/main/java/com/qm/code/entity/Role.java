@@ -1,9 +1,9 @@
 package com.qm.code.entity;
 
-import javax.persistence.Id;
-import javax.persistence.Table;
+import com.qm.frame.mybatis.note.QmId;
+import com.qm.frame.mybatis.note.QmTable;
+
 import java.util.Date;
-import java.util.List;
 
 /**
  * Copyright © 2018浅梦工作室}. All rights reserved.
@@ -12,9 +12,9 @@ import java.util.List;
  * @date 2018/12/9 20:14
  * @Description 角色实体
  */
-@Table(name = "qm_role")
+@QmTable(name = "qm_role")
 public class Role {
-    @Id
+    @QmId
     private Integer roleId;
     private String roleName;
     private Date createTime;
