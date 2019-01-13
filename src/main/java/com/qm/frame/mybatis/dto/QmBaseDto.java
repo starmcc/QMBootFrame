@@ -19,156 +19,126 @@ public final class QmBaseDto {
 
 	private String tableName;
 
-	private boolean primaryKeyautoIncrement = true;
-
 	private List<Map<String, Object>> params = null;
 
 	private Map<String, Object> primaryKey = null;
+
 
 	/**
 	 * 构造一个Dto
 	 * @param bean
 	 */
-	public <T> QmBaseDto(T bean) {
+	public <T> QmBaseDto(T bean,boolean isPrimaryKey) throws Exception {
 		this.bean = bean;
-		initDto();
-	}
-
-	/**
-	 * 初始化该类的Dto
-	 */
-	private void initDto() {
-		try {
-			final Class<?> clamm = bean.getClass();
-			// 获取该实体的表名
-			QmTable table = clamm.getAnnotation(QmTable.class);
-			if (table == null || StringUtils.isEmpty(table.name())) {
-				tableName = clamm.getSimpleName();
-			} else {
-				tableName = table.name();
-			}
-			// 获取该实体的字段进行操作
-			final Field[] fields = clamm.getDeclaredFields();
-			if (fields != null) {
-				for (Field field : fields) {
-					// 开放字段权限public
-					if (!field.isAccessible()) {
-						field.setAccessible(true);
-					}
-					// 判断是否主键
-					if (isPrimaryKey(field)) {
-						// 判断是否已设置主键
-						if (primaryKey == null) {
-							// 设置主键值
-							setPrimaryKey(field);
-						}
-					} else {
-						// 判断是否序列化该字段
-						if (isField(field)) {
-							// 设置字段
-							setFiledToList(field);
-						}
-					}
-				}
-			}
-			return;
-		} catch (Exception e) {
+		//this.isPrimaryKey = isPrimaryKey;
+		final Class<?> clamm = bean.getClass();
+		// 获取该实体的表名
+		QmTable table = clamm.getAnnotation(QmTable.class);
+		if (table == null || StringUtils.isEmpty(table.name())) {
+			tableName = clamm.getSimpleName();
+		} else {
+			tableName = table.name();
 		}
-	}
-
-	/**
-	 * 是否主键
-	 * @param id
-	 * @return
-	 */
-	private boolean isPrimaryKey(Field id) {
-		QmId idKey = id.getAnnotation(QmId.class);
-		if (idKey == null) {
-			return false;
+		// 获取该实体的字段进行操作
+		final Field[] fields = clamm.getDeclaredFields();
+		// 如果该字段为空则返回
+		if (fields == null) {
+			throw new QmBaseDtoException("检测不到该实体的字段集!");
 		}
-		return true;
+		// 遍历字段进行参数封装
+		for (Field field : fields) {
+			// 开放字段权限public
+			if (!field.isAccessible()) {
+				field.setAccessible(true);
+			}
+			// 判断是否需要主键策略
+			if (isPrimaryKey) {
+				// 序列化该主键
+				setPrimaryKey(field);
+			}
+			// 序列化该字段
+			setFiledToList(field);
+		}
+		return;
 	}
 
 	/**
 	 * 设置主键
 	 * @param id
+	 * @return
 	 */
-	private void setPrimaryKey(Field id) {
-		QmId idKey = id.getAnnotation(QmId.class);
+	private void setPrimaryKey(Field filed) throws QmBaseDtoException {
+		QmId idKey = filed.getAnnotation(QmId.class);
 		if (idKey == null) {
 			return;
 		}
-		Object obj;
+		Object obj = null;
 		try {
-			obj = id.get(bean);
-		} catch (Exception e) {
-			return;
-		}
-		if (primaryKey == null) {
-			primaryKey = new HashMap<String, Object>();
-		}
-		// 判断是否设置别名
-		if (StringUtils.isEmpty(idKey.name())) {
-			primaryKey.put("key", id.getName());
-		}else {
-			primaryKey.put("key", idKey.name());
+			obj = filed.get(bean);
+		} catch (IllegalAccessException e) {
+			throw new QmBaseDtoException("读取实体类主键字段发生了异常！");
 		}
 		if (obj != null) {
-			primaryKey.put("value", obj);
-			primaryKeyautoIncrement = false;
-		}else {
-			// 如果没有值，则直接默认为是增加或删除调用，所以直接判断uuid规则还是自增规则
-			// 判断是否为uuid策略
-			if (idKey.uuid()) {
-				primaryKey.put("value", UUID.randomUUID().toString().replace("-", ""));
-				primaryKeyautoIncrement = false;
-				return;
-			}else{
-				// 自增id策略
-				primaryKeyautoIncrement = true;
+			// 不等于null
+			// 判断是否设置别名
+			primaryKey = new HashMap<>();
+			if (StringUtils.isEmpty(idKey.name())) {
+				primaryKey.put("key", filed.getName());
+			}else {
+				primaryKey.put("key", idKey.name());
 			}
+			primaryKey.put("value", obj);
+		} else {
+			// 判断是否为uuid策略
+			if (idKey.uuid() == false) return;
+			// 直接判断uuid规则还是自增规则
+			// 判断是否设置别名
+			primaryKey = new HashMap<>();
+			if (StringUtils.isEmpty(idKey.name())) {
+				primaryKey.put("key", filed.getName());
+			}else {
+				primaryKey.put("key", idKey.name());
+			}
+			primaryKey.put("value", UUID.randomUUID().toString().replace("-", ""));
 		}
+		return;
 	}
 
-	/**
-	 * 判断是否序列化该字段
-	 * @param field
-	 * @return
-	 */
-	private boolean isField(Field field) {
-		QmParams qmParams = field.getAnnotation(QmParams.class);
-		if (qmParams != null && qmParams.except()) {
-			return false;
-		}
-		return true;
-	}
 
 	/**
 	 * 设置字段
 	 * @param field
+	 * @return
 	 */
-	private void setFiledToList(Field field) {
-		Object obj;
-		try {
-			obj = field.get(bean);
-		} catch (Exception e) {
+	private void setFiledToList(Field field) throws QmBaseDtoException{
+		QmParams qmParams = field.getAnnotation(QmParams.class);
+		// 判断是否有该注解，如果存在并且except等于true则不加入该字段。
+		if (qmParams != null && qmParams.except()) {
 			return;
 		}
-
-		if (obj != null) {
-			if (params == null) {
-				params = new ArrayList<Map<String, Object>>();
+		Object obj = null;
+		try {
+			obj = field.get(bean);
+			// 如果值是null则不需要这个值了。
+			if (obj == null) {
+			    return;
 			}
-			QmParams qmParams = field.getAnnotation(QmParams.class);
-			Map<String, Object> fieldMap = new HashMap<String, Object>();
-			if (StringUtils.isEmpty(qmParams.name())) {
-				fieldMap.put("key", field.getName());
-			}else{
-				fieldMap.put("key", qmParams.name());
-			}
-			fieldMap.put("value", obj);
-			params.add(fieldMap);
+		} catch (IllegalAccessException e) {
+			throw new QmBaseDtoException("获取字段失败！");
 		}
+		// 开始获取字段并加入字段列表
+		Map<String, Object> fieldMap = new HashMap<String, Object>();
+		if (qmParams == null || StringUtils.isEmpty(qmParams.name())) {
+			fieldMap.put("key", field.getName());
+		}else{
+			fieldMap.put("key", qmParams.name());
+		}
+		fieldMap.put("value", obj);
+		if (params == null) {
+			params = new ArrayList<>();
+		}
+		params.add(fieldMap);
+		return;
 	}
 
 
@@ -182,7 +152,6 @@ public final class QmBaseDto {
 		resMap.put("primaryKey", primaryKey);
 		resMap.put("params", params);
 		resMap.put("tableName", tableName);
-		resMap.put("primaryKeyautoIncrement", primaryKeyautoIncrement);
 		System.out.println(resMap);
 		return resMap;
 	}

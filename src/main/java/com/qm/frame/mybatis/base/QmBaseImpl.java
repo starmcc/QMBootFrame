@@ -1,10 +1,8 @@
 package com.qm.frame.mybatis.base;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.qm.code.entity.User;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +40,15 @@ public final class QmBaseImpl implements QmBase {
 	 * @param sqlName
 	 * @return
 	 */
-	private String getSqlName(String sqlName) {
-		String methodName = sqlName.substring(sqlName.indexOf("Mapper") + 6);
-		String nameSpace = sqlName.substring(0, sqlName.indexOf("Mapper") + 6);
+	private String getSqlName(String sqlName) throws QmBaseException {
+		String methodName = null;
+		String nameSpace = null;
+		try {
+			methodName = sqlName.substring(sqlName.indexOf("Mapper") + 6);
+			nameSpace = sqlName.substring(0, sqlName.indexOf("Mapper") + 6);
+		} catch (Exception e) {
+			throw new QmBaseException("Mapper命名空间错误!'" + sqlName + "' error");
+		}
 		return nameSpace + "." + methodName;
 	}
 
@@ -58,6 +62,7 @@ public final class QmBaseImpl implements QmBase {
 			session.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
+			new QmBaseException("SQL语句错误！").printStackTrace();
 		} finally {
 			session.close();
 		}
@@ -135,7 +140,7 @@ public final class QmBaseImpl implements QmBase {
 		List<Q> list = null;
 		try {
 			List<Map<String, Object>> mapLis;
-			mapLis = session.selectList(QM_NAMESPACE + "selectAuto", new QmBaseDto(entity).getParamsMap());
+			mapLis = session.selectList(QM_NAMESPACE + "selectAuto", new QmBaseDto(entity,false).getParamsMap());
 			session.commit();
 			list = ConvertUtil.mapsToObjects(mapLis, clamm);
 		} catch (Exception e) {
@@ -152,7 +157,7 @@ public final class QmBaseImpl implements QmBase {
 		try {
 			Q obj = clamm.newInstance();
 			Map<String, Object> map;
-			map = session.selectOne(QM_NAMESPACE + "selectAuto", new QmBaseDto(entity).getParamsMap());
+			map = session.selectOne(QM_NAMESPACE + "selectAuto", new QmBaseDto(entity,false).getParamsMap());
 			session.commit();
 			ConvertUtil.mapToBean(map, obj);
 			return obj;
@@ -170,7 +175,7 @@ public final class QmBaseImpl implements QmBase {
 		SqlSession session = sqlSessionFactory.openSession();
 		int result = 0;
 		try {
-			result = session.insert(QM_NAMESPACE + "insertAuto", new QmBaseDto(entity).getParamsMap());
+			result = session.insert(QM_NAMESPACE + "insertAuto", new QmBaseDto(entity,false).getParamsMap());
 			session.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -185,7 +190,7 @@ public final class QmBaseImpl implements QmBase {
 		SqlSession session = sqlSessionFactory.openSession();
 		int result = 0;
 		try {
-			result = session.update(QM_NAMESPACE + "updateAuto", new QmBaseDto(entity).getParamsMap());
+			result = session.update(QM_NAMESPACE + "updateAuto", new QmBaseDto(entity,true).getParamsMap());
 			session.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -200,7 +205,7 @@ public final class QmBaseImpl implements QmBase {
 		SqlSession session = sqlSessionFactory.openSession();
 		int result = 0;
 		try {
-			result = session.delete(QM_NAMESPACE + "deleteAuto", new QmBaseDto(entity).getParamsMap());
+			result = session.delete(QM_NAMESPACE + "deleteAuto", new QmBaseDto(entity,true).getParamsMap());
 			session.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
