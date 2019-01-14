@@ -142,6 +142,8 @@ public final class QmBaseImpl implements QmBase {
 			List<Map<String, Object>> mapLis;
 			mapLis = session.selectList(QM_NAMESPACE + "selectAuto", new QmBaseDto(entity,false).getParamsMap());
 			session.commit();
+			// 如果是空的直接返回null
+			if (mapLis == null) return null;
 			list = ConvertUtil.mapsToObjects(mapLis, clamm);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -159,6 +161,8 @@ public final class QmBaseImpl implements QmBase {
 			Map<String, Object> map;
 			map = session.selectOne(QM_NAMESPACE + "selectAuto", new QmBaseDto(entity,false).getParamsMap());
 			session.commit();
+			// 如果是空的直接返回null
+			if (map == null) return null;
 			ConvertUtil.mapToBean(map, obj);
 			return obj;
 		} catch (Exception e) {
@@ -175,7 +179,7 @@ public final class QmBaseImpl implements QmBase {
 		SqlSession session = sqlSessionFactory.openSession();
 		int result = 0;
 		try {
-			result = session.insert(QM_NAMESPACE + "insertAuto", new QmBaseDto(entity,false).getParamsMap());
+			result = session.insert(QM_NAMESPACE + "insertAuto", new QmBaseDto(entity,true).getParamsMap());
 			session.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -206,6 +210,21 @@ public final class QmBaseImpl implements QmBase {
 		int result = 0;
 		try {
 			result = session.delete(QM_NAMESPACE + "deleteAuto", new QmBaseDto(entity,true).getParamsMap());
+			session.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		return result;
+	}
+
+	@Override
+	public <Q> int autoSelectCount(Q entity) {
+		SqlSession session = sqlSessionFactory.openSession();
+		int result = 0;
+		try {
+			result = session.selectOne(QM_NAMESPACE + "selectCount", new QmBaseDto(entity,false).getParamsMap());
 			session.commit();
 		} catch (Exception e) {
 			e.printStackTrace();

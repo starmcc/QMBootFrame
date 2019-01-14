@@ -89,4 +89,11 @@ public interface QmBase {
 	 * @return 影响行数
 	 */
 	<Q> int autoDelete(Q entity);
+
+	/**
+	 * 通用查询记录数
+	 * @param entity 实体类(必须带有@Table和@QmId)
+	 * @return 影响行数
+	 */
+	<Q> int autoSelectCount(Q entity);
 }

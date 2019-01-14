@@ -147,8 +147,7 @@ public final class QmBaseDto {
 	 * @return
 	 */
 	public Object getParamsMap() {
-		Map<String, Object> resMap = new HashMap<>();
-		System.out.println("====================");
+		Map<String, Object> resMap = new LinkedHashMap<>();
 		resMap.put("primaryKey", primaryKey);
 		resMap.put("params", params);
 		resMap.put("tableName", tableName);

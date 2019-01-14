@@ -6,11 +6,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="QmBaseMapper">
 
 	<!-- 通用查询数据入口 -->
-	<select id="selectAuto" resultType="hashmap">
+	<select id="selectAuto" resultType="map">
 		SELECT *
 		FROM `${tableName}`
 		WHERE 1 = 1
-		<if test="params != null and params.size() != 0">
+		<if test="params != null and params.size != 0">
 			<foreach item="item" collection="params">
 				AND ${item.key} = #{item.value}
 			</foreach>
@@ -21,14 +21,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<insert id="insertAuto">
 		INSERT INTO `${tableName}`
 		(
-			<if test="params != null and params.size() != 0">
+			<if test="primaryKey != null">${primaryKey.key},</if>
+			<if test="params != null and params.size != 0">
 				<foreach item="item" collection="params" separator=",">
 					${item.key}
 				</foreach>
 			</if>
 		)
 		VALUES(
-			<if test="params != null and params.size() != 0">
+		<if test="primaryKey != null">#{primaryKey.value},</if>
+			<if test="params != null and params.size != 0">
 				<foreach item="item" collection="params" separator=",">
 					#{item.value}
 				</foreach>
@@ -40,7 +42,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<update id="updateAuto">
 		UPDATE `${tableName}`
 		SET
-		<if test="params != null">
+		<if test="params != null and params.size != 0">
 			<foreach item="item" collection="params" separator=",">
 				${item.key} = #{item.value}
 			</foreach>
@@ -52,11 +54,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<delete id="deleteAuto">
 		DELETE FROM `${tableName}`
 		WHERE ${primaryKey.key} = #{primaryKey.value}
-		<if test="params != null and params.size() != 0">
+		<if test="params != null and params.size != 0">
 			<foreach open="AND" item="item" collection="params" separator="AND">
 				${item.key} = #{item.value}
 			</foreach>
 		</if>
 	</delete>
+
+	<!-- 查询条数 -->
+	<select id="selectCount" resultType="Integer">
+		SELECT COUNT(1)
+		FROM `${tableName}`
+		WHERE 1 = 1
+		<if test="params != null and params.size != 0">
+			<foreach item="item" collection="params">
+				AND ${item.key} = #{item.value}
+			</foreach>
+		</if>
+	</select>
 	<!-- 全自动End -->
 </mapper>

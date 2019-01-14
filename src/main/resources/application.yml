@@ -80,7 +80,7 @@ mybatis:
   type-aliases-package: com.qm.code.entity
   mapper-locations: 
   - 'classpath*:com/qm/frame/mybatis/mapper/QmMapper.xml'
-  - 'classpath*:com/qm/code/sql/**Mapper.xml'
+  - 'classpath*:com/qm/code/sql/**/*Mapper.xml'
 #※※※※※※※※※※※※Logger※※※※※※※※※※※※
 logging:
   config: 'classpath:logback-spring.xml'

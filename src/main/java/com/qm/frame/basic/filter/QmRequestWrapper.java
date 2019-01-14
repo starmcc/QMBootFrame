@@ -38,14 +38,14 @@ public class QmRequestWrapper extends HttpServletRequestWrapper {
 	 */
 	public QmRequestWrapper(HttpServletRequest request) throws IOException {
 		super(request);
-		System.out.println("-------------------------------------------------");
-		Enumeration<String> e = request.getHeaderNames();
-		while (e.hasMoreElements()) {
-			String name = (String) e.nextElement();
-			String value = request.getHeader(name);
-			System.out.println(name + " = " + value);
-
-		}
+		//System.out.println("-------------------------------------------------");
+		//Enumeration<String> e = request.getHeaderNames();
+		//while (e.hasMoreElements()) {
+		//	String name = (String) e.nextElement();
+		//	String value = request.getHeader(name);
+		//	System.out.println(name + " = " + value);
+		//
+		//}
 		String bodyTemp = getBodyString(request);
 		body =  getBodyByAes(bodyTemp).getBytes(Charset.forName("UTF-8"));
 	}
