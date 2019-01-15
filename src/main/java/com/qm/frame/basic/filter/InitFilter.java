@@ -1,22 +1,17 @@
 package com.qm.frame.basic.filter;
 
-import java.io.IOException;
-import java.util.List;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.annotation.WebFilter;
-import javax.servlet.http.HttpServletRequest;
+import com.qm.frame.basic.controller.QmCode;
+import com.qm.frame.basic.controller.QmController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import com.qm.frame.basic.controller.QmCode;
-import com.qm.frame.basic.controller.QmController;
+import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
@@ -48,7 +43,13 @@ public @Component class InitFilter extends QmController implements Filter{
         /**
          * 重写RequestBody,并对body进行对称AES解密。
          */
-        ServletRequest requestWrapper = new QmRequestWrapper(req);
+        ServletRequest requestWrapper = null;
+        try {
+            requestWrapper = new QmRequestWrapper(req);
+        } catch (Exception e) {
+            response.getWriter().write(super.sendJSON(QmCode._101));
+            return;
+        }
         chain.doFilter(requestWrapper, response);
     }
 

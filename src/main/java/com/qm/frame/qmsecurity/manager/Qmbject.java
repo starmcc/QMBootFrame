@@ -1,6 +1,5 @@
 package com.qm.frame.qmsecurity.manager;
 
-import com.qm.frame.qmsecurity.basic.QmSecurityRealm;
 import com.qm.frame.qmsecurity.entity.QmPermissions;
 import com.qm.frame.qmsecurity.entity.QmTokenInfo;
 
@@ -23,7 +22,7 @@ public interface Qmbject {
      * @param expireTime  有效时长(秒单位)
      * @return
      */
-    String login(final QmTokenInfo qmTokenInfo,final long expireTime);
+    String login(final QmTokenInfo qmTokenInfo, final long expireTime);
 
 
     /**
@@ -38,7 +37,7 @@ public interface Qmbject {
      * @param isNew 是否一定获取最新信息
      * @return QmPermissions 返回角色权限对象
      */
-    QmPermissions extractQmPermissions(final int roleId,final boolean isNew);
+    QmPermissions extractQmPermissions(final int roleId, final boolean isNew);
 
 
     /**

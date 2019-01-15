@@ -7,7 +7,6 @@ import com.qm.frame.basic.util.HttpApiUtil;
 import com.qm.frame.qmsecurity.entity.QmPermissions;
 import com.qm.frame.qmsecurity.entity.QmTokenInfo;
 import com.qm.frame.qmsecurity.manager.Qmbject;
-import io.netty.util.internal.StringUtil;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.thymeleaf.util.StringUtils;

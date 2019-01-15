@@ -5,7 +5,6 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.qm.frame.qmsecurity.config.QmSecurityConfig;
 import com.qm.frame.qmsecurity.entity.QmTokenInfo;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
@@ -81,6 +80,9 @@ public class QmSecurityBasic {
         claimMap.remove("qm_security_requestIp");
         Integer roleId = claimMap.get("qm_security_roleId").asInt();
         claimMap.remove("qm_security_roleId");
+        // 删除敏感的登录和失效时间
+        claimMap.remove("exp");
+        claimMap.remove("iat");
         qmTokenInfo.setUserName(userName);
         qmTokenInfo.setRequestIp(requestIp);
         qmTokenInfo.setRoleId(roleId);

@@ -1,21 +1,20 @@
 package com.qm.frame.basic.filter;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
-import java.util.Enumeration;
+
+import com.alibaba.fastjson.JSONObject;
+import com.qm.frame.basic.Constant.QmConstant;
+import com.qm.frame.basic.util.AESUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-import com.alibaba.fastjson.JSONObject;
-import com.qm.frame.basic.Constant.QmConstant;
-import com.qm.frame.basic.util.AESUtil;
-import org.bouncycastle.jcajce.provider.symmetric.AES;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.util.Enumeration;
 
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
@@ -24,6 +23,8 @@ import org.bouncycastle.jcajce.provider.symmetric.AES;
  * @Description 实现重写RequestBody,并实现AES对称无缝解密
  */
 public class QmRequestWrapper extends HttpServletRequestWrapper {
+
+	private static final Logger LOG = LoggerFactory.getLogger(QmRequestWrapper.class);
 
 	/**
 	 * body
@@ -38,16 +39,24 @@ public class QmRequestWrapper extends HttpServletRequestWrapper {
 	 */
 	public QmRequestWrapper(HttpServletRequest request) throws IOException {
 		super(request);
-		//System.out.println("-------------------------------------------------");
-		//Enumeration<String> e = request.getHeaderNames();
-		//while (e.hasMoreElements()) {
-		//	String name = (String) e.nextElement();
-		//	String value = request.getHeader(name);
-		//	System.out.println(name + " = " + value);
-		//
-		//}
+		// logPrint(request);
+		// 开始对body进行解析
 		String bodyTemp = getBodyString(request);
 		body =  getBodyByAes(bodyTemp).getBytes(Charset.forName("UTF-8"));
+	}
+
+	/**
+	 * 打印请求日志
+	 * @param request
+	 */
+	public void logPrint(HttpServletRequest request) {
+		LOG.info("-------------------------------------------------");
+		Enumeration<String> e = request.getHeaderNames();
+		while (e.hasMoreElements()) {
+			String name = (String) e.nextElement();
+			String value = request.getHeader(name);
+			LOG.info(name + " = " + value);
+		}
 	}
 
 	/**
@@ -71,15 +80,6 @@ public class QmRequestWrapper extends HttpServletRequestWrapper {
 		}
     	return json;
     }
-
-
-	public static void main(String[] args) {
-		String text = "{'value':{'abc':1,'test':'2'}}";
-		JSONObject json = JSONObject.parseObject(text);
-		System.out.println(json.getString("value"));
-	}
-
-
 
 	/**
 	 * @Title getBodyString

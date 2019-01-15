@@ -5,12 +5,9 @@ import com.qm.frame.basic.controller.QmController;
 import com.qm.frame.basic.util.HttpApiUtil;
 import com.qm.frame.qmsecurity.entity.QmPermissions;
 import com.qm.frame.qmsecurity.entity.QmTokenInfo;
-import com.qm.frame.qmsecurity.manager.Qmbject;
 import com.qm.frame.qmsecurity.note.QmPass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
