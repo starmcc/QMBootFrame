@@ -69,15 +69,20 @@ public class ConvertUtil {
 	 * @throws IllegalAccessException
 	 * @Description 将List<Map<String,Object>>转换为List<T>
 	 */
-	public static <T> List<T> mapsToObjects(List<Map<String, Object>> maps, Class<T> clazz)
-			throws InstantiationException, IllegalAccessException {
+	public static <T> List<T> mapsToObjects(List<Map<String, Object>> maps, Class<T> clazz){
 		List<T> list = Lists.newArrayList();
 		if (maps != null && maps.size() > 0) {
 			Map<String, Object> map = null;
 			T bean = null;
 			for (int i = 0, size = maps.size(); i < size; i++) {
 				map = maps.get(i);
-				bean = clazz.newInstance();
+				try {
+					bean = clazz.newInstance();
+				} catch (InstantiationException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
 				mapToBean(map, bean);
 				list.add(bean);
 			}

@@ -93,7 +93,6 @@ public class DateTimeTools {
             DateFormat format = DateFormat.getDateInstance();
             return format.parse(string);
         } catch (ParseException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return null;
@@ -104,7 +103,6 @@ public class DateTimeTools {
             DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             return format.parse(string);
         } catch (ParseException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return null;

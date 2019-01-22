@@ -28,7 +28,7 @@ public final class QmBaseDto {
 	 * 构造一个Dto
 	 * @param bean
 	 */
-	public <T> QmBaseDto(T bean,boolean isPrimaryKey) throws Exception {
+	public <T> QmBaseDto(T bean,boolean isPrimaryKey){
 		this.bean = bean;
 		//this.isPrimaryKey = isPrimaryKey;
 		final Class<?> clamm = bean.getClass();
@@ -67,7 +67,7 @@ public final class QmBaseDto {
 	 * @param id
 	 * @return
 	 */
-	private void setPrimaryKey(Field filed) throws QmBaseDtoException {
+	private void setPrimaryKey(Field filed) {
 		QmId idKey = filed.getAnnotation(QmId.class);
 		if (idKey == null) {
 			return;
@@ -110,7 +110,7 @@ public final class QmBaseDto {
 	 * @param field
 	 * @return
 	 */
-	private void setFiledToList(Field field) throws QmBaseDtoException{
+	private void setFiledToList(Field field){
 		QmParams qmParams = field.getAnnotation(QmParams.class);
 		// 判断是否有该注解，如果存在并且except等于true则不加入该字段。
 		if (qmParams != null && qmParams.except()) {
@@ -146,8 +146,8 @@ public final class QmBaseDto {
 	 * 获取实体类参数封装Map
 	 * @return
 	 */
-	public Object getParamsMap() {
-		Map<String, Object> resMap = new LinkedHashMap<>();
+	public LinkedHashMap<String, Object> getParamsMap() {
+		LinkedHashMap<String, Object> resMap = new LinkedHashMap<>();
 		resMap.put("primaryKey", primaryKey);
 		resMap.put("params", params);
 		resMap.put("tableName", tableName);

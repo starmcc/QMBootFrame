@@ -50,13 +50,15 @@ public class VerifyUtil {
 	public static final String REGEX_IP_ADDR = "(25[0-5]|2[0-4]\\d|[0-1]\\d{2}|[1-9]?\\d)";
 
 	/**
-	 * 测试方法
-	 * 
-	 * @param args
+	 * 是否为null
+	 * @param obj
+	 * @return
 	 */
-	public static void main(String[] args) {
-		boolean is = isUsername("a111");
-		System.out.println(is);
+	private static boolean isNull(Object obj){
+		if (obj == null) {
+		    return true;
+		}
+		return false;
 	}
 
 	/**
@@ -66,6 +68,7 @@ public class VerifyUtil {
 	 * @return 校验通过返回true，否则返回false
 	 */
 	public static boolean isUsername(String username) {
+		if (isNull(username)) return false;
 		return Pattern.matches(REGEX_USERNAME, username);
 	}
 
@@ -76,8 +79,10 @@ public class VerifyUtil {
 	 * @return 校验通过返回true，否则返回false
 	 */
 	public static boolean isPassword(String password) {
+		if (isNull(password)) return false;
 		return Pattern.matches(REGEX_PASSWORD, password);
 	}
+
 
 	/**
 	 * 校验手机号
@@ -86,6 +91,7 @@ public class VerifyUtil {
 	 * @return 校验通过返回true，否则返回false
 	 */
 	public static boolean isMobile(String mobile) {
+		if (isNull(mobile)) return false;
 		return Pattern.matches(REGEX_MOBILE, mobile);
 	}
 
@@ -96,6 +102,7 @@ public class VerifyUtil {
 	 * @return 校验通过返回true，否则返回false
 	 */
 	public static boolean isEmail(String email) {
+		if (isNull(email)) return false;
 		return Pattern.matches(REGEX_EMAIL, email);
 	}
 
@@ -106,6 +113,7 @@ public class VerifyUtil {
 	 * @return 校验通过返回true，否则返回false
 	 */
 	public static boolean isChinese(String chinese) {
+		if (isNull(chinese)) return false;
 		return Pattern.matches(REGEX_CHINESE, chinese);
 	}
 
@@ -116,6 +124,7 @@ public class VerifyUtil {
 	 * @return 校验通过返回true，否则返回false
 	 */
 	public static boolean isIDCard(String idCard) {
+		if (isNull(idCard)) return false;
 		return Pattern.matches(REGEX_ID_CARD, idCard);
 	}
 
@@ -126,6 +135,7 @@ public class VerifyUtil {
 	 * @return 校验通过返回true，否则返回false
 	 */
 	public static boolean isUrl(String url) {
+		if (isNull(url)) return false;
 		return Pattern.matches(REGEX_URL, url);
 	}
 
@@ -136,6 +146,7 @@ public class VerifyUtil {
 	 * @return
 	 */
 	public static boolean isIPAddr(String ipAddr) {
+		if (isNull(ipAddr)) return false;
 		return Pattern.matches(REGEX_IP_ADDR, ipAddr);
 	}
 }

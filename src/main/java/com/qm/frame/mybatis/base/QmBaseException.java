@@ -7,7 +7,7 @@ package com.qm.frame.mybatis.base;
  * @date 2019/1/13 16:06
  * @Description QmBase错误异常
  */
-public class QmBaseException extends Exception {
+public class QmBaseException extends RuntimeException {
     // 提供无参数的构造方法
     public QmBaseException() { }
 
@@ -15,5 +15,10 @@ public class QmBaseException extends Exception {
     // 提供一个有参数的构造方法，可自动生成
     public QmBaseException(String message) {
         super(message);// 把参数传递给Throwable的带String参数的构造方法
+    }
+
+    // 提供一个带参的构造方法，并且输出一些异常信息
+    public QmBaseException(String message, Throwable cause) {
+        super(message, cause);
     }
 }
