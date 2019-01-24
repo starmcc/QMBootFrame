@@ -12,7 +12,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE 1 = 1
 		<if test="params != null and params.size != 0">
 			<foreach item="item" collection="params">
-				AND ${item.key} = #{item.value}
+				AND `${item.key}` = #{item.value}
 			</foreach>
 		</if>
 	</select>
@@ -21,10 +21,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<insert id="insertAuto">
 		INSERT INTO `${tableName}`
 		(
-			<if test="primaryKey != null">${primaryKey.key},</if>
+			<if test="primaryKey != null">`${primaryKey.key}`,</if>
 			<if test="params != null and params.size != 0">
 				<foreach item="item" collection="params" separator=",">
-					${item.key}
+					`${item.key}`
 				</foreach>
 			</if>
 		)
@@ -44,19 +44,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SET
 		<if test="params != null and params.size != 0">
 			<foreach item="item" collection="params" separator=",">
-				${item.key} = #{item.value}
+				`${item.key}` = #{item.value}
 			</foreach>
 		</if>
-		WHERE ${primaryKey.key} = #{primaryKey.value}
+		WHERE `${primaryKey.key}` = #{primaryKey.value}
 	</update>
 
 	<!-- 通用删除数据入口 -->
 	<delete id="deleteAuto">
 		DELETE FROM `${tableName}`
-		WHERE ${primaryKey.key} = #{primaryKey.value}
+		WHERE `${primaryKey.key}` = #{primaryKey.value}
 		<if test="params != null and params.size != 0">
 			<foreach open="AND" item="item" collection="params" separator="AND">
-				${item.key} = #{item.value}
+				`${item.key}` = #{item.value}
 			</foreach>
 		</if>
 	</delete>
@@ -68,7 +68,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE 1 = 1
 		<if test="params != null and params.size != 0">
 			<foreach item="item" collection="params">
-				AND ${item.key} = #{item.value}
+				AND `${item.key}` = #{item.value}
 			</foreach>
 		</if>
 	</select>

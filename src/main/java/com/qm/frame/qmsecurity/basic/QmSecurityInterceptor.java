@@ -3,8 +3,10 @@ package com.qm.frame.qmsecurity.basic;
 import com.qm.frame.basic.controller.QmCode;
 import com.qm.frame.basic.controller.QmController;
 import com.qm.frame.basic.util.HttpApiUtil;
+import com.qm.frame.qmsecurity.config.QmSercurityContent;
 import com.qm.frame.qmsecurity.entity.QmPermissions;
 import com.qm.frame.qmsecurity.entity.QmTokenInfo;
+import com.qm.frame.qmsecurity.manager.QmSecurityManager;
 import com.qm.frame.qmsecurity.note.QmPass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +54,7 @@ public class QmSecurityInterceptor extends QmController implements HandlerInterc
 
         }
         // 从头部获取token字段
-        String token = request.getHeader(QmSercurityContent.HEADER_TOKEN_KEY_NAME);
+        String token = request.getHeader(QmSercurityContent.getHeaderTokenKeyName());
         // 如果为空则直接拦截
         if (token == null) {
             LOG.info("※※※检测不到token拒绝访问");
@@ -82,7 +84,7 @@ public class QmSecurityInterceptor extends QmController implements HandlerInterc
             // 获取请求路由
             String path = request.getServletPath();
             // 获取该角色的权限信息
-            QmPermissions qmPermissions = QmSecurityUtils.getQmbject().extractQmPermissions(roleId,false);
+            QmPermissions qmPermissions = QmSecurityManager.getQmbject().extractQmPermissions(roleId,false);
             // 校验该角色是否存在匹配当前请求url的匹配规则。
             boolean is = QmSecurityBasic.verifyPermissions(path,qmPermissions.getMatchUrls());
             if (!is) {

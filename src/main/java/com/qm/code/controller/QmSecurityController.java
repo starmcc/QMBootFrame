@@ -2,8 +2,8 @@ package com.qm.code.controller;
 
 import com.qm.frame.basic.controller.QmCode;
 import com.qm.frame.basic.controller.QmController;
-import com.qm.frame.qmsecurity.basic.QmSecurityUtils;
 import com.qm.frame.qmsecurity.entity.QmTokenInfo;
+import com.qm.frame.qmsecurity.manager.QmSecurityManager;
 import com.qm.frame.qmsecurity.manager.Qmbject;
 import com.qm.frame.qmsecurity.note.QmPass;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,8 +25,8 @@ public class QmSecurityController extends QmController {
     @QmPass
     @GetMapping("/login")
     public String login() {
-        // 利用QmSecurityUtils获取qmbject实例。
-        Qmbject qmbject = QmSecurityUtils.getQmbject();
+        // 利用QmSecurityManager获取qmbject实例。
+        Qmbject qmbject = QmSecurityManager.getQmbject();
         // 创建token签名信息QmTokenInfo，并配置该对象的信息
         QmTokenInfo qmTokenInfo = new QmTokenInfo();
         // userName为必须字段，用户唯一识别

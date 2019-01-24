@@ -1,10 +1,8 @@
 package com.qm.frame.basic.body;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.qm.frame.basic.controller.QmController;
-import com.qm.frame.basic.util.ConvertUtil;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.MethodParameter;
@@ -19,10 +17,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @version V1.0 Description: 自定义解析json数据
@@ -81,13 +76,15 @@ public class JsonPathArgumentResolver extends QmController implements HandlerMet
                 return parsePrimitive(parameterType.getName(), value);
             }
             // 基本类型包装类
-            if (isBasicDataTypes(parameterType)) {
+            if (isPackDataTypes(parameterType)) {
                 return parseBasicTypeWrapper(parameterType, value);
                 // 字符串类型
             } else if (parameterType == String.class) {
+                if (StringUtils.isEmpty(value.toString())) {
+                    throw new IllegalArgumentException(String.format("required param %s is not present", key));
+                }
                 return value.toString();
             }
-
             // 解析Date时间
             if (parameterType == Date.class) {
                 return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -95,20 +92,14 @@ public class JsonPathArgumentResolver extends QmController implements HandlerMet
             }
             // 如果是list则解析list
             if (parameterType.isAssignableFrom(List.class)) {
-                // getGenericParameterType 可获取list带泛型类型的type
-                Type type = parameter.getGenericParameterType();
-                // 利用type获取Parameterize 即可调用getActualTypeArguments获取list的class
-                ParameterizedType pt = (ParameterizedType)type;
-                Class listEntityClass = (Class)pt.getActualTypeArguments()[0];
-                return JSON.parseArray(value.toString(),listEntityClass);
+                return JSON.parseArray(value.toString());
             }
-
             return JSON.parseObject(value.toString(), parameterType);
         }
 
 
         // 解析不到则将整个json串解析为当前参数类型
-        if (isBasicDataTypes(parameterType)) {
+        if (isPackDataTypes(parameterType)) {
             if (qmBody.required()) {
                 throw new IllegalArgumentException(String.format("required param %s is not present", key));
             } else {
@@ -212,9 +203,9 @@ public class JsonPathArgumentResolver extends QmController implements HandlerMet
     }
 
     /**
-     * 基本数据类型直接返回
+     * 是否为包装数据类型
      */
-    private boolean isBasicDataTypes(Class clazz) {
+    private boolean isPackDataTypes(Class clazz) {
         Set<Class> classSet = new HashSet<>();
         classSet.add(Integer.class);
         classSet.add(Long.class);

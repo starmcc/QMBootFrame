@@ -20,4 +20,10 @@ public @interface QmTable {
      * @return
      */
     String name() default "";
+
+    /**
+     * 数据库风格
+     * @return
+     */
+    QmStyle style() default QmStyle.HUMP;
 }

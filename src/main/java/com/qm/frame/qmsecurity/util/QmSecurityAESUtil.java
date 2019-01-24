@@ -1,5 +1,6 @@
-package com.qm.frame.qmsecurity.basic;
+package com.qm.frame.qmsecurity.util;
 
+import com.qm.frame.qmsecurity.config.QmSercurityContent;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,8 +26,8 @@ public class QmSecurityAESUtil {
     public static String encryptAES(String data) throws Exception {
         Date date = new Date();
         String str = data;
-        for (int i = 0; i < QmSercurityContent.ENCRYPT_NUMBER; i++){
-            str = encryptAES(str, QmSercurityContent.TOKEN_SECRET);
+        for (int i = 0; i < QmSercurityContent.getEncryptNumber(); i++){
+            str = encryptAES(str, QmSercurityContent.getTokenSecret());
         }
         LOG.debug("加密用时：" + (new Date().getTime() - date.getTime()));
         return str;
@@ -40,8 +41,8 @@ public class QmSecurityAESUtil {
     public static String decryptAES(String data) throws Exception {
         Date date = new Date();
         String str = data;
-        for (int i = 0; i < QmSercurityContent.ENCRYPT_NUMBER; i++){
-            str = decryptAES(str, QmSercurityContent.TOKEN_SECRET);
+        for (int i = 0; i < QmSercurityContent.getEncryptNumber(); i++){
+            str = decryptAES(str, QmSercurityContent.getTokenSecret());
         }
         LOG.debug("解密用时：" + (new Date().getTime() - date.getTime()));
         return str;

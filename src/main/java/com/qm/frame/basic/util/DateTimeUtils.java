@@ -208,8 +208,8 @@ public class DateTimeUtils extends DateUtils {
 		} else if(StringUtils.isNotEmpty(xFormat) 
 				&& (WEEK_DATE_FORMAT.equals(xFormat))) {
 			Calendar cal = Calendar.getInstance(); cal.setTime(date);
-			int week = cal.get(java.util.Calendar.DAY_OF_WEEK) - 1 == 0 ? 
-					7 : cal.get(java.util.Calendar.DAY_OF_WEEK) - 1;
+			int week = cal.get(Calendar.DAY_OF_WEEK) - 1 == 0 ?
+					7 : cal.get(Calendar.DAY_OF_WEEK) - 1;
 			return week;
 		} else {
 			return 0;

@@ -5,7 +5,9 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.qm.frame.qmsecurity.config.QmSercurityContent;
 import com.qm.frame.qmsecurity.entity.QmTokenInfo;
+import com.qm.frame.qmsecurity.util.QmSecurityAESUtil;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 
@@ -64,7 +66,7 @@ public class QmSecurityBasic {
     protected static QmTokenInfo getTokenInfo(String token) throws Exception {
         DecodedJWT jwt;
         try {
-            JWTVerifier verifier = JWT.require(Algorithm.HMAC256(QmSercurityContent.TOKEN_SECRET)).build();
+            JWTVerifier verifier = JWT.require(Algorithm.HMAC256(QmSercurityContent.getTokenSecret())).build();
             // jwt解密token
             jwt = verifier.verify(token);
         } catch (Exception e) {

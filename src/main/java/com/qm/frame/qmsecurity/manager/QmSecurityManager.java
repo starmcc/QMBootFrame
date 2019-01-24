@@ -1,19 +1,18 @@
-package com.qm.frame.qmsecurity.basic;
+package com.qm.frame.qmsecurity.manager;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.qm.frame.basic.util.HttpApiUtil;
+import com.qm.frame.qmsecurity.util.QmSecurityAESUtil;
+import com.qm.frame.qmsecurity.basic.QmSecurityRealm;
+import com.qm.frame.qmsecurity.basic.QmSecuritySpringApplication;
 import com.qm.frame.qmsecurity.config.QmSercurityContent;
 import com.qm.frame.qmsecurity.entity.QmPermissions;
 import com.qm.frame.qmsecurity.entity.QmTokenInfo;
-import com.qm.frame.qmsecurity.manager.Qmbject;
-import com.qm.frame.qmsecurity.manager.QmSecurityManager;
-import com.qm.frame.qmsecurity.util.QmSecurityAESUtil;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.thymeleaf.util.StringUtils;
-
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -25,8 +24,7 @@ import java.util.*;
  * @date 2018/12/22 16:59
  * @Description QmSecurity核心工具类
  */
-@Deprecated
-public class QmSecurityUtils implements Qmbject {
+public class QmSecurityManager implements Qmbject {
 
     // 依赖ServletContext进行全局缓存，key名
     private static final String QM_PERMISSIONS_KEY = "QmSecurityManager_QmPermissions";
@@ -38,7 +36,7 @@ public class QmSecurityUtils implements Qmbject {
     /**
      * 注入相关Spring依赖
      */
-    public QmSecurityUtils(){
+    public QmSecurityManager(){
         if (request == null) {
             request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         }

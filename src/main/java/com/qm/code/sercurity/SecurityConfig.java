@@ -1,7 +1,6 @@
 package com.qm.code.sercurity;
 
-import com.qm.frame.qmsecurity.basic.QmSecurityBasic;
-import com.qm.frame.qmsecurity.basic.QmSercurityContent;
+import com.qm.frame.qmsecurity.config.QmSercurityContent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

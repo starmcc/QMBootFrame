@@ -1,7 +1,6 @@
 package com.qm.frame.qmsecurity.config;
 
 import com.qm.frame.qmsecurity.basic.QmSecurityInterceptor;
-import com.qm.frame.qmsecurity.basic.QmSercurityContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

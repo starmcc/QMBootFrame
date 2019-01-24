@@ -72,15 +72,6 @@ public class QmRequestWrapper extends HttpServletRequestWrapper {
     	return json;
     }
 
-
-	public static void main(String[] args) {
-		String text = "{'value':{'abc':1,'test':'2'}}";
-		JSONObject json = JSONObject.parseObject(text);
-		System.out.println(json.getString("value"));
-	}
-
-
-
 	/**
 	 * @Title getBodyString
 	 * @param request
