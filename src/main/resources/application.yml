@@ -81,6 +81,8 @@ mybatis:
   mapper-locations: 
   - 'classpath*:com/qm/frame/mybatis/mapper/QmMapper.xml'
   - 'classpath*:com/qm/code/sql/**/*Mapper.xml'
+  configuration:
+    map-underscore-to-camel-case: false #是否启动数据库下划线自动映射实体
 #※※※※※※※※※※※※Logger※※※※※※※※※※※※
 logging:
   config: 'classpath:logback-spring.xml'
