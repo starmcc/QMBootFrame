@@ -4,6 +4,7 @@ import com.qm.frame.basic.exception.QmFrameException;
 import com.qm.frame.basic.util.PropertiesUtil;
 
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -73,14 +74,26 @@ public class QmFrameConcent {
     /**
      * 系统容忍请求版本编号(默认允许当前版本)
      */
-    public final static List<String> VERSION_VERSIONS = getVersions();
+    public final static List<String> VERSION_ALLOWS = getVersionAllows();
 
     /**
      * 获取允许版本号
      * @return
      */
-    private final static List<String> getVersions(){
-        return null;
+    private final static List<String> getVersionAllows(){
+        List<String> allows = new ArrayList<>();
+        boolean is = true;
+        int num = 0;
+        while (is){
+            String tempVersion = PRO.getProperty("version.allows-[" + num + "]",null);
+            if (tempVersion != null) {
+                allows.add(tempVersion);
+            }else{
+                is = false;
+            }
+            num++;
+        }
+        return allows;
     }
 
     private final static Properties getProperties(){

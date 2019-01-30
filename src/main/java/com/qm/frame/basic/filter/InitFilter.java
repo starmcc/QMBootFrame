@@ -74,9 +74,8 @@ public @Component class InitFilter extends QmController implements Filter{
             return true;
         }
         LOG.debug("进入版本控制判断");
-        List<String> versionPermit = QmFrameConcent.VERSION_VERSIONS;
-        if (versionPermit != null && versionPermit.size() > 0) {
-            for (String version : versionPermit) {
+        if (QmFrameConcent.VERSION_ALLOWS != null && QmFrameConcent.VERSION_ALLOWS.size() > 0) {
+            for (String version : QmFrameConcent.VERSION_ALLOWS) {
                 if (version.equals(versionRequest)) {
                     //通过
                     return true;
