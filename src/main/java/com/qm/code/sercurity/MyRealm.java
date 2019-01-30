@@ -1,10 +1,11 @@
 package com.qm.code.sercurity;
 
-import com.qm.frame.qmsecurity.entity.QmPermissions;
+import com.qm.code.entity.Permissions;
+import com.qm.code.service.RoleService;
+import com.qm.code.service.UserService;
 import com.qm.frame.qmsecurity.basic.QmSecurityRealm;
-import org.aspectj.weaver.ast.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,10 +18,19 @@ import java.util.List;
  */
 public class MyRealm implements QmSecurityRealm {
 
+    @Autowired
+    private RoleService roleService;
+
+
     @Override
     public List<String> authorizationPermissions(int roleId) {
-        List<String> permission = new ArrayList<>();
-        permission.add("/**");
-        return permission;
+        // 获取该角色的权限集合
+        List<Permissions> permissionsList = roleService.getPermissions(roleId);
+        // 把权限拆箱出来，返回给框架
+        List<String> matchUrls = new ArrayList<>();
+        for (Permissions permission : permissionsList) {
+            matchUrls.add(permission.getMatchUrl());
+        }
+        return matchUrls;
     }
 }

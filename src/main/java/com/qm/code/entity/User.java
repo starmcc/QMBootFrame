@@ -12,18 +12,19 @@ import com.qm.frame.mybatis.note.QmTable;
  */
 @QmTable(name = "qm_user")
 public class User {
-    @QmId
-    private Integer id;
+    // uuid = true 则启用框架中uuid策略自动生成uuid
+    @QmId(uuid = true)
+    private String userCode;
     private String userName;
     private String password;
     private Integer roleId;
 
-    public Integer getId() {
-        return id;
+    public String getUserCode() {
+        return userCode;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setUserCode(String userCode) {
+        this.userCode = userCode;
     }
 
     public String getUserName() {
@@ -52,7 +53,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User [id=" + id + ", userName=" + userName + ", password=" + password + ", roleId=" + roleId + "]";
+        return "User [userCode=" + userCode + ", userName=" + userName + ", password=" + password + ", roleId=" + roleId + "]";
     }
 
 }

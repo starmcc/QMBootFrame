@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/mvc")
 public class MvcController {
 
-    @GetMapping("/index")
     @QmPass
+    @GetMapping("/index")
     public String index(Model model){
         model.addAttribute("test","我是浅梦，欢迎使用QmBoot的thymeleaf模板引擎");
         return "/index";

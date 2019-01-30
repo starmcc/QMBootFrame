@@ -1,8 +1,9 @@
 package com.qm.code.service;
 
-import java.util.List;
-
+import com.qm.code.entity.Permissions;
 import com.qm.code.entity.User;
+
+import java.util.List;
 
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
@@ -27,15 +28,32 @@ public interface UserService {
 	List<User> getList(User user);
 
 	/**
-	 * 
+	 * 调用auto删除
 	 * @param user
 	 * @return
 	 */
-	int del(User user);
+	int autoDel(User user);
 
-	int update(User user);
+	/**
+	 * 调用auto更新
+	 * @param user
+	 * @return
+	 */
+	int autoUpdate(User user);
 
-	int insert(User user);
+	/**
+	 * 调用auto新增
+	 * @param user
+	 * @return
+	 */
+	int autoInsert(User user);
 
+	/**
+	 * 登录
+	 * @param userName
+	 * @param password
+	 * @return
+	 */
 	User login(String userName,String password);
+
 }

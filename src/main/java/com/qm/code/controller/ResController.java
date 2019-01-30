@@ -44,9 +44,9 @@ public class ResController extends QmController {
      * 该方法以POST进行请求,并以body的形式传递json参数。
      * 传递格式为：
      * {
-     * "value":{
-     * "userName":"zhangsan"
-     * }
+     *      "value":{
+     *          "test":"zhangsan"
+     *      }
      * }
      * 返回的则是相同的格式。并且调用框架中的QmController的返回格式
      * QmBody 是RequestBody的封装，是直接解释value后的json，自动装配参数列表的类型。
@@ -77,7 +77,6 @@ public class ResController extends QmController {
      */
     @GetMapping("/demo4")
     public String demo4() {
-        System.out.println("demo6");
         List<User> userLis = userService.getList(new User());
         return super.sendJSON(QmCode._1, userLis);
     }

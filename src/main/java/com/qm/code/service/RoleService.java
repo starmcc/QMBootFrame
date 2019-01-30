@@ -1,5 +1,6 @@
 package com.qm.code.service;
 
+import com.qm.code.entity.Permissions;
 import com.qm.code.entity.Role;
 
 import java.util.List;
@@ -12,9 +13,11 @@ import java.util.List;
  * @Description 权限业务接口
  */
 public interface RoleService {
-    Role getRole(int roleId);
 
-    List<String> getPowers(int roleId);
-
-
+    /**
+     * 获取该角色id的授权集合
+     * @param roleId
+     * @return
+     */
+    List<Permissions> getPermissions(int roleId);
 }

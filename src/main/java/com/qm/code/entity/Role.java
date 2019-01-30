@@ -20,8 +20,6 @@ public class Role {
     private String roleName;
     private Date createTime;
     private Date updateTime;
-    private String createOperator;
-    private String updateOperator;
 
     public Integer getRoleId() {
         return roleId;
@@ -53,21 +51,5 @@ public class Role {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
-    }
-
-    public String getCreateOperator() {
-        return createOperator;
-    }
-
-    public void setCreateOperator(String createOperator) {
-        this.createOperator = createOperator;
-    }
-
-    public String getUpdateOperator() {
-        return updateOperator;
-    }
-
-    public void setUpdateOperator(String updateOperator) {
-        this.updateOperator = updateOperator;
     }
 }
