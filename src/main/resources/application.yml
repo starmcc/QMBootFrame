@@ -72,10 +72,9 @@ spring:
       min-idle: 0 #连接池中的最小空闲连接 
     timeout: 1000 #连接超时时间（毫秒）
 
-
 #※※※※※※※※※※※※Mybatis※※※※※※※※※※※※
 mybatis:
-  type-aliases-package: com.qm.code.entity
+  type-aliases-package: com.qm.code.entity # 指定实体类包路径
   mapper-locations:
   - 'classpath*:**/*Mapper.xml' # 该行配置请勿修改
   configuration:  #是否启动数据库下划线自动映射实体
