@@ -10,6 +10,7 @@ import com.qm.frame.qmsecurity.entity.QmTokenInfo;
 import com.qm.frame.qmsecurity.manager.Qmbject;
 import com.qm.frame.qmsecurity.manager.QmSecurityManager;
 import com.qm.frame.qmsecurity.util.QmSecurityAESUtil;
+import com.qm.frame.qmsecurity.util.QmSecuritySpringApplication;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.thymeleaf.util.StringUtils;

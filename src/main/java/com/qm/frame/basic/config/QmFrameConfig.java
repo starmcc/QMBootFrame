@@ -18,7 +18,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
-import com.qm.frame.basic.Constant.QmConstant;
 import com.qm.frame.basic.body.JsonPathArgumentResolver;
 //import com.qm.frame.qmsecurity.basic.QmSecurityInterceptor;
 
@@ -30,11 +29,7 @@ import com.qm.frame.basic.body.JsonPathArgumentResolver;
  */
 @Configuration
 @WebFilter(urlPatterns = "/*")
-@EnableCaching // 启动缓存
 public class QmFrameConfig implements WebMvcConfigurer {
-
-	@Autowired
-	private QmConstant qmConstant;
 
 	/**
 	 * 添加静态资源--过滤

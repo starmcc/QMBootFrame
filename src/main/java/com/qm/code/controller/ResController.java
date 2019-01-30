@@ -65,7 +65,6 @@ public class ResController extends QmController {
      */
     @GetMapping("/demo3")
     public String demo3() {
-        System.out.println("demo5");
         List<User> userLis = userService.getAutoList(new User());
         return super.sendJSON(QmCode._1, userLis);
     }

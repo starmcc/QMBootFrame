@@ -13,9 +13,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import com.alibaba.fastjson.JSONObject;
-import com.qm.frame.basic.Constant.QmConstant;
+import com.qm.frame.basic.config.QmFrameConcent;
 import com.qm.frame.basic.util.AESUtil;
-import org.bouncycastle.jcajce.provider.symmetric.AES;
 
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
@@ -59,9 +58,8 @@ public class QmRequestWrapper extends HttpServletRequestWrapper {
 	private String getBodyByAes(String body){
 		if (body == null || body.trim().equals("")) return body;
 		JSONObject jsonObject = JSONObject.parseObject(body);
-		QmConstant config = QmConstant.getQmConstantByContext();
-		String json = jsonObject.getString(config.getSendConstant().getRequestDataKey());
-		if (config.getAesConstant().isStart()) {
+		String json = jsonObject.getString(QmFrameConcent.REQUEST_DATA_KEY);
+		if (QmFrameConcent.AES_START) {
 			try {
 				json = AESUtil.decryptAES(json);
 			} catch (Exception e) {

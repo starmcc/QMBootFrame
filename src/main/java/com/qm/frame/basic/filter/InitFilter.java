@@ -10,6 +10,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
+
+import com.qm.frame.basic.config.QmFrameConcent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
@@ -62,17 +64,17 @@ public @Component class InitFilter extends QmController implements Filter{
      */
     public boolean verifyVersion(HttpServletRequest request) throws IOException {
         //不开启版本控制
-        if (!super.qmConstant.getQmVersionConstant().isStart()) return true;
+        if (!QmFrameConcent.VERSION_START) return true;
         //目前版本号
         String versionRequest = request.getHeader("version");
         LOG.debug("请求版本号：" + versionRequest);
-        LOG.debug("当前版本号：" + super.qmConstant.getQmVersionConstant().getVersion());
-        if (super.qmConstant.getQmVersionConstant().getVersion().equals(versionRequest)) {
+        LOG.debug("当前版本号：" + QmFrameConcent.VERSION_NOW);
+        if (QmFrameConcent.VERSION_NOW.equals(versionRequest)) {
             //通过
             return true;
         }
         LOG.debug("进入版本控制判断");
-        List<String> versionPermit = super.qmConstant.getQmVersionConstant().getPermitVersions();
+        List<String> versionPermit = QmFrameConcent.VERSION_VERSIONS;
         if (versionPermit != null && versionPermit.size() > 0) {
             for (String version : versionPermit) {
                 if (version.equals(versionRequest)) {

@@ -1,11 +1,12 @@
 package com.qm;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 
 //SpringBoot启动注解
 @SpringBootApplication
+//@EnableCaching // 启动缓存r
 public class QmApplication {
 	
 	/**

@@ -6,7 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.qm.frame.basic.util.HttpApiUtil;
 import com.qm.frame.qmsecurity.util.QmSecurityAESUtil;
 import com.qm.frame.qmsecurity.basic.QmSecurityRealm;
-import com.qm.frame.qmsecurity.basic.QmSecuritySpringApplication;
+import com.qm.frame.qmsecurity.util.QmSecuritySpringApplication;
 import com.qm.frame.qmsecurity.config.QmSercurityContent;
 import com.qm.frame.qmsecurity.entity.QmPermissions;
 import com.qm.frame.qmsecurity.entity.QmTokenInfo;

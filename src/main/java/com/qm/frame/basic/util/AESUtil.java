@@ -1,7 +1,6 @@
 package com.qm.frame.basic.util;
 
-import com.qm.frame.basic.Constant.AesConstant;
-import com.qm.frame.basic.Constant.QmConstant;
+import com.qm.frame.basic.config.QmFrameConcent;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +17,6 @@ import java.util.Date;
  */
 public class AESUtil {
     private static final Logger LOG = LoggerFactory.getLogger(AESUtil.class);
-    private static final AesConstant config = QmConstant.getQmConstantByContext().getAesConstant();
     /**
      * 加密封装
      * @param data
@@ -28,8 +26,8 @@ public class AESUtil {
     public static String encryptAES(String data) throws Exception {
         Date date = new Date();
         String str = data;
-        for (int i = 0; i < config.getNumber(); i++){
-            str = encryptAES(str,config.getKey());
+        for (int i = 0; i < QmFrameConcent.AES_NUMBER; i++){
+            str = encryptAES(str, QmFrameConcent.AES_KEY);
         }
         LOG.debug("加密用时：" + (new Date().getTime() - date.getTime()));
         return str;
@@ -43,8 +41,8 @@ public class AESUtil {
     public static String decryptAES(String data) throws Exception {
         Date date = new Date();
         String str = data;
-        for (int i = 0; i < config.getNumber(); i++){
-            str = decryptAES(str,config.getKey());
+        for (int i = 0; i < QmFrameConcent.AES_NUMBER; i++){
+            str = decryptAES(str, QmFrameConcent.AES_KEY);
         }
         LOG.debug("解密用时：" + (new Date().getTime() - date.getTime()));
         return str;
@@ -67,7 +65,7 @@ public class AESUtil {
         SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
-        byte[] encryptedData = cipher.doFinal(data.getBytes(config.getEncoding()));
+        byte[] encryptedData = cipher.doFinal(data.getBytes(QmFrameConcent.AES_ENCODING));
         String hexStr = Base64.encodeBase64String(encryptedData);
         return hexStr;
     }
@@ -92,7 +90,7 @@ public class AESUtil {
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.DECRYPT_MODE, skeySpec);
         byte[] decryptedData = cipher.doFinal(Base64.decodeBase64(data));
-        String respStr = new String(decryptedData,config.getEncoding());
+        String respStr = new String(decryptedData, QmFrameConcent.AES_ENCODING);
         return respStr;
     }
 

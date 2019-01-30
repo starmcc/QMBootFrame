@@ -1,6 +1,7 @@
 package com.qm.code.entity;
 
 import com.qm.frame.mybatis.note.QmId;
+import com.qm.frame.mybatis.note.QmStyle;
 import com.qm.frame.mybatis.note.QmTable;
 
 import java.util.Date;

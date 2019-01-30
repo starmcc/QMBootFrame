@@ -1,4 +1,4 @@
-package com.qm.frame.qmsecurity.basic;
+package com.qm.frame.qmsecurity.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

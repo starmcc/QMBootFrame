@@ -2,7 +2,7 @@ package com.qm.frame.basic.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.qm.frame.basic.Constant.QmConstant;
+import com.qm.frame.basic.config.QmFrameConcent;
 import com.qm.frame.basic.util.AESUtil;
 import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
@@ -34,8 +34,6 @@ public @Component class QmController {
     protected HttpServletResponse response;
     @Autowired
     protected HttpSession session;
-    @Autowired
-    protected QmConstant qmConstant;
 
     /**
      * 接口回调方法
@@ -96,10 +94,10 @@ public @Component class QmController {
         String value = JSONObject.toJSONString(responseMap, SerializerFeature.WriteMapNullValue);
         value = StringEscapeUtils.unescapeJava(value);
         try {
-            if (qmConstant.getAesConstant().isStart()) {
+            if (QmFrameConcent.AES_START) {
                 value = AESUtil.encryptAES(value);
                 Map<String,String> resMap = new HashMap<>();
-                resMap.put(qmConstant.getSendConstant().getResponseDataKey(),value);
+                resMap.put(QmFrameConcent.RESPONSE_DATA_KEY,value);
                 return StringEscapeUtils.unescapeJava(JSONObject.toJSONString(resMap,SerializerFeature.WriteMapNullValue));
             }
         } catch (Exception e) {
@@ -107,7 +105,7 @@ public @Component class QmController {
             LOG.debug("加密失败");
         }
         Map<String,Map<String,Object>> resMap = new HashMap<>();
-        resMap.put(qmConstant.getSendConstant().getResponseDataKey(),responseMap);
+        resMap.put(QmFrameConcent.RESPONSE_DATA_KEY,responseMap);
         return StringEscapeUtils.unescapeJava(JSONObject.toJSONString(resMap,SerializerFeature.WriteMapNullValue));
     }
 }
