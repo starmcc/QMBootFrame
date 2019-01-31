@@ -46,7 +46,7 @@ public class PropertiesUtil {
 	}
 
 	/**
-	 * @Title get
+	 * @Title getQmResponseOut
 	 * @param key
 	 * @return
 	 * @Description 从properties文件中读取出一个key对应的value
@@ -57,7 +57,7 @@ public class PropertiesUtil {
 	}
 	
 	/**
-	 * @Title get
+	 * @Title getQmResponseOut
 	 * @param key
 	 * @param defaultValue
 	 * @return

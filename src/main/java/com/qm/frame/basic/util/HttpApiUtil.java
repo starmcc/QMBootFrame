@@ -31,7 +31,7 @@ import org.apache.http.util.EntityUtils;
 public class HttpApiUtil {
 	// 提交方式
 	private final static String POST = "post";
-	private final static String GET = "get";
+	private final static String GET = "getQmResponseOut";
 	/**
 	 * 默认字符编码
 	 */

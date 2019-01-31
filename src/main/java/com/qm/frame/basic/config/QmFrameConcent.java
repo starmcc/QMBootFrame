@@ -75,6 +75,10 @@ public class QmFrameConcent {
      * 系统容忍请求版本编号(默认允许当前版本)
      */
     public final static List<String> VERSION_ALLOWS = getVersionAllows();
+    /**
+     * 记录日志类路径
+     */
+    public final static String LOGGER_AOP_EXTEND_CLASS = PRO.getProperty("logger.aop.extend.package");
 
     /**
      * 获取允许版本号

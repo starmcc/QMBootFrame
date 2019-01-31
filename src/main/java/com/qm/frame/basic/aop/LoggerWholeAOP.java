@@ -1,18 +1,15 @@
 package com.qm.frame.basic.aop;
 
-import java.util.Arrays;
-
-
+import com.qm.frame.basic.config.QmFrameConcent;
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
 
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
@@ -24,7 +21,24 @@ import org.springframework.stereotype.Component;
 public @Component class LoggerWholeAOP {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LoggerWholeAOP.class);
-	
+
+	private final static QmResponseOut qmResponseOut = getQmResponseOut();
+
+	/**
+	 * 获取QmResponseOut
+	 * @return
+	 */
+	private final static QmResponseOut getQmResponseOut(){
+		try {
+			QmResponseOut temp = null;
+			if (StringUtils.isEmpty(QmFrameConcent.LOGGER_AOP_EXTEND_CLASS) == false) {
+				temp = (QmResponseOut) Class.forName(QmFrameConcent.LOGGER_AOP_EXTEND_CLASS).newInstance();
+			}
+			return temp;
+		} catch (Exception e) {}
+		return null;
+	}
+
 	/**
 	 * 记录请求时间
 	 */
@@ -32,8 +46,10 @@ public @Component class LoggerWholeAOP {
 	
 	/**
 	 * 切入点范围 execution(* com.qm..*.controller..*.*(..))
+	 * execution(* *..controller..*.*(..))
+	 * this(com.qm.frame.basic.controller.QmController)
 	 */
-	@Pointcut("execution(* com.qm..*.controller..*.*(..))")
+	@Pointcut("this(com.qm.frame.basic.controller.QmController)")
 	public void qmPointcut() {
 	}
 
@@ -79,7 +95,9 @@ public @Component class LoggerWholeAOP {
 		Long endTime = System.currentTimeMillis();
 		Long time = endTime - starTime;
 		LOG.info("\n※※※※※※※※※请求响应耗时：" + time + "/ms※※※※※※※※※");
+		if (qmResponseOut != null) {
+			qmResponseOut.responseOutHandling(jp, result, time);
+		}
 	}
-	
-	
+
 }
