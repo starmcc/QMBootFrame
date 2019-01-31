@@ -105,7 +105,7 @@ public class QmFrameConcent {
             Properties properties = new Properties();
             // 读取properties文件,使用InputStreamReader字符流防止文件中出现中文导致乱码
             InputStreamReader inStream = new InputStreamReader
-                    (PropertiesUtil.class.getClassLoader().getResourceAsStream("qm-frame.properties"),
+                    (QmFrameConcent.class.getClassLoader().getResourceAsStream("qm-frame.properties"),
                             "UTF-8");
             properties.load(inStream);
             inStream.close();
