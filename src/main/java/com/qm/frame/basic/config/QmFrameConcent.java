@@ -78,7 +78,7 @@ public class QmFrameConcent {
     /**
      * 记录日志类路径
      */
-    public final static String LOGGER_AOP_EXTEND_CLASS = PRO.getProperty("logger.aop.extend.package");
+    public final static String LOGGER_AOP_EXTEND_CLASS = PRO.getProperty("controller.aop.extend.class");
 
     /**
      * 获取允许版本号
