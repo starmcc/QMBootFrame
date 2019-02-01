@@ -22,18 +22,18 @@ public @Component class LoggerWholeAOP {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LoggerWholeAOP.class);
 
-	private final static QmResponseOut qmResponseOut = getQmResponseOut();
+	private final static QmOutMethod QM_OUT_METHOD = getQmOutMethod();
 
 	/**
 	 * 获取QmResponseOut
 	 * @return
 	 */
-	private final static QmResponseOut getQmResponseOut(){
+	private final static QmOutMethod getQmOutMethod(){
 		try {
 			if (StringUtils.isEmpty(QmFrameConcent.LOGGER_AOP_EXTEND_CLASS) == false) {
 				return null;
 			}
-			return (QmResponseOut) Class.forName(QmFrameConcent.LOGGER_AOP_EXTEND_CLASS).newInstance();
+			return (QmOutMethod) Class.forName(QmFrameConcent.LOGGER_AOP_EXTEND_CLASS).newInstance();
 		} catch (Exception e) {}
 		return null;
 	}
@@ -94,8 +94,8 @@ public @Component class LoggerWholeAOP {
 		Long endTime = System.currentTimeMillis();
 		Long time = endTime - starTime;
 		LOG.info("\n※※※※※※※※※请求响应耗时：" + time + "/ms※※※※※※※※※");
-		if (qmResponseOut != null) {
-			qmResponseOut.responseOutHandling(jp, result, time);
+		if (QM_OUT_METHOD != null) {
+			QM_OUT_METHOD.responseOutHandling(jp, result, time);
 		}
 	}
 

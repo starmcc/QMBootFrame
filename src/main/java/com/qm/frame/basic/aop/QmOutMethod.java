@@ -9,7 +9,7 @@ import org.aspectj.lang.JoinPoint;
  * @date 2019/1/7 0:57
  * @Description 请求方法执行完毕回调接口
  */
-public interface QmResponseOut {
+public interface QmOutMethod {
 
     /**
      * 当请求方法执行完毕时执行该方法
