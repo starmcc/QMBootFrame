@@ -1,4 +1,4 @@
-# QMBootFrame v0.6.0 -beta2
+# QMBootFrame v0.6.1
 
 ## 框架介绍
 

@@ -30,11 +30,10 @@ public @Component class LoggerWholeAOP {
 	 */
 	private final static QmResponseOut getQmResponseOut(){
 		try {
-			QmResponseOut temp = null;
 			if (StringUtils.isEmpty(QmFrameConcent.LOGGER_AOP_EXTEND_CLASS) == false) {
-				temp = (QmResponseOut) Class.forName(QmFrameConcent.LOGGER_AOP_EXTEND_CLASS).newInstance();
+				return null;
 			}
-			return temp;
+			return (QmResponseOut) Class.forName(QmFrameConcent.LOGGER_AOP_EXTEND_CLASS).newInstance();
 		} catch (Exception e) {}
 		return null;
 	}
