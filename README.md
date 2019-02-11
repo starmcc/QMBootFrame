@@ -1,4 +1,4 @@
-# QMBootFrame v0.7.0
+# QMBootFrame v0.7.1
 
 ## 框架介绍
 
