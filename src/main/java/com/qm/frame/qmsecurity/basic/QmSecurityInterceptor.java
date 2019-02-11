@@ -4,6 +4,7 @@ import com.qm.frame.basic.controller.QmCode;
 import com.qm.frame.basic.controller.QmController;
 import com.qm.frame.basic.util.HttpApiUtil;
 import com.qm.frame.qmsecurity.config.QmSecurityContent;
+import com.qm.frame.qmsecurity.entity.QmErrorRedirectUrl;
 import com.qm.frame.qmsecurity.entity.QmPermissions;
 import com.qm.frame.qmsecurity.entity.QmSessionInfo;
 import com.qm.frame.qmsecurity.entity.QmTokenInfo;
@@ -142,12 +143,13 @@ public class QmSecurityInterceptor extends QmController implements HandlerInterc
      */
     private void sendJsonOrViewName(HttpServletResponse response,QmCode qmCode) throws IOException {
         if (qmSecurityContent.isUseRedirect()) {
+            QmErrorRedirectUrl qmErrorRedirectUrl = qmSecurityContent.getQmErrorRedirectUrl();
             switch (qmCode){
             case _103:
-                response.sendRedirect(qmSecurityContent.getQmErrorRedirectUrl().getNotLoginRedirectUrl());
+                response.sendRedirect(qmErrorRedirectUrl.getNotLoginURI());
                 break;
             case _104:
-                response.sendRedirect(qmSecurityContent.getQmErrorRedirectUrl().getPermissionDeniedRedirectUrl());
+                response.sendRedirect(qmErrorRedirectUrl.getPermissionDeniedURI());
                 break;
             }
         }else {

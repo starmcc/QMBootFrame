@@ -114,7 +114,7 @@ public class QmSecurityManager implements Qmbject {
 
     @Override
     public void loginForSession(QmSessionInfo qmSessionInfo, int expireTime) {
-        HttpSession  session = request.getSession();
+        HttpSession session = request.getSession();
         QmUserSessionListener qmUserSessionListener = new QmUserSessionListener();
         qmUserSessionListener.setQmSessionInfo(qmSessionInfo);
         session.setAttribute("userCountListener", qmUserSessionListener);
@@ -132,8 +132,8 @@ public class QmSecurityManager implements Qmbject {
 
     @Override
     public void setLoginUserForSession(QmSessionInfo user) {
-        HttpSession  session = request.getSession();
-        QmUserSessionListener qmUserSessionListener =  new QmUserSessionListener();
+        HttpSession session = request.getSession();
+        QmUserSessionListener qmUserSessionListener = new QmUserSessionListener();
         qmUserSessionListener.setQmSessionInfo(user);
         session.setAttribute("userCountListener", qmUserSessionListener);
     }

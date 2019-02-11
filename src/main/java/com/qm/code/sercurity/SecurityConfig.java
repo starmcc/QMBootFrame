@@ -39,9 +39,9 @@ public class SecurityConfig {
         // 如果设置了重定向返回则需设置重定向路径
         QmErrorRedirectUrl qmErrorRedirectUrl = new QmErrorRedirectUrl();
         // 当登录超时重定向的路径
-        qmErrorRedirectUrl.setNotLoginRedirectUrl("/mvc/index");
+        qmErrorRedirectUrl.setNotLoginURI("/mvc/index");
         // 当访问权限不足时重定向返回的路径
-        qmErrorRedirectUrl.setPermissionDeniedRedirectUrl("/mvc/index");
+        qmErrorRedirectUrl.setPermissionDeniedURI("/mvc/index");
         // 把对象设置到配置中
         qmSecurityContent.setQmErrorRedirectUrl(qmErrorRedirectUrl);
         // ========End======================

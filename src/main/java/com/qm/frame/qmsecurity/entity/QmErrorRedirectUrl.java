@@ -9,22 +9,22 @@ package com.qm.frame.qmsecurity.entity;
  */
 public class QmErrorRedirectUrl {
 
-    private String notLoginRedirectUrl;
-    private String permissionDeniedRedirectUrl;
+    private String notLoginURI = "/error";
+    private String permissionDeniedURI = "/error";
 
-    public String getNotLoginRedirectUrl() {
-        return notLoginRedirectUrl;
+    public String getNotLoginURI() {
+        return notLoginURI;
     }
 
-    public void setNotLoginRedirectUrl(String notLoginRedirectUrl) {
-        this.notLoginRedirectUrl = notLoginRedirectUrl;
+    public void setNotLoginURI(String notLoginURI) {
+        this.notLoginURI = notLoginURI;
     }
 
-    public String getPermissionDeniedRedirectUrl() {
-        return permissionDeniedRedirectUrl;
+    public String getPermissionDeniedURI() {
+        return permissionDeniedURI;
     }
 
-    public void setPermissionDeniedRedirectUrl(String permissionDeniedRedirectUrl) {
-        this.permissionDeniedRedirectUrl = permissionDeniedRedirectUrl;
+    public void setPermissionDeniedURI(String permissionDeniedURI) {
+        this.permissionDeniedURI = permissionDeniedURI;
     }
 }

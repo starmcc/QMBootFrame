@@ -18,20 +18,18 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class QmSecurityConfig implements WebMvcConfigurer {
 
     // 不确定调用者是否启用该安全框架，如果启用的话，则会进行配置，这里就能够获取到Spring容器中的对象了。
-    @Autowired(required=false)
+    @Autowired(required = false)
     private QmSecurityContent qmSecurityContent;
 
     // 重写WebMvcConfigurer的addInterceptors方法
     @Override
-    public void addInterceptors (InterceptorRegistry registry){
+    public void addInterceptors(InterceptorRegistry registry) {
         // 首先判断是否注入了该框架，如果注入了，则继续，否则不进行操作。
         if (qmSecurityContent == null) return;
         // 把框架添加到拦截器队列中,设置接管所有访问路径。
         QmSecurityInterceptor qmSecurityInterceptor = new QmSecurityInterceptor(qmSecurityContent);
         registry.addInterceptor(qmSecurityInterceptor).addPathPatterns("/**");
     }
-
-
 
 
 }

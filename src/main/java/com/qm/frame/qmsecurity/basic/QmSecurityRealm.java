@@ -9,7 +9,7 @@ import java.util.List;
  * @date 2018/12/22 17:06
  * @Description QmSecurity授权接口
  */
-public interface QmSecurityRealm {
+public interface QmSecurityRealm{
 
     /**
      * 提供给调用者的授权方法
@@ -19,4 +19,5 @@ public interface QmSecurityRealm {
      * @return
      */
     List<String> authorizationPermissions(int roleId);
+
 }

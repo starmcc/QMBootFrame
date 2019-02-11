@@ -15,8 +15,6 @@ import java.util.List;
  */
 public interface Qmbject {
 
-
-
     /**
      * 登录
      * @param qmTokenInfo 参与签名的信息对象

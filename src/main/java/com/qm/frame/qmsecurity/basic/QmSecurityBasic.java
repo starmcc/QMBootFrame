@@ -32,13 +32,14 @@ public class QmSecurityBasic {
 
     /**
      * 匹配角色授权url
+     *
      * @param path
      * @param matchingUrls
      * @return
      */
-    protected boolean verifyPermissions(String path,List<String> matchingUrls){
+    protected boolean verifyPermissions(String path, List<String> matchingUrls) {
         for (String matchUrl : matchingUrls) {
-            if (verifyUrl(path,matchUrl)) {
+            if (verifyMatchURI(matchUrl, path)) {
                 return true;
             }
         }
@@ -48,10 +49,11 @@ public class QmSecurityBasic {
 
     /**
      * 校验token
+     *
      * @param token
      * @return
      */
-    protected QmTokenInfo verifyToken(String token){
+    protected QmTokenInfo verifyToken(String token) {
         try {
             // AES解密token
             token = QmSecurityAESUtil.decryptAES(token);
@@ -65,6 +67,7 @@ public class QmSecurityBasic {
 
     /**
      * 获取token信息
+     *
      * @param token
      * @return
      * @throws Exception
@@ -105,11 +108,12 @@ public class QmSecurityBasic {
 
     /**
      * Spring提供的模糊路径匹配算法
-     * @param requestUrl
-     * @param matchingUrl
+     *
+     * @param matchingUrl 匹配路径
+     * @param requestUrl 请求地址
      * @return
      */
-    public boolean verifyUrl(String requestUrl,String matchingUrl){
+    protected boolean verifyMatchURI(String matchingUrl, String requestUrl) {
         PathMatcher matcher = new AntPathMatcher();
         return matcher.match(matchingUrl, requestUrl);
     }
