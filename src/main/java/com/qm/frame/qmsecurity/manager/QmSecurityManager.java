@@ -4,17 +4,20 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.qm.frame.basic.util.HttpApiUtil;
-import com.qm.frame.qmsecurity.util.QmSecurityAESUtil;
 import com.qm.frame.qmsecurity.basic.QmSecurityRealm;
-import com.qm.frame.qmsecurity.util.QmSecuritySpringApplication;
-import com.qm.frame.qmsecurity.config.QmSercurityContent;
+import com.qm.frame.qmsecurity.config.QmSecurityContent;
 import com.qm.frame.qmsecurity.entity.QmPermissions;
+import com.qm.frame.qmsecurity.entity.QmSessionInfo;
 import com.qm.frame.qmsecurity.entity.QmTokenInfo;
+import com.qm.frame.qmsecurity.util.QmSecurityAESUtil;
+import com.qm.frame.qmsecurity.util.QmSecuritySpringApplication;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.thymeleaf.util.StringUtils;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.*;
 
 /**
@@ -33,20 +36,30 @@ public class QmSecurityManager implements Qmbject {
     private HttpServletRequest request;
     // 依赖Servlet的全局上下文作用域
     private ServletContext application;
+    // 依赖配置类
+    private QmSecurityContent qmSecurityContent;
+
+
     /**
      * 注入相关Spring依赖
      */
-    public QmSecurityManager(){
+    public QmSecurityManager() {
         if (request == null) {
             request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         }
         if (application == null) {
             application = request.getSession().getServletContext();
         }
+        try {
+            qmSecurityContent = QmSecuritySpringApplication.getBean(QmSecurityContent.class);
+        } catch (Exception e) {
+            return;
+        }
     }
 
     /**
      * 获取QmBject实例
+     *
      * @return
      */
     public static Qmbject getQmbject() {
@@ -54,10 +67,10 @@ public class QmSecurityManager implements Qmbject {
     }
 
     @Override
-    public String login(final QmTokenInfo qmTokenInfo,final long expireTime) {
+    public String login(final QmTokenInfo qmTokenInfo, final long expireTime) {
         // 判断是否存在必须的参数信息
         if (StringUtils.isEmpty(qmTokenInfo.getUserName())
-                || expireTime <= 0){
+                || expireTime <= 0) {
             new Exception("请检查qmTokenInfo的参数是否完整！");
             return null;
         }
@@ -89,7 +102,7 @@ public class QmSecurityManager implements Qmbject {
         builder.withIssuedAt(new Date(currentTimeMillis));
         try {
             // 将这些信息生成token签名
-            String token  = builder.sign(Algorithm.HMAC256(QmSercurityContent.getTokenSecret()));
+            String token = builder.sign(Algorithm.HMAC256(qmSecurityContent.getTokenSecret()));
             // AES加密手段
             token = QmSecurityAESUtil.encryptAES(token);
             return token;
@@ -99,11 +112,34 @@ public class QmSecurityManager implements Qmbject {
         return null;
     }
 
-
-
+    @Override
+    public void loginForSession(QmSessionInfo qmSessionInfo, int expireTime) {
+        HttpSession  session = request.getSession();
+        QmUserSessionListener qmUserSessionListener = new QmUserSessionListener();
+        qmUserSessionListener.setQmSessionInfo(qmSessionInfo);
+        session.setAttribute("userCountListener", qmUserSessionListener);
+        session.setMaxInactiveInterval(expireTime);
+    }
 
     @Override
-    public QmPermissions extractQmPermissions(final int roleId,final boolean isNew) {
+    public QmSessionInfo getLoginUserForSession() {
+        try {
+            return (QmSessionInfo) request.getAttribute(QmSessionInfo.class.getName());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
+    public void setLoginUserForSession(QmSessionInfo user) {
+        HttpSession  session = request.getSession();
+        QmUserSessionListener qmUserSessionListener =  new QmUserSessionListener();
+        qmUserSessionListener.setQmSessionInfo(user);
+        session.setAttribute("userCountListener", qmUserSessionListener);
+    }
+
+    @Override
+    public QmPermissions extractQmPermissions(final int roleId, final boolean isNew) {
         // 首先调用获取所有的角色权限列表
         List<QmPermissions> QmPermissionsLis = this.getAllQmPermissions();
         // 外部定义qmPermissions
@@ -120,9 +156,9 @@ public class QmSecurityManager implements Qmbject {
                     List<String> matchUrls = qmSecurityRealm.authorizationPermissions(roleId);
                     // 替换该对象
                     qmPermissions.setMatchUrls(matchUrls);
-                    QmPermissionsLis.set(i,qmPermissions);
+                    QmPermissionsLis.set(i, qmPermissions);
                     // 将该集合缓存起来
-                    application.setAttribute(QM_PERMISSIONS_KEY,QmPermissionsLis);
+                    application.setAttribute(QM_PERMISSIONS_KEY, QmPermissionsLis);
                 }
                 break;
             }
@@ -130,11 +166,11 @@ public class QmSecurityManager implements Qmbject {
         // 如果是空的则也使用调用者提供的方法去获取
         if (qmPermissions == null) {
             qmPermissions = new QmPermissions();
-            List<String> matchUrls = QmSercurityContent.getQmSecurityRealm().authorizationPermissions(roleId);
+            List<String> matchUrls = qmSecurityContent.getQmSecurityRealm().authorizationPermissions(roleId);
             qmPermissions.setRoleId(roleId);
             qmPermissions.setMatchUrls(matchUrls);
             QmPermissionsLis.add(qmPermissions);
-            application.setAttribute(QM_PERMISSIONS_KEY,QmPermissionsLis);
+            application.setAttribute(QM_PERMISSIONS_KEY, QmPermissionsLis);
         }
         return qmPermissions;
     }
@@ -159,8 +195,7 @@ public class QmSecurityManager implements Qmbject {
     @Override
     public QmTokenInfo getTokenInfo() {
         try {
-            QmTokenInfo qmTokenInfo = (QmTokenInfo) request.getAttribute(QmTokenInfo.class.getName());
-            return qmTokenInfo;
+            return (QmTokenInfo) request.getAttribute(QmTokenInfo.class.getName());
         } catch (Exception e) {
             return null;
         }

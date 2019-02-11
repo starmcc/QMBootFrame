@@ -1,6 +1,7 @@
 package com.qm.frame.qmsecurity.manager;
 
 import com.qm.frame.qmsecurity.entity.QmPermissions;
+import com.qm.frame.qmsecurity.entity.QmSessionInfo;
 import com.qm.frame.qmsecurity.entity.QmTokenInfo;
 
 import java.util.List;
@@ -24,6 +25,25 @@ public interface Qmbject {
      */
     String login(final QmTokenInfo qmTokenInfo, final long expireTime);
 
+    /**
+     * session模式登录
+     * @param qmSessionInfo
+     * @param roleId
+     * @param expireTime
+     */
+    void loginForSession(final QmSessionInfo qmSessionInfo, final int expireTime);
+
+    /**
+     * session模式获取用户对象
+     * @return
+     */
+    QmSessionInfo getLoginUserForSession();
+
+    /**
+     * session模式设置用户对象
+     * @param user
+     */
+    void setLoginUserForSession(final QmSessionInfo qmSessionInfo);
 
     /**
      * 动态获取角色权限

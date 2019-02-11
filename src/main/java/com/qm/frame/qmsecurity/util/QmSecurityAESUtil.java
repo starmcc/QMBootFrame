@@ -1,6 +1,6 @@
 package com.qm.frame.qmsecurity.util;
 
-import com.qm.frame.qmsecurity.config.QmSercurityContent;
+import com.qm.frame.qmsecurity.config.QmSecurityContent;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +17,17 @@ import java.util.Date;
  */
 public class QmSecurityAESUtil {
     private static final Logger LOG = LoggerFactory.getLogger(QmSecurityAESUtil.class);
+
+    /**
+     * 配置
+     */
+    private static QmSecurityContent qmSecurityContent;
+
+    static {
+        qmSecurityContent = QmSecuritySpringApplication.getBean(QmSecurityContent.class);
+    }
+
+
     /**
      * 加密封装
      * @param data
@@ -26,8 +37,8 @@ public class QmSecurityAESUtil {
     public static String encryptAES(String data) throws Exception {
         Date date = new Date();
         String str = data;
-        for (int i = 0; i < QmSercurityContent.getEncryptNumber(); i++){
-            str = encryptAES(str, QmSercurityContent.getTokenSecret());
+        for (int i = 0; i < qmSecurityContent.getEncryptNumber(); i++){
+            str = encryptAES(str, qmSecurityContent.getTokenSecret());
         }
         LOG.debug("加密用时：" + (new Date().getTime() - date.getTime()));
         return str;
@@ -41,8 +52,8 @@ public class QmSecurityAESUtil {
     public static String decryptAES(String data) throws Exception {
         Date date = new Date();
         String str = data;
-        for (int i = 0; i < QmSercurityContent.getEncryptNumber(); i++){
-            str = decryptAES(str, QmSercurityContent.getTokenSecret());
+        for (int i = 0; i < qmSecurityContent.getEncryptNumber(); i++){
+            str = decryptAES(str, qmSecurityContent.getTokenSecret());
         }
         LOG.debug("解密用时：" + (new Date().getTime() - date.getTime()));
         return str;

@@ -81,6 +81,22 @@ public class QmFrameConcent {
     public final static String LOGGER_AOP_EXTEND_CLASS = PRO.getProperty("controller.aop.extend.class",null);
 
     /**
+     * 遇到错误时是否使用重定向
+     */
+    public final static boolean REDIRECT_ERROR_TYPE =
+            Boolean.parseBoolean(PRO.getProperty("redirect.error.type","false"));
+
+    /**
+     * 遇到404时,返回重定向路径
+     */
+    public final static String REDIRECT_ERROR_404_URI = PRO.getProperty("redirect.error.404.uri","/error");
+
+    /**
+     * 遇到500时，返回重定向路径
+     */
+    public final static String REDIRECT_ERROR_500_URI = PRO.getProperty("redirect.error.500.uri","/error");
+
+    /**
      * 获取允许版本号
      * @return
      */

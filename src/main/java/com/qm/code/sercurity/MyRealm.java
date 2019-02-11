@@ -24,13 +24,14 @@ public class MyRealm implements QmSecurityRealm {
 
     @Override
     public List<String> authorizationPermissions(int roleId) {
-        // 获取该角色的权限集合
-        List<Permissions> permissionsList = roleService.getPermissions(roleId);
+        //// 获取该角色的权限集合
+        //List<Permissions> permissionsList = roleService.getPermissions(roleId);
         // 把权限拆箱出来，返回给框架
         List<String> matchUrls = new ArrayList<>();
-        for (Permissions permission : permissionsList) {
-            matchUrls.add(permission.getMatchUrl());
-        }
+        //for (Permissions permission : permissionsList) {
+        //    matchUrls.add(permission.getMatchUrl());
+        //}
+        matchUrls.add("/**");
         return matchUrls;
     }
 }

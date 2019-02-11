@@ -5,6 +5,7 @@ import com.qm.code.entity.User;
 import com.qm.code.service.UserService;
 import com.qm.frame.basic.controller.QmCode;
 import com.qm.frame.basic.controller.QmController;
+import com.qm.frame.qmsecurity.entity.QmSessionInfo;
 import com.qm.frame.qmsecurity.entity.QmTokenInfo;
 import com.qm.frame.qmsecurity.manager.QmSecurityManager;
 import com.qm.frame.qmsecurity.manager.Qmbject;
@@ -57,6 +58,26 @@ public class QmSecurityController extends QmController {
         // 将token返回给前端
         return super.sendJSON(QmCode._1, token);
     }
+
+    @QmPass
+    @GetMapping("/loginForSession")
+    public String loginForSession() {
+        // 利用QmSecurityManager获取qmbject实例。
+        Qmbject qmbject = QmSecurityManager.getQmbject();
+        QmSessionInfo qmSessionInfo = new QmSessionInfo();
+        qmSessionInfo.setUser("admin");
+        qmSessionInfo.setRoleId(1);
+        qmbject.loginForSession(qmSessionInfo,100);
+        return super.sendJSON(QmCode._1);
+    }
+
+    @GetMapping("/test")
+    public String test() {
+        // 利用QmSecurityManager获取qmbject实例。
+        Qmbject qmbject = QmSecurityManager.getQmbject();
+        return super.sendJSON(QmCode._1,qmbject.getLoginUserForSession());
+    }
+
 
     /**
      * 如果只需要登录，不需要授权，

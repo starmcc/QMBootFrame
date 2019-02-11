@@ -1,10 +1,13 @@
 package com.qm.code.controller;
 
+import com.qm.frame.basic.controller.QmController;
 import com.qm.frame.qmsecurity.note.QmPass;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.io.IOException;
 
 /**
  * Copyright © 2019浅梦工作室. All rights reserved.
@@ -15,11 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 @RequestMapping("/mvc")
-public class MvcController {
+public class MvcController extends QmController {
 
     @QmPass
     @GetMapping("/index")
-    public String index(Model model){
+    public String index(Model model) throws IOException {
         model.addAttribute("test","我是浅梦，欢迎使用QmBoot的thymeleaf模板引擎");
         return "/index";
     }

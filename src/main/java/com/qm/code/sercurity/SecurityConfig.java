@@ -1,6 +1,7 @@
 package com.qm.code.sercurity;
 
-import com.qm.frame.qmsecurity.config.QmSercurityContent;
+import com.qm.frame.qmsecurity.config.QmSecurityContent;
+import com.qm.frame.qmsecurity.entity.QmErrorRedirectUrl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,17 +21,32 @@ public class SecurityConfig {
     }
 
     @Bean
-    public QmSercurityContent setQmSecurityBasic(MyRealm myRealm) {
+    public QmSecurityContent setQmSecurityBasic(MyRealm myRealm) {
         // 创建一个QmSecurityContent初始配置
-        QmSercurityContent qmSercurityContent = new QmSercurityContent();
+        QmSecurityContent qmSecurityContent = new QmSecurityContent();
+        // 设置使用哪种校验机制 session or token
+        qmSecurityContent.setSessionOrToken("session");
         // setTokenSecret 设置token加密秘钥
-        qmSercurityContent.setTokenSecret("key2018s2312tarmcc");
+        qmSecurityContent.setTokenSecret("key2018s2312tarmcc");
         // setQmSecurityRealm 设置自定义的Realm
-        qmSercurityContent.setQmSecurityRealm(myRealm);
+        qmSecurityContent.setQmSecurityRealm(myRealm);
         // 设置加密次数
-        qmSercurityContent.setEncryptNumber(1);
+        qmSecurityContent.setEncryptNumber(1);
+
+        // ========下列为选择性设置==========
+        // 设置是否使用重定向返回
+        qmSecurityContent.setUseRedirect(true);
+        // 如果设置了重定向返回则需设置重定向路径
+        QmErrorRedirectUrl qmErrorRedirectUrl = new QmErrorRedirectUrl();
+        // 当登录超时重定向的路径
+        qmErrorRedirectUrl.setNotLoginRedirectUrl("/mvc/index");
+        // 当访问权限不足时重定向返回的路径
+        qmErrorRedirectUrl.setPermissionDeniedRedirectUrl("/mvc/index");
+        // 把对象设置到配置中
+        qmSecurityContent.setQmErrorRedirectUrl(qmErrorRedirectUrl);
+        // ========End======================
         // 返回该对象交由Spring容器
-        return qmSercurityContent;
+        return qmSecurityContent;
     }
 
 }

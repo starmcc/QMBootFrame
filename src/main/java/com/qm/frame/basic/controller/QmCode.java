@@ -59,25 +59,13 @@ public enum QmCode {
 	 */
 	_102(102),
 	/**
-	 * 未登录,检测token为空
+	 * 未登录/登录过期/请求ip校验失败
 	 */
 	_103(103),
 	/**
-	 * 请求ip校验失败
-	 */
-	_104(104),
-	/**
-	 * 登录过期，Token失效
-	 */
-	_105(105),
-	/**
-	 * 找不到该用户的角色信息
-	 */
-	_106(106),
-	/**
 	 * 权限不足，拒绝访问
 	 */
-	_107(107),
+	_104(104),
 	/**
 	 * 请求404,找不到资源
 	 */
@@ -133,19 +121,10 @@ public enum QmCode {
 			msg = "Version validation failed";
 			break;
 		case _103:
-			msg = "Login not in,token is null";
+			msg = "Login not in";
 			break;
 		case _104:
-			msg = "ip is error";
-			break;
-		case _105:
-			msg = "Token verify error";
-			break;
-		case _106:
-			msg = "role is null";
-			break;
-		case _107:
-			msg = "permission denied";
+			msg = "Permission denied";
 			break;
 		case _404:
 			msg = "Can't find resources";

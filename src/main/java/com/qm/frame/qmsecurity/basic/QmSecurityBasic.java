@@ -5,7 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.qm.frame.qmsecurity.config.QmSercurityContent;
+import com.qm.frame.qmsecurity.config.QmSecurityContent;
 import com.qm.frame.qmsecurity.entity.QmTokenInfo;
 import com.qm.frame.qmsecurity.util.QmSecurityAESUtil;
 import org.springframework.util.AntPathMatcher;
@@ -24,13 +24,19 @@ import java.util.Map;
  */
 public class QmSecurityBasic {
 
+    private QmSecurityContent qmSecurityContent;
+
+    public QmSecurityBasic(QmSecurityContent qmSecurityContent) {
+        this.qmSecurityContent = qmSecurityContent;
+    }
+
     /**
      * 匹配角色授权url
      * @param path
      * @param matchingUrls
      * @return
      */
-    protected static boolean verifyPermissions(String path,List<String> matchingUrls){
+    protected boolean verifyPermissions(String path,List<String> matchingUrls){
         for (String matchUrl : matchingUrls) {
             if (verifyUrl(path,matchUrl)) {
                 return true;
@@ -45,7 +51,7 @@ public class QmSecurityBasic {
      * @param token
      * @return
      */
-    protected static QmTokenInfo verifyToken(String token){
+    protected QmTokenInfo verifyToken(String token){
         try {
             // AES解密token
             token = QmSecurityAESUtil.decryptAES(token);
@@ -63,10 +69,10 @@ public class QmSecurityBasic {
      * @return
      * @throws Exception
      */
-    protected static QmTokenInfo getTokenInfo(String token) throws Exception {
+    protected QmTokenInfo getTokenInfo(String token) throws Exception {
         DecodedJWT jwt;
         try {
-            JWTVerifier verifier = JWT.require(Algorithm.HMAC256(QmSercurityContent.getTokenSecret())).build();
+            JWTVerifier verifier = JWT.require(Algorithm.HMAC256(qmSecurityContent.getTokenSecret())).build();
             // jwt解密token
             jwt = verifier.verify(token);
         } catch (Exception e) {
@@ -103,7 +109,7 @@ public class QmSecurityBasic {
      * @param matchingUrl
      * @return
      */
-    public static boolean verifyUrl(String requestUrl,String matchingUrl){
+    public boolean verifyUrl(String requestUrl,String matchingUrl){
         PathMatcher matcher = new AntPathMatcher();
         return matcher.match(matchingUrl, requestUrl);
     }
