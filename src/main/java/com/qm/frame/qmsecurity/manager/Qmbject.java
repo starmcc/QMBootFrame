@@ -35,13 +35,13 @@ public interface Qmbject {
      * session模式获取用户对象
      * @return
      */
-    QmSessionInfo getLoginUserForSession();
+    QmSessionInfo getSessionInfo();
 
     /**
      * session模式设置用户对象
-     * @param user
+     * @param qmSessionInfo
      */
-    void setLoginUserForSession(final QmSessionInfo qmSessionInfo);
+    void setSessionInfo(final QmSessionInfo qmSessionInfo);
 
     /**
      * 动态获取角色权限

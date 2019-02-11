@@ -75,7 +75,7 @@ public class QmSecurityController extends QmController {
     public String test() {
         // 利用QmSecurityManager获取qmbject实例。
         Qmbject qmbject = QmSecurityManager.getQmbject();
-        return super.sendJSON(QmCode._1,qmbject.getLoginUserForSession());
+        return super.sendJSON(QmCode._1,qmbject.getSessionInfo());
     }
 
 

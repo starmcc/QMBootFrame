@@ -122,7 +122,7 @@ public class QmSecurityManager implements Qmbject {
     }
 
     @Override
-    public QmSessionInfo getLoginUserForSession() {
+    public QmSessionInfo getSessionInfo() {
         try {
             return (QmSessionInfo) request.getAttribute(QmSessionInfo.class.getName());
         } catch (Exception e) {
@@ -131,7 +131,7 @@ public class QmSecurityManager implements Qmbject {
     }
 
     @Override
-    public void setLoginUserForSession(QmSessionInfo user) {
+    public void setSessionInfo(QmSessionInfo user) {
         HttpSession session = request.getSession();
         QmUserSessionListener qmUserSessionListener = new QmUserSessionListener();
         qmUserSessionListener.setQmSessionInfo(user);
