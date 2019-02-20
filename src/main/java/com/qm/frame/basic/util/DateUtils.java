@@ -1,3 +1,5 @@
+package com.qm.frame.basic.util;
+
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.ParsePosition;
