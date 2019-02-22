@@ -53,7 +53,7 @@ spring:
       config: 'classpath:ehcache.xml'
   #配置thymeleaf 官方推荐模板引擎
   thymeleaf:
-    prefix: 'classpath:/views/'
+    prefix: 'classpath:/views/web/'
     suffix: '.html'
     mode: 'HTML'
     encoding: 'UTF-8'

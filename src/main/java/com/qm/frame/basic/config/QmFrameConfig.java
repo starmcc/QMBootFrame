@@ -36,8 +36,8 @@ public class QmFrameConfig implements WebMvcConfigurer {
 	 */
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
-		// 按需求添加
+		// addResourceLocations指的是文件放置的目录，addResoureHandler指的是对外暴露的访问路径
+		registry.addResourceHandler("/static/**").addResourceLocations("classpath:/views/static/");
 	}
 
 	/**
