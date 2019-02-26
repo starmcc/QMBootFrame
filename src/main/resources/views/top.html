@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Top</title>
+</head>
+<body>
+<!-- top 模块 -->
+<nav th:fragment="qm-top" class="navbar navbar-default">
+    <!-- 导航栏 -->
+    <div class="container-fluid">
+        <!-- logo位置 -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#qm-menu-sx-style" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="javascript:;">浅梦工作室</a>
+        </div>
+        <!-- 菜单 -->
+        <div class="collapse navbar-collapse" id="qm-menu-sx-style">
+            <!-- 模块 -->
+            <ul class="nav navbar-nav">
+                <li class="qmui-li-click">
+                    <a class="qmui-a-click" qmui-page="home">home</a>
+                </li>
+                <li class="qmui-li-click">
+                    <a class="qmui-a-click" qmui-page="about">about</a>
+                </li>
+                <li class="dropdown">
+                    <a href="javascript:;"
+                       class="dropdown-toggle"
+                       data-toggle="dropdown"
+                       role="button"
+                       aria-haspopup="true"
+                       aria-expanded="false">菜单三(下拉菜单)
+                        <!-- 下拉箭头图标 -->
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="qmui-li-click disabled"><a class="qmui-a-click" href="javascript:;">禁用选项</a></li>
+                        <!-- 下划线 -->
+                        <li role="separator" class="divider"></li>
+                        <li class="qmui-li-click"><a href="javascript:;">菜单下的选项</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <!-- 用户栏 -->
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                       aria-haspopup="true" aria-expanded="false">浅梦娱乐 <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li class="qmui-li-click"><a href="javascript:;">用户中心</a></li>
+                        <li class="qmui-li-click"><a href="javascript:;">系统设置</a></li>
+                        <!-- 下划线 -->
+                        <li role="separator" class="divider"></li>
+                        <li><a class="qmui-a-click" href="javascript:;">注销</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+</body>
+</html>

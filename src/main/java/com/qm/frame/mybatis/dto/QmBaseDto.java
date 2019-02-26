@@ -60,9 +60,10 @@ public final class QmBaseDto {
                 field.setAccessible(true);
             }
             // 判断是否需要主键策略
-            if (isPrimaryKey) {
+            if (isPrimaryKey && primaryKey == null) {
                 // 序列化该主键
                 setPrimaryKey(field);
+                continue;
             }
             // 序列化该字段
             setFiledToList(field);

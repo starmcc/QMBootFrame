@@ -22,8 +22,7 @@ public class MvcController extends QmController {
 
     @QmPass
     @GetMapping("/index")
-    public String index(Model model) throws IOException {
-        model.addAttribute("test","我是浅梦，欢迎使用QmBoot的thymeleaf模板引擎");
+    public String index(){
         return "/index";
     }
 }

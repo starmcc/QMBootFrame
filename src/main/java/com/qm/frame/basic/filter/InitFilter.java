@@ -1,7 +1,6 @@
 package com.qm.frame.basic.filter;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -11,7 +10,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 
-import com.qm.frame.basic.config.QmFrameConcent;
+import com.qm.frame.basic.config.QmFrameContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
@@ -64,18 +63,18 @@ public @Component class InitFilter extends QmController implements Filter{
      */
     public boolean verifyVersion(HttpServletRequest request) throws IOException {
         //不开启版本控制
-        if (!QmFrameConcent.VERSION_START) return true;
+        if (!QmFrameContent.VERSION_START) return true;
         //目前版本号
         String versionRequest = request.getHeader("version");
         LOG.debug("请求版本号：" + versionRequest);
-        LOG.debug("当前版本号：" + QmFrameConcent.VERSION_NOW);
-        if (QmFrameConcent.VERSION_NOW.equals(versionRequest)) {
+        LOG.debug("当前版本号：" + QmFrameContent.VERSION_NOW);
+        if (QmFrameContent.VERSION_NOW.equals(versionRequest)) {
             //通过
             return true;
         }
         LOG.debug("进入版本控制判断");
-        if (QmFrameConcent.VERSION_ALLOWS != null && QmFrameConcent.VERSION_ALLOWS.size() > 0) {
-            for (String version : QmFrameConcent.VERSION_ALLOWS) {
+        if (QmFrameContent.VERSION_ALLOWS != null && QmFrameContent.VERSION_ALLOWS.size() > 0) {
+            for (String version : QmFrameContent.VERSION_ALLOWS) {
                 if (version.equals(versionRequest)) {
                     //通过
                     return true;

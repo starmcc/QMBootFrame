@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org";>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>QM-bootstrap-template</title>
+    <!-- 网页图标 -->
+    <link rel="shortcut icon" th:href="@{/views/frame/qmui/img/icon.jpg}">
+    <!-- bootstrap框架css样式支持 -->
+    <link rel="stylesheet" th:href="@{/views/frame/bootstrap-3.3.7-dist/css/bootstrap.min.css}">
+    <!-- qm样式封装支持 -->
+    <link rel="stylesheet" th:href="@{/views/frame/qmui/css/qmui.css}">
+    <!-- jQuery -->
+    <script th:src="@{/views/frame/jquery/jquery1.12.4.js}"></script>
+    <!-- bootstrap js插件支持 -->
+    <script th:src="@{/views/frame/bootstrap-3.3.7-dist/js/bootstrap.min.js}"></script>
+    <!-- qmui-js封装支持 -->
+    <script th:src="@{/views/frame/qmui/js/qmui.js}"></script>
+    <!-- 路由支持 -->
+    <pages name="home" to="/views/pages/home.html"  js="/views/pages/home.js"/>
+    <pages name="about" to="/views/pages/about.html" js="/views/pages/about.js"/>
+</head>
+<body >
+    <!-- 内容主体区域 -->
+    <!-- top -->
+    <div th:replace="/top::qm-top"></div>
+    <!-- container -->
+    <div id="qmui-app"></div>
+</body>
+</html>

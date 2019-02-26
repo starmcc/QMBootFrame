@@ -32,20 +32,8 @@ public class SecurityConfig {
         qmSecurityContent.setQmSecurityRealm(myRealm);
         // 设置加密次数
         qmSecurityContent.setEncryptNumber(1);
-
-        // ========下列为选择性设置==========
-        // 设置是否使用重定向返回
-        qmSecurityContent.setUseRedirect(true);
-        // 如果设置了重定向返回则需设置重定向路径
-        QmErrorRedirectUrl qmErrorRedirectUrl = new QmErrorRedirectUrl();
-        // 当登录超时重定向的路径
-        qmErrorRedirectUrl.setNotLoginURI("/mvc/index");
-        // 当访问权限不足时重定向返回的路径
-        qmErrorRedirectUrl.setPermissionDeniedURI("/mvc/index");
-        // 把对象设置到配置中
-        qmSecurityContent.setQmErrorRedirectUrl(qmErrorRedirectUrl);
-        // ========End======================
-        // 返回该对象交由Spring容器
+        // 需要排除的静态资源路径
+        qmSecurityContent.setExcludePathPatterns("/views/**");
         return qmSecurityContent;
     }
 

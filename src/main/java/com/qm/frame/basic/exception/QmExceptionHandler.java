@@ -1,7 +1,7 @@
 package com.qm.frame.basic.exception;
 
 
-import com.qm.frame.basic.config.QmFrameConcent;
+import com.qm.frame.basic.config.QmFrameContent;
 import com.qm.frame.basic.controller.QmCode;
 import com.qm.frame.basic.controller.QmController;
 import org.springframework.http.HttpStatus;
@@ -71,9 +71,6 @@ public class QmExceptionHandler extends QmController {
     public String notFoundPage404(HttpServletResponse response,
                                   Exception e) throws IOException {
         response.setStatus(200);
-        if (QmFrameConcent.REDIRECT_ERROR_TYPE) {
-            response.sendRedirect(QmFrameConcent.REDIRECT_ERROR_404_URI);
-        }
         return super.sendJSON(QmCode._404);
     }
 
@@ -90,9 +87,6 @@ public class QmExceptionHandler extends QmController {
     public String defaultException(HttpServletResponse response, Exception e) throws IOException {
         e.printStackTrace();
         response.setStatus(200);
-        if (QmFrameConcent.REDIRECT_ERROR_TYPE) {
-            response.sendRedirect(QmFrameConcent.REDIRECT_ERROR_500_URI);
-        }
         return super.sendJSON(QmCode._500);
     }
 

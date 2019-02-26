@@ -1,13 +1,12 @@
 package com.qm.frame.basic.config;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.annotation.WebFilter;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.EnableCaching;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson.support.config.FastJsonConfig;
+import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import com.qm.frame.basic.body.JsonPathArgumentResolver;
+import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -15,10 +14,9 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.alibaba.fastjson.support.config.FastJsonConfig;
-import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
-import com.qm.frame.basic.body.JsonPathArgumentResolver;
+import javax.servlet.annotation.WebFilter;
+import java.util.ArrayList;
+import java.util.List;
 //import com.qm.frame.qmsecurity.basic.QmSecurityInterceptor;
 
 /**
@@ -37,7 +35,8 @@ public class QmFrameConfig implements WebMvcConfigurer {
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		// addResourceLocations指的是文件放置的目录，addResoureHandler指的是对外暴露的访问路径
-		registry.addResourceHandler("/static/**").addResourceLocations("classpath:/views/static/");
+		registry.addResourceHandler("/views/**").addResourceLocations("classpath:/views/src/");
+		WebMvcConfigurer.super.addResourceHandlers(registry);
 	}
 
 	/**
@@ -85,14 +84,5 @@ public class QmFrameConfig implements WebMvcConfigurer {
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
 		argumentResolvers.add(new JsonPathArgumentResolver());
 	}
-
-
-	///**
-	// * 添加拦截器
-	// */
-	//@Override
-	//public void addInterceptors(InterceptorRegistry registry) {
-	//}
-
 
 }

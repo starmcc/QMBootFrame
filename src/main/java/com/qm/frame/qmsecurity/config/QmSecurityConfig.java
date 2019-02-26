@@ -2,8 +2,8 @@ package com.qm.frame.qmsecurity.config;
 
 import com.qm.frame.qmsecurity.basic.QmSecurityInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -28,7 +28,16 @@ public class QmSecurityConfig implements WebMvcConfigurer {
         if (qmSecurityContent == null) return;
         // 把框架添加到拦截器队列中,设置接管所有访问路径。
         QmSecurityInterceptor qmSecurityInterceptor = new QmSecurityInterceptor(qmSecurityContent);
-        registry.addInterceptor(qmSecurityInterceptor).addPathPatterns("/**");
+        // 添加拦截器
+        InterceptorRegistration interceptor = registry.addInterceptor(qmSecurityInterceptor);
+        // 添加拦截路径
+        interceptor.addPathPatterns("/**");
+        // 检索静态路径
+        String[] excludePathPatterns = qmSecurityContent.getExcludePathPatterns();
+        // 添加静态路径排除
+        if (excludePathPatterns != null && excludePathPatterns.length != 0) {
+            interceptor.excludePathPatterns(excludePathPatterns);
+        }
     }
 
 

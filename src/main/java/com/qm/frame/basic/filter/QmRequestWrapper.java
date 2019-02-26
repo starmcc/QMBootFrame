@@ -13,7 +13,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import com.alibaba.fastjson.JSONObject;
-import com.qm.frame.basic.config.QmFrameConcent;
+import com.qm.frame.basic.config.QmFrameContent;
 import com.qm.frame.basic.util.AESUtil;
 
 /**
@@ -58,8 +58,8 @@ public class QmRequestWrapper extends HttpServletRequestWrapper {
 	private String getBodyByAes(String body){
 		if (body == null || body.trim().equals("")) return body;
 		JSONObject jsonObject = JSONObject.parseObject(body);
-		String json = jsonObject.getString(QmFrameConcent.REQUEST_DATA_KEY);
-		if (QmFrameConcent.AES_START) {
+		String json = jsonObject.getString(QmFrameContent.REQUEST_DATA_KEY);
+		if (QmFrameContent.AES_START) {
 			try {
 				json = AESUtil.decryptAES(json);
 			} catch (Exception e) {

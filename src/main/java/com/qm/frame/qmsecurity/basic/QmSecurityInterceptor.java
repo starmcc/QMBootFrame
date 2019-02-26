@@ -80,7 +80,7 @@ public class QmSecurityInterceptor extends QmController implements HandlerInterc
             QmUserSessionListener qmUserSessionListener = (QmUserSessionListener) session.getAttribute("qmUserSessionListener");
             if (qmUserSessionListener == null) {
                 LOG.info("※※※找不到用户信息,登录超时");
-                sendJsonOrViewName(response, QmCode._103);
+                response.getWriter().print(super.sendJSON(QmCode._103));
                 return false;
             } else {
                 QmSessionInfo qmSessionInfo = qmUserSessionListener.getQmSessionInfo();
@@ -94,21 +94,21 @@ public class QmSecurityInterceptor extends QmController implements HandlerInterc
             // 如果为空则直接拦截
             if (token == null) {
                 LOG.info("※※※检测不到token拒绝访问");
-                sendJsonOrViewName(response, QmCode._103);
+                response.getWriter().print(super.sendJSON(QmCode._103));
                 return false;
             }
             LOG.info("※※※正在验证Token是否正确");
             QmTokenInfo qmTokenInfo = qmSecurityBasic.verifyToken(token);
             if (qmTokenInfo == null) {
                 LOG.info("※※※Token失效或已过期");
-                sendJsonOrViewName(response, QmCode._103);
+                response.getWriter().print(super.sendJSON(QmCode._103));
                 return false;
             }
             LOG.info("※※※进行请求ip单点匹配");
             String requestIp = HttpApiUtil.getHttpIp(request);
             if (!requestIp.equals(qmTokenInfo.getRequestIp())) {
                 LOG.info("※※※请求ip校验失败");
-                sendJsonOrViewName(response, QmCode._103);
+                response.getWriter().print(super.sendJSON(QmCode._103));
                 return false;
             }
             roleId = qmTokenInfo.getRoleId();
@@ -127,34 +127,12 @@ public class QmSecurityInterceptor extends QmController implements HandlerInterc
             boolean is = qmSecurityBasic.verifyPermissions(path, qmPermissions.getMatchUrls());
             if (!is) {
                 LOG.info("※※※权限不足,拒绝访问");
-                sendJsonOrViewName(response, QmCode._104);
+                response.getWriter().print(super.sendJSON(QmCode._104));
                 return false;
             }
         }
         LOG.info("※※※通过QmSecurity");
         return true;
-    }
-
-    /**
-     * 返回信息
-     * @param response
-     * @param qmCode
-     * @throws IOException
-     */
-    private void sendJsonOrViewName(HttpServletResponse response,QmCode qmCode) throws IOException {
-        if (qmSecurityContent.isUseRedirect()) {
-            QmErrorRedirectUrl qmErrorRedirectUrl = qmSecurityContent.getQmErrorRedirectUrl();
-            switch (qmCode){
-            case _103:
-                response.sendRedirect(qmErrorRedirectUrl.getNotLoginURI());
-                break;
-            case _104:
-                response.sendRedirect(qmErrorRedirectUrl.getPermissionDeniedURI());
-                break;
-            }
-        }else {
-            response.getWriter().print(super.sendJSON(qmCode));
-        }
     }
 
 }

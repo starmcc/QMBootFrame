@@ -58,16 +58,15 @@ public class JsonPathArgumentResolver extends QmController implements HandlerMet
         // 如果@qmBody注解没有设置value，则取参数名FrameworkServlet作为json解析的key
         if (StringUtils.isNotEmpty(key)) {
             value = jsonObject.get(key);
-            // 如果设置了value但是解析不到，报错
-            if (value == null && qmBody.required()) {
-                throw new IllegalArgumentException(String.format("required param %s is not present", key));
-            }
         } else {
             // 注解为设置value则用参数名当做json的key
             key = parameter.getParameterName();
             value = jsonObject.get(key);
         }
-
+        // 如果required = true 则不允许value == null
+        if (value == null && qmBody.required()) {
+            throw new IllegalArgumentException(String.format("required param %s is not present", key));
+        }
         Class<?> parameterType = parameter.getParameterType();
         // 通过注解的value或者参数名解析，能拿到value进行解析
         if (value != null) {
@@ -92,6 +91,13 @@ public class JsonPathArgumentResolver extends QmController implements HandlerMet
             }
             // 如果是list则解析list
             if (parameterType.isAssignableFrom(List.class)) {
+                Type genericType = parameter.getGenericParameterType();
+                if(genericType instanceof ParameterizedType){
+                    ParameterizedType pt = (ParameterizedType) genericType;
+                    //得到泛型里的class类型对象
+                    Class<?> genericClazz = (Class<?>)pt.getActualTypeArguments()[0];
+                    return JSON.parseArray(value.toString(), genericClazz);
+                }
                 return JSON.parseArray(value.toString());
             }
             return JSON.parseObject(value.toString(), parameterType);

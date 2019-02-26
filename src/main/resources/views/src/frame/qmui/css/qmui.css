@@ -1,0 +1,11 @@
+/* iframe样式设置 */
+#qmui-iframe{
+    border:0;
+    width:100%;
+    height: 10000px;
+    margin: 0;
+}
+/* 导航栏 */
+.navbar{
+    margin: 0;
+}

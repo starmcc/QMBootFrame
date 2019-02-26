@@ -1,7 +1,6 @@
 package com.qm.frame.basic.config;
 
 import com.qm.frame.basic.exception.QmFrameException;
-import com.qm.frame.basic.util.PropertiesUtil;
 
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ import java.util.Properties;
  * @date 2019/1/30 19:36
  * @Description
  */
-public class QmFrameConcent {
+public class QmFrameContent {
 
     private final static Properties PRO = getProperties();
     /**
@@ -81,17 +80,6 @@ public class QmFrameConcent {
     public final static String LOGGER_AOP_EXTEND_CLASS = PRO.getProperty("controller.aop.extend.class",null);
 
     /**
-     * 遇到错误时是否使用重定向
-     */
-    public final static boolean REDIRECT_ERROR_TYPE =
-            Boolean.parseBoolean(PRO.getProperty("redirect.error.type","false"));
-
-    /**
-     * 遇到404时,返回重定向路径
-     */
-    public final static String REDIRECT_ERROR_404_URI = PRO.getProperty("redirect.error.404.uri","/error");
-
-    /**
      * 遇到500时，返回重定向路径
      */
     public final static String REDIRECT_ERROR_500_URI = PRO.getProperty("redirect.error.500.uri","/error");
@@ -121,7 +109,7 @@ public class QmFrameConcent {
             Properties properties = new Properties();
             // 读取properties文件,使用InputStreamReader字符流防止文件中出现中文导致乱码
             InputStreamReader inStream = new InputStreamReader
-                    (QmFrameConcent.class.getClassLoader().getResourceAsStream("qm-frame.properties"),
+                    (QmFrameContent.class.getClassLoader().getResourceAsStream("qm-frame.properties"),
                             "UTF-8");
             properties.load(inStream);
             inStream.close();

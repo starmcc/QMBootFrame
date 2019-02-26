@@ -1,8 +1,9 @@
 package com.qm.frame.qmsecurity.config;
 
 import com.qm.frame.qmsecurity.basic.QmSecurityRealm;
-import com.qm.frame.qmsecurity.entity.QmErrorRedirectUrl;
 import com.qm.frame.qmsecurity.manager.QmSecuritySessionEvent;
+
+import java.util.List;
 
 /**
  * Copyright © 2018浅梦工作室}. All rights reserved.
@@ -21,9 +22,7 @@ public class QmSecurityContent {
 
     private int encryptNumber = 2;
 
-    private boolean useRedirect = false;
-
-    private QmErrorRedirectUrl qmErrorRedirectUrl;
+    private String[] excludePathPatterns;
 
     private QmSecurityRealm qmSecurityRealm;
 
@@ -53,14 +52,17 @@ public class QmSecurityContent {
         return sessionOrToken;
     }
 
-    public QmErrorRedirectUrl getQmErrorRedirectUrl() {
-        return qmErrorRedirectUrl;
+    public String[] getExcludePathPatterns() {
+        return excludePathPatterns;
     }
 
-    public boolean isUseRedirect() {
-        return useRedirect;
+    /**
+     * 静态资源排除拦截路径
+     * @param excludePathPatterns
+     */
+    public void setExcludePathPatterns(String... excludePathPatterns) {
+        this.excludePathPatterns = excludePathPatterns;
     }
-
 
     /**
      * 设置session监听器的回调
@@ -69,25 +71,6 @@ public class QmSecurityContent {
      */
     public void setQmSecuritySessionEvent(QmSecuritySessionEvent qmSecuritySessionEvent) {
         this.qmSecuritySessionEvent = qmSecuritySessionEvent;
-    }
-
-
-    /**
-     * 当校验失败或鉴权失败时，是否重定向。默认为false
-     *
-     * @param useRedirect
-     */
-    public void setUseRedirect(boolean useRedirect) {
-        this.useRedirect = useRedirect;
-    }
-
-    /**
-     * 当校验失败或鉴权失败时，返回视图名
-     *
-     * @param qmErrorRedirectUrl
-     */
-    public void setQmErrorRedirectUrl(QmErrorRedirectUrl qmErrorRedirectUrl) {
-        this.qmErrorRedirectUrl = qmErrorRedirectUrl;
     }
 
     /**

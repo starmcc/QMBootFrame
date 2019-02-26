@@ -3,7 +3,6 @@ package com.qm.frame.basic.config;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
-import com.qm.frame.basic.config.QmFrameConcent;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
@@ -41,10 +40,10 @@ public @Configuration class DruidConfig {
         ServletRegistrationBean<StatViewServlet> servletRegistrationBean = new ServletRegistrationBean<StatViewServlet>(new StatViewServlet(),"/druid/*");
 
         //添加初始化参数：initParams
-        String allow = QmFrameConcent.DRUID_ALLOW;
-        String deny = QmFrameConcent.DRUID_DENY;
-        String loginUsername = QmFrameConcent.DRUID_LOGIN_USERNAME;
-        String loginPassword = QmFrameConcent.DRUID_LOGIN_PASSWORD;
+        String allow = QmFrameContent.DRUID_ALLOW;
+        String deny = QmFrameContent.DRUID_DENY;
+        String loginUsername = QmFrameContent.DRUID_LOGIN_USERNAME;
+        String loginPassword = QmFrameContent.DRUID_LOGIN_PASSWORD;
         //白名单：
         servletRegistrationBean.addInitParameter("allow",allow);
         //IP黑名单 (存在共同时，deny优先于allow) : 如果满足deny的话提示:Sorry, you are not permitted to views this page.
@@ -53,7 +52,7 @@ public @Configuration class DruidConfig {
         servletRegistrationBean.addInitParameter("loginUsername",loginUsername);
         servletRegistrationBean.addInitParameter("loginPassword",loginPassword);
         //是否能够重置数据.
-        servletRegistrationBean.addInitParameter("resetEnable", QmFrameConcent.DRUID_RESET_ENABLE);
+        servletRegistrationBean.addInitParameter("resetEnable", QmFrameContent.DRUID_RESET_ENABLE);
         return servletRegistrationBean;
     }
 
