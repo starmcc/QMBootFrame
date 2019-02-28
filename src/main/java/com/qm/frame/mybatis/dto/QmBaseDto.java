@@ -62,8 +62,9 @@ public final class QmBaseDto {
             // 判断是否需要主键策略
             if (isPrimaryKey && primaryKey == null) {
                 // 序列化该主键
-                setPrimaryKey(field);
-                continue;
+                if(setPrimaryKey(field)){
+                    continue;
+                }
             }
             // 序列化该字段
             setFiledToList(field);
@@ -77,10 +78,10 @@ public final class QmBaseDto {
      * @param id
      * @return
      */
-    private void setPrimaryKey(Field filed) {
+    private boolean setPrimaryKey(Field filed) {
         QmId idKey = filed.getAnnotation(QmId.class);
         if (idKey == null) {
-            return;
+            return false;
         }
         Object obj = null;
         try {
@@ -105,7 +106,7 @@ public final class QmBaseDto {
             primaryKey.put("value", obj);
         } else {
             // 判断是否为uuid策略
-            if (idKey.uuid() == false) return;
+            if (idKey.uuid() == false) return false;
             // 直接判断uuid规则还是自增规则
             // 判断是否设置别名
             primaryKey = new HashMap<>();
@@ -116,7 +117,7 @@ public final class QmBaseDto {
             }
             primaryKey.put("value", UUID.randomUUID().toString().replace("-", ""));
         }
-        return;
+        return true;
     }
 
 
