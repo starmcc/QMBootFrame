@@ -62,6 +62,10 @@ public class QmFrameContent {
      */
     public final static String RESPONSE_DATA_KEY = PRO.getProperty("body.response.key","value");
     /**
+     * 特殊请求不进行解析(包括版本控制和解析json等)
+     */
+    public final static List<String> REQUEST_SPECIAL_URI = getRequestSpecialUri();
+    /**
      * 是否开启版本控制(ture时,每个请求需在header带上version参数,参数值version)
      */
     public final static Boolean VERSION_START = Boolean.parseBoolean(PRO.getProperty("version.start","false"));
@@ -80,9 +84,25 @@ public class QmFrameContent {
     public final static String LOGGER_AOP_EXTEND_CLASS = PRO.getProperty("controller.aop.extend.class",null);
 
     /**
-     * 遇到500时，返回重定向路径
+     * 获取特殊请求
+     * @return
      */
-    public final static String REDIRECT_ERROR_500_URI = PRO.getProperty("redirect.error.500.uri","/error");
+    private final static List<String> getRequestSpecialUri(){
+        List<String> specialUriList = new ArrayList<>();
+        boolean is = true;
+        int num = 0;
+        while (is){
+            String tempVersion = PRO.getProperty("request.special.uri-[" + num + "]",null);
+            if (tempVersion != null) {
+                specialUriList.add(tempVersion);
+            }else{
+                is = false;
+            }
+            num++;
+        }
+        return specialUriList;
+    }
+
 
     /**
      * 获取允许版本号
@@ -118,6 +138,4 @@ public class QmFrameContent {
             throw new QmFrameException("读取qm-frame.properties发生了异常！",e);
         }
     }
-
-
 }

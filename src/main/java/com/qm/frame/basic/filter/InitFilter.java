@@ -9,8 +9,10 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.qm.frame.basic.config.QmFrameContent;
+import com.qm.frame.basic.util.QmSpringManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
@@ -40,9 +42,14 @@ public @Component class InitFilter extends QmController implements Filter{
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html;charset=utf-8");
         HttpServletRequest req = (HttpServletRequest) request;
+        LOG.info("/n" + "请求URI：" + req.getRequestURI());
+        //特殊请求
+        if (verifySpecialURI(req)) {
+            chain.doFilter(request,response);
+            return;
+        }
         //版本控制
-        boolean is = verifyVersion(req);
-        if (!is) {
+        if (!verifyVersion(req)) {
             response.getWriter().write(super.sendJSON(QmCode._102));
             return;
         }
@@ -53,6 +60,19 @@ public @Component class InitFilter extends QmController implements Filter{
         chain.doFilter(requestWrapper, response);
     }
 
+    /**
+     * 验证是否为特殊请求
+     * @param request
+     * @return
+     */
+    private boolean verifySpecialURI(HttpServletRequest request){
+        for (String uri : QmFrameContent.REQUEST_SPECIAL_URI) {
+            if (QmSpringManager.verifyMatchURI(uri,request.getRequestURI())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * @param request
@@ -61,7 +81,7 @@ public @Component class InitFilter extends QmController implements Filter{
      * @Title verify
      * @Description 版本验证工具
      */
-    public boolean verifyVersion(HttpServletRequest request) throws IOException {
+    private boolean verifyVersion(HttpServletRequest request) throws IOException {
         //不开启版本控制
         if (!QmFrameContent.VERSION_START) return true;
         //目前版本号
