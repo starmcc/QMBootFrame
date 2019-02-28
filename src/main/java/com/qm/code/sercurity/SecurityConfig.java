@@ -21,7 +21,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public QmSecurityContent setQmSecurityBasic(MyRealm myRealm) {
+    public QmSecurityContent setQmSecurityContent(MyRealm myRealm) {
         // 创建一个QmSecurityContent初始配置
         QmSecurityContent qmSecurityContent = new QmSecurityContent();
         // 设置使用哪种校验机制 session or token
