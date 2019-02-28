@@ -77,8 +77,9 @@ mybatis:
   type-aliases-package: com.qm.code.entity # 指定实体类包路径
   mapper-locations:
   - 'classpath*:**/*Mapper.xml' # 该行配置请勿修改
-  configuration:  #是否启动数据库下划线自动映射实体
-    map-underscore-to-camel-case: false
+  configuration:
+    map-underscore-to-camel-case: false #是否启动数据库下划线自动映射实体
+    auto-mapping-behavior: full # resultMap 自动映射级别设置
 #※※※※※※※※※※※※Logger※※※※※※※※※※※※
 logging:
   config: 'classpath:logback-spring.xml'
