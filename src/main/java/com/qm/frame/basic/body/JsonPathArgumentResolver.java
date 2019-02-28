@@ -67,6 +67,7 @@ public class JsonPathArgumentResolver extends QmController implements HandlerMet
         if (value == null && qmBody.required()) {
             throw new IllegalArgumentException(String.format("required param %s is not present", key));
         }
+
         Class<?> parameterType = parameter.getParameterType();
         // 通过注解的value或者参数名解析，能拿到value进行解析
         if (value != null) {
@@ -93,10 +94,21 @@ public class JsonPathArgumentResolver extends QmController implements HandlerMet
             if (parameterType.isAssignableFrom(List.class)) {
                 Type genericType = parameter.getGenericParameterType();
                 if(genericType instanceof ParameterizedType){
-                    ParameterizedType pt = (ParameterizedType) genericType;
-                    //得到泛型里的class类型对象
-                    Class<?> genericClazz = (Class<?>)pt.getActualTypeArguments()[0];
-                    return JSON.parseArray(value.toString(), genericClazz);
+                    try {
+                        ParameterizedType pt = (ParameterizedType) genericType;
+                        //得到泛型里的class类型对象
+                        Class<?> genericClazz = (Class<?>)pt.getActualTypeArguments()[0];
+                        return JSON.parseArray(value.toString(), genericClazz);
+                    } catch (Exception e) {
+                        try {
+                            return JSON.parseArray(value.toString());
+                        } catch (Exception e1) {
+                            if (qmBody.required()) {
+                                throw new IllegalArgumentException(String.format("required param %s is not present", key));
+                            }
+                            return null;
+                        }
+                    }
                 }
                 return JSON.parseArray(value.toString());
             }
@@ -112,8 +124,14 @@ public class JsonPathArgumentResolver extends QmController implements HandlerMet
                 return null;
             }
         }
-
-        Object result = parameterType.newInstance();
+        Object result = null;
+        try {
+            result = parameterType.newInstance();
+        } catch (Exception e) {
+            if (qmBody.required() == false) {
+                return null;
+            }
+        }
         // 非基本类型，不允许解析所有字段，返回null
         if (!qmBody.parseAllFields()) {
             // 如果是必传参数抛异常
