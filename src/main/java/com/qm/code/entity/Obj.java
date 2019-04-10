@@ -7,7 +7,7 @@ import java.util.Date;
  *
  * @author 浅梦
  * @date 2019/4/10 15:55
- * @Description TODO
+ * @Description 测试实体
  */
 public class Obj {
 
