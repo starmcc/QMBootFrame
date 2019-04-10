@@ -1,6 +1,6 @@
 #※※※※※※※※※※※※Server※※※※※※※※※※※※
 server:
-  port: 80
+  port: 9999
   tomcat: 
       url-encoding: UTF-8
   servlet:
@@ -10,7 +10,7 @@ spring:
   datasource: #主数据源
     type: 'com.alibaba.druid.pool.DruidDataSource'
     driverClassName: 'com.mysql.cj.jdbc.Driver'
-    url: 'jdbc:mysql://localhost:3306/test'
+    url: 'jdbc:mysql://localhost:3306/test2'
     username: 'root'
     password: '123'
     #下面为连接池的补充设置，应用到上面所有数据源中
@@ -71,6 +71,8 @@ spring:
       max-idle: 10 #连接池中的最大空闲连接
       min-idle: 0 #连接池中的最小空闲连接 
     timeout: 1000 #连接超时时间（毫秒）
+  velocity:
+    content-type: 'application/json'
 
 #※※※※※※※※※※※※Mybatis※※※※※※※※※※※※
 mybatis:

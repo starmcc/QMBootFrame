@@ -1,19 +1,20 @@
 package com.qm.code.controller;
 
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.qm.code.entity.Obj;
 import com.qm.code.entity.User;
 import com.qm.code.service.UserService;
 import com.qm.frame.basic.body.QmBody;
 import com.qm.frame.basic.controller.QmCode;
 import com.qm.frame.basic.controller.QmController;
+import com.qm.frame.qmsecurity.note.QmPass;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
@@ -44,9 +45,9 @@ public class ResController extends QmController {
      * 该方法以POST进行请求,并以body的形式传递json参数。
      * 传递格式为：
      * {
-     *      "value":{
-     *          "test":"zhangsan"
-     *      }
+     * "value":{
+     * "test":"zhangsan"
+     * }
      * }
      * 返回的则是相同的格式。并且调用框架中的QmController的返回格式
      * QmBody 是RequestBody的封装，是直接解释value后的json，自动装配参数列表的类型。
@@ -65,6 +66,7 @@ public class ResController extends QmController {
      */
     @GetMapping("/demo3")
     public String demo3() {
+
         List<User> userLis = userService.getAutoList(new User());
         return super.sendJSON(QmCode._1, userLis);
     }
@@ -81,5 +83,21 @@ public class ResController extends QmController {
         return super.sendJSON(QmCode._1, userLis);
     }
 
+
+    @QmPass
+    @PostMapping("/demo5")
+    public String demo5(@QmBody String userName,
+                        @QmBody Date reqTime,
+                        @QmBody Obj obj,
+                        @QmBody int num,
+                        @QmBody(required = false) String ttt) {
+        Map<String,Object> resMap = new HashMap<>();
+        resMap.put("userName",userName);
+        resMap.put("reqTime",reqTime);
+        resMap.put("obj",obj);
+        resMap.put("num",num);
+        resMap.put("ttt",ttt);
+        return super.sendJSON(QmCode._1, resMap);
+    }
 
 }

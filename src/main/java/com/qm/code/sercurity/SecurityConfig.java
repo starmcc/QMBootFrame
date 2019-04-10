@@ -1,7 +1,6 @@
 package com.qm.code.sercurity;
 
 import com.qm.frame.qmsecurity.config.QmSecurityContent;
-import com.qm.frame.qmsecurity.entity.QmErrorRedirectUrl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -25,7 +24,7 @@ public class SecurityConfig {
         // 创建一个QmSecurityContent初始配置
         QmSecurityContent qmSecurityContent = new QmSecurityContent();
         // 设置使用哪种校验机制 session or token
-        qmSecurityContent.setSessionOrToken("session");
+        qmSecurityContent.setSessionOrToken("token");
         // setTokenSecret 设置token加密秘钥
         qmSecurityContent.setTokenSecret("key2018s2312tarmcc");
         // setQmSecurityRealm 设置自定义的Realm

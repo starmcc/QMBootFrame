@@ -4,7 +4,6 @@ import com.qm.frame.basic.controller.QmCode;
 import com.qm.frame.basic.controller.QmController;
 import com.qm.frame.basic.util.HttpApiUtil;
 import com.qm.frame.qmsecurity.config.QmSecurityContent;
-import com.qm.frame.qmsecurity.entity.QmErrorRedirectUrl;
 import com.qm.frame.qmsecurity.entity.QmPermissions;
 import com.qm.frame.qmsecurity.entity.QmSessionInfo;
 import com.qm.frame.qmsecurity.entity.QmTokenInfo;
@@ -50,6 +49,10 @@ public class QmSecurityInterceptor extends QmController implements HandlerInterc
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws IOException {
+        // 解决请求跨域时发送OPTIONS被拦截的问题。
+        if (request.getMethod().equalsIgnoreCase("OPTIONS")) {
+            return true;
+        }
         // 定义是否需要授权匹配，默认为true。当标注了@QmPass且用户给定needLogin为true时，则该值会变为false;
         boolean isPerssions = true;
         // 查找是否存在pass注解，如果存在则放过请求

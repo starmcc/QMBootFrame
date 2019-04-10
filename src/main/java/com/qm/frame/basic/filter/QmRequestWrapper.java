@@ -1,20 +1,17 @@
 package com.qm.frame.basic.filter;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
-import java.util.Enumeration;
+import com.alibaba.fastjson.JSONObject;
+import com.qm.frame.basic.config.QmFrameContent;
+import com.qm.frame.basic.util.AESUtil;
+
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-import com.alibaba.fastjson.JSONObject;
-import com.qm.frame.basic.config.QmFrameContent;
-import com.qm.frame.basic.util.AESUtil;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.util.Enumeration;
 
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
@@ -43,7 +40,6 @@ public class QmRequestWrapper extends HttpServletRequestWrapper {
 			String name = (String) e.nextElement();
 			String value = request.getHeader(name);
 			System.out.println(name + " = " + value);
-
 		}
 		String bodyTemp = getBodyString(request);
 		body =  getBodyByAes(bodyTemp).getBytes(Charset.forName("UTF-8"));
@@ -81,7 +77,7 @@ public class QmRequestWrapper extends HttpServletRequestWrapper {
         InputStream inputStream = null;
         BufferedReader reader = null;
         try {
-            inputStream = request.getInputStream();
+			inputStream = request.getInputStream();
             reader = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8")));
             String line = "";
             while ((line = reader.readLine()) != null) {

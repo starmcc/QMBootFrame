@@ -48,7 +48,6 @@ public class JsonPathArgumentResolver extends QmController implements HandlerMet
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
 
         String jsonBody = getRequestBody(webRequest);
-
         JSONObject jsonObject = JSON.parseObject(jsonBody);
         // 根据@qmBody注解value作为json解析的key
         QmBody qmBody = parameter.getParameterAnnotation(QmBody.class);
