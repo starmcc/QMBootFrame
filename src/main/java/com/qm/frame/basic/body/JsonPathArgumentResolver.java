@@ -65,101 +65,53 @@ public class JsonPathArgumentResolver extends QmController implements HandlerMet
         // 如果required = true 则不允许value == null
         if (value == null && qmBody.required()) {
             throw new IllegalArgumentException(String.format("required param %s is not present", key));
+        }else if (value == null && qmBody.required() == false) {
+           return null;
         }
-
         Class<?> parameterType = parameter.getParameterType();
         // 通过注解的value或者参数名解析，能拿到value进行解析
-        if (value != null) {
-            //基本类型
-            if (parameterType.isPrimitive()) {
-                return parsePrimitive(parameterType.getName(), value);
+        //基本类型
+        if (parameterType.isPrimitive()) {
+            return parsePrimitive(parameterType.getName(), value);
+        }
+        // 基本类型包装类
+        if (isPackDataTypes(parameterType)) {
+            return parseBasicTypeWrapper(parameterType, value);
+            // 字符串类型
+        } else if (parameterType == String.class) {
+            if (StringUtils.isEmpty(value.toString())) {
+                throw new IllegalArgumentException(String.format("required param %s is not present", key));
             }
-            // 基本类型包装类
-            if (isPackDataTypes(parameterType)) {
-                return parseBasicTypeWrapper(parameterType, value);
-                // 字符串类型
-            } else if (parameterType == String.class) {
-                if (StringUtils.isEmpty(value.toString())) {
-                    throw new IllegalArgumentException(String.format("required param %s is not present", key));
-                }
-                return value.toString();
-            }
-            // 解析Date时间
-            if (parameterType == Date.class) {
-                return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                        .parse(value.toString());
-            }
-            // 如果是list则解析list
-            if (parameterType.isAssignableFrom(List.class)) {
-                Type genericType = parameter.getGenericParameterType();
-                if(genericType instanceof ParameterizedType){
+            return value.toString();
+        }
+        // 解析Date时间
+        if (parameterType == Date.class) {
+            return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                    .parse(value.toString());
+        }
+        // 如果是list则解析list
+        if (parameterType.isAssignableFrom(List.class)) {
+            Type genericType = parameter.getGenericParameterType();
+            if(genericType instanceof ParameterizedType){
+                try {
+                    ParameterizedType pt = (ParameterizedType) genericType;
+                    //得到泛型里的class类型对象
+                    Class<?> genericClazz = (Class<?>)pt.getActualTypeArguments()[0];
+                    return JSON.parseArray(value.toString(), genericClazz);
+                } catch (Exception e) {
                     try {
-                        ParameterizedType pt = (ParameterizedType) genericType;
-                        //得到泛型里的class类型对象
-                        Class<?> genericClazz = (Class<?>)pt.getActualTypeArguments()[0];
-                        return JSON.parseArray(value.toString(), genericClazz);
-                    } catch (Exception e) {
-                        try {
-                            return JSON.parseArray(value.toString());
-                        } catch (Exception e1) {
-                            if (qmBody.required()) {
-                                throw new IllegalArgumentException(String.format("required param %s is not present", key));
-                            }
-                            return null;
+                        return JSON.parseArray(value.toString());
+                    } catch (Exception e1) {
+                        if (qmBody.required()) {
+                            throw new IllegalArgumentException(String.format("required param %s is not present", key));
                         }
+                        return null;
                     }
                 }
-                return JSON.parseArray(value.toString());
             }
-            return JSON.parseObject(value.toString(), parameterType);
+            return JSON.parseArray(value.toString());
         }
-
-
-        // 解析不到则将整个json串解析为当前参数类型
-        if (isPackDataTypes(parameterType)) {
-            if (qmBody.required()) {
-                throw new IllegalArgumentException(String.format("required param %s is not present", key));
-            } else {
-                return null;
-            }
-        }
-        Object result = null;
-        try {
-            result = parameterType.newInstance();
-        } catch (Exception e) {
-            if (qmBody.required() == false) {
-                return null;
-            }
-        }
-        // 非基本类型，不允许解析所有字段，返回null
-        if (!qmBody.parseAllFields()) {
-            // 如果是必传参数抛异常
-            if (qmBody.required()) {
-                throw new IllegalArgumentException(String.format("required param %s is not present", key));
-            }
-            // 否则返回空对象
-            return result;
-        }
-        // 非基本类型，允许解析，将外层属性解析
-        result = JSON.parseObject(jsonObject.toString(), parameterType);
-        // 如果非必要参数直接返回，否则如果没有一个属性有值则报错
-        if (!qmBody.required()) {
-            return result;
-        } else {
-            boolean haveValue = false;
-            Field[] declaredFields = parameterType.getDeclaredFields();
-            for (Field field : declaredFields) {
-                field.setAccessible(true);
-                if (field.get(result) != null) {
-                    haveValue = true;
-                    break;
-                }
-            }
-            if (!haveValue) {
-                throw new IllegalArgumentException(String.format("required param %s is not present", key));
-            }
-            return result;
-        }
+        return JSON.parseObject(value.toString(), parameterType);
     }
 
 

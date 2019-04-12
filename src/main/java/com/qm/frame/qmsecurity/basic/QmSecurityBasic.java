@@ -60,7 +60,7 @@ public class QmSecurityBasic {
             // 获取token信息,期间已经进行了一次校验机制。如果过期返回的是空。
             return getTokenInfo(token);
         } catch (Exception e) {
-            e.printStackTrace();
+            new Exception("Token校验失败！").printStackTrace();
             return null;
         }
     }

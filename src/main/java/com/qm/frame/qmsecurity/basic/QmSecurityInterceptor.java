@@ -50,7 +50,8 @@ public class QmSecurityInterceptor extends QmController implements HandlerInterc
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws IOException {
         // 解决请求跨域时发送OPTIONS被拦截的问题。
-        if (request.getMethod().equalsIgnoreCase("OPTIONS")) {
+        String requestMethod = request.getMethod();
+        if (requestMethod.equalsIgnoreCase("OPTIONS")) {
             return true;
         }
         // 定义是否需要授权匹配，默认为true。当标注了@QmPass且用户给定needLogin为true时，则该值会变为false;
