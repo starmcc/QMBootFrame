@@ -1,8 +1,10 @@
 package com.qm.frame.mybatis.util;
 
-        import java.util.*;
-        import java.util.regex.Matcher;
-        import java.util.regex.Pattern;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Copyright © 2019浅梦工作室. All rights reserved.
@@ -23,7 +25,6 @@ public class QmBaseStyleUtils {
      */
     private final static String PATTERN_2 = "[_][A-Za-z]";
 
-
     /**
      * 转换map中的key名样式
      * 递归模式
@@ -39,7 +40,7 @@ public class QmBaseStyleUtils {
             String key = (String) entry.getKey();
             Object val = entry.getValue();
             key = transformNameByHump(key);
-            if (val.getClass().isPrimitive() || isPackDataTypes(val.getClass())) {
+            if (!val.getClass().isPrimitive() && !isPackDataTypes(val.getClass())) {
                 Map mapTemp = (Map) val;
                 val = transformMapForHump(mapTemp);
             }
@@ -61,6 +62,10 @@ public class QmBaseStyleUtils {
         classSet.add(Boolean.class);
         classSet.add(Byte.class);
         classSet.add(Character.class);
+        classSet.add(String.class);
+        classSet.add(Timestamp.class);
+        classSet.add(Date.class);
+        classSet.add(BigDecimal.class);
         return classSet.contains(clazz);
     }
 
