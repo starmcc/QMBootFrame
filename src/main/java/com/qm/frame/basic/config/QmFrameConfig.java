@@ -4,18 +4,19 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import com.qm.frame.basic.body.JsonPathArgumentResolver;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import javax.servlet.annotation.WebFilter;
 import java.util.ArrayList;
 import java.util.List;
-//import com.qm.frame.qmsecurity.basic.QmSecurityInterceptor;
 
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
@@ -24,7 +25,7 @@ import java.util.List;
  * @Description QMFrame框架的基础配置类
  */
 @Configuration
-@WebFilter(urlPatterns = "/*")
+//@WebFilter(urlPatterns = "/*")
 public class QmFrameConfig implements WebMvcConfigurer {
 
 	/**
@@ -37,16 +38,21 @@ public class QmFrameConfig implements WebMvcConfigurer {
 		WebMvcConfigurer.super.addResourceHandlers(registry);
 	}
 
+
 	/**
-	 * 跨域支持
+	 * 跨域过滤器
+	 *
+	 * @return
 	 */
-	@Override
-	public void addCorsMappings(CorsRegistry registry) {
-		registry.addMapping("/**")// 设置允许跨域的路径
-				.allowedOrigins("*")// 设置允许跨域请求的域名
-				.allowCredentials(true)// 是否允许证书 不再默认开启
-				.allowedMethods("GET", "POST", "PUT", "DELETE","OPTIONS")// 设置允许的方法
-				.maxAge(3600);// 跨域允许时间
+	@Bean
+	public CorsFilter corsFilter() {
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		CorsConfiguration corsConfiguration = new CorsConfiguration();
+		corsConfiguration.addAllowedOrigin("*");
+		corsConfiguration.addAllowedHeader("*");
+		corsConfiguration.addAllowedMethod("*");
+		source.registerCorsConfiguration("/**", corsConfiguration);
+		return new CorsFilter(source);
 	}
 
 	/**

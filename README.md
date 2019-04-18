@@ -1,4 +1,4 @@
-# QMBootFrame v0.7.6
+# QMBootFrame v0.8.0
 
 > 最新发布：[QmBootFrame](https://github.com/starmcc/QMBootFrame)
 

@@ -32,6 +32,8 @@ public class QmSecurityConfig implements WebMvcConfigurer {
         InterceptorRegistration interceptor = registry.addInterceptor(qmSecurityInterceptor);
         // 添加拦截路径
         interceptor.addPathPatterns("/**");
+        // 设置拦截器的优先级 (后期需要优化)
+        interceptor.order(2);
         // 检索静态路径
         String[] excludePathPatterns = qmSecurityContent.getExcludePathPatterns();
         // 添加静态路径排除
