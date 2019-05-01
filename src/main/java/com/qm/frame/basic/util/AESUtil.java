@@ -17,8 +17,10 @@ import java.util.Date;
  */
 public class AESUtil {
     private static final Logger LOG = LoggerFactory.getLogger(AESUtil.class);
+
     /**
      * 加密封装
+     *
      * @param data
      * @return
      * @throws Exception
@@ -26,14 +28,16 @@ public class AESUtil {
     public static String encryptAES(String data) throws Exception {
         Date date = new Date();
         String str = data;
-        for (int i = 0; i < QmFrameContent.AES_NUMBER; i++){
+        for (int i = 0; i < QmFrameContent.AES_NUMBER; i++) {
             str = encryptAES(str, QmFrameContent.AES_KEY);
         }
         LOG.debug("加密用时：" + (new Date().getTime() - date.getTime()));
         return str;
     }
+
     /**
      * 解密封装
+     *
      * @param data
      * @return
      * @throws Exception
@@ -41,7 +45,7 @@ public class AESUtil {
     public static String decryptAES(String data) throws Exception {
         Date date = new Date();
         String str = data;
-        for (int i = 0; i < QmFrameContent.AES_NUMBER; i++){
+        for (int i = 0; i < QmFrameContent.AES_NUMBER; i++) {
             str = decryptAES(str, QmFrameContent.AES_KEY);
         }
         LOG.debug("解密用时：" + (new Date().getTime() - date.getTime()));
@@ -50,12 +54,13 @@ public class AESUtil {
 
     /**
      * 加密
+     *
      * @param data
      * @param key
      * @return
      * @throws Exception
      */
-    private static String encryptAES(String data,String key) throws Exception {
+    private static String encryptAES(String data, String key) throws Exception {
         KeyGenerator kgen = KeyGenerator.getInstance("AES");
         SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
         secureRandom.setSeed(key.getBytes());
@@ -73,12 +78,13 @@ public class AESUtil {
 
     /**
      * 解密
+     *
      * @param data
      * @param key
      * @return
      * @throws Exception
      */
-    private static String decryptAES(String data,String key)throws Exception {
+    private static String decryptAES(String data, String key) throws Exception {
         KeyGenerator kgen = KeyGenerator.getInstance("AES");
         //kgen.init(128, new SecureRandom(key.getBytes()));
         SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");

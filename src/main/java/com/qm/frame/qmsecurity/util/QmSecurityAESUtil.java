@@ -24,12 +24,13 @@ public class QmSecurityAESUtil {
     private static QmSecurityContent qmSecurityContent;
 
     static {
-        qmSecurityContent = QmSecuritySpringApplication.getBean(QmSecurityContent.class);
+        qmSecurityContent = QmSecuritySpringMapnager.getBean(QmSecurityContent.class);
     }
 
 
     /**
      * 加密封装
+     *
      * @param data
      * @return
      * @throws Exception
@@ -37,14 +38,16 @@ public class QmSecurityAESUtil {
     public static String encryptAES(String data) throws Exception {
         Date date = new Date();
         String str = data;
-        for (int i = 0; i < qmSecurityContent.getEncryptNumber(); i++){
+        for (int i = 0; i < qmSecurityContent.getEncryptNumber(); i++) {
             str = encryptAES(str, qmSecurityContent.getTokenSecret());
         }
         LOG.debug("加密用时：" + (new Date().getTime() - date.getTime()));
         return str;
     }
+
     /**
      * 解密封装
+     *
      * @param data
      * @return
      * @throws Exception
@@ -52,7 +55,7 @@ public class QmSecurityAESUtil {
     public static String decryptAES(String data) throws Exception {
         Date date = new Date();
         String str = data;
-        for (int i = 0; i < qmSecurityContent.getEncryptNumber(); i++){
+        for (int i = 0; i < qmSecurityContent.getEncryptNumber(); i++) {
             str = decryptAES(str, qmSecurityContent.getTokenSecret());
         }
         LOG.debug("解密用时：" + (new Date().getTime() - date.getTime()));
@@ -62,22 +65,23 @@ public class QmSecurityAESUtil {
     /**
      * main
      */
-    public static void main (String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
         //...start...
         String str = "测试加密文本";
-        String mw = encryptAES(str,"shdiosadoiwaoxczcs");
+        String mw = encryptAES(str, "shdiosadoiwaoxczcs");
         System.out.println(mw);
     }
 
 
     /**
      * 加密
+     *
      * @param data
      * @param key
      * @return
      * @throws Exception
      */
-    private static String encryptAES(String data,String key) throws Exception {
+    private static String encryptAES(String data, String key) throws Exception {
         KeyGenerator kgen = KeyGenerator.getInstance("AES");
         SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
         secureRandom.setSeed(key.getBytes());
@@ -95,12 +99,13 @@ public class QmSecurityAESUtil {
 
     /**
      * 解密
+     *
      * @param data
      * @param key
      * @return
      * @throws Exception
      */
-    private static String decryptAES(String data,String key)throws Exception {
+    private static String decryptAES(String data, String key) throws Exception {
         KeyGenerator kgen = KeyGenerator.getInstance("AES");
         //kgen.init(128, new SecureRandom(key.getBytes()));
         SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
@@ -112,7 +117,7 @@ public class QmSecurityAESUtil {
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.DECRYPT_MODE, skeySpec);
         byte[] decryptedData = cipher.doFinal(Base64.decodeBase64(data));
-        String respStr = new String(decryptedData,"UTF-8");
+        String respStr = new String(decryptedData, "UTF-8");
         return respStr;
     }
 

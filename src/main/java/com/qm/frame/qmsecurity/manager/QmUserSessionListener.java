@@ -2,7 +2,7 @@ package com.qm.frame.qmsecurity.manager;
 
 import com.qm.frame.qmsecurity.config.QmSecurityContent;
 import com.qm.frame.qmsecurity.entity.QmSessionInfo;
-import com.qm.frame.qmsecurity.util.QmSecuritySpringApplication;
+import com.qm.frame.qmsecurity.util.QmSecuritySpringMapnager;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSessionBindingEvent;
@@ -29,12 +29,13 @@ public class QmUserSessionListener implements HttpSessionBindingListener {
      * 初始化该监听回调接口
      */
     public QmUserSessionListener() {
-        QmSecurityContent qmSecurityContent = QmSecuritySpringApplication.getBean(QmSecurityContent.class);
+        QmSecurityContent qmSecurityContent = QmSecuritySpringMapnager.getBean(QmSecurityContent.class);
         this.qmSecuritySessionEvent = qmSecurityContent.getQmSecuritySessionEvent();
     }
 
     /**
      * 获取用户对象
+     *
      * @return
      */
     public QmSessionInfo getQmSessionInfo() {
@@ -43,6 +44,7 @@ public class QmUserSessionListener implements HttpSessionBindingListener {
 
     /**
      * 保存用户对象
+     *
      * @param qmSessionInfo
      */
     public void setQmSessionInfo(QmSessionInfo qmSessionInfo) {
@@ -51,6 +53,7 @@ public class QmUserSessionListener implements HttpSessionBindingListener {
 
     /**
      * session 绑定时触发
+     *
      * @param event
      */
     public void valueBound(HttpSessionBindingEvent event) {
@@ -68,6 +71,7 @@ public class QmUserSessionListener implements HttpSessionBindingListener {
 
     /**
      * session 解绑时触发
+     *
      * @param event
      */
     public void valueUnbound(HttpSessionBindingEvent event) {

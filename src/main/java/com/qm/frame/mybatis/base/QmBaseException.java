@@ -9,7 +9,8 @@ package com.qm.frame.mybatis.base;
  */
 public class QmBaseException extends RuntimeException {
     // 提供无参数的构造方法
-    public QmBaseException() { }
+    public QmBaseException() {
+    }
 
 
     // 提供一个有参数的构造方法，可自动生成

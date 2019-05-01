@@ -7,7 +7,7 @@ package com.qm.frame.basic.exception;
  * @date 2019/1/30 19:46
  * @Description 框架异常
  */
-public class QmFrameException extends RuntimeException{
+public class QmFrameException extends RuntimeException {
 
 
     public QmFrameException() {

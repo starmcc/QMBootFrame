@@ -16,51 +16,41 @@ import java.util.Properties;
  */
 public class QmFrameContent {
 
+    // properties
     private final static Properties PRO = getProperties();
-    /**
-     * 白名单
-     */
-    public final static String DRUID_ALLOW = PRO.getProperty("druid.allow","127.0.0.1");
-    /**
-     * 黑名单
-     */
-    public final static String DRUID_DENY = PRO.getProperty("druid.deny","");
-    /**
-     * 账号
-     */
-    public final static String DRUID_LOGIN_USERNAME = PRO.getProperty("druid.login.username","admin");
-    /**
-     * 密码
-     */
-    public final static String DRUID_LOGIN_PASSWORD = PRO.getProperty("druid.login.password","admin");
-    /**
-     * 是否可重置数据
-     */
-    public final static String DRUID_RESET_ENABLE = PRO.getProperty("druid.reset.enable","false");
     /**
      * 是否启用AES对称加密传输
      */
-    public final static boolean AES_START = Boolean.parseBoolean(PRO.getProperty("aes.start","false"));
+    public final static boolean AES_START =
+            getProBoolean("aes.start", false);
     /**
      * AES秘钥
      */
-    public final static String AES_KEY = PRO.getProperty("aes.key","20190101000000QmBootFrame");
+    public final static String AES_KEY =
+            getProString("aes.key", "20190101000000QmBootFrame");
     /**
      * 统一使用的编码方式
      */
-    public final static String AES_ENCODING = PRO.getProperty("aes.encoding","UTF-8");
+    public final static String AES_ENCODING =
+            getProString("aes.encoding", "UTF-8");
     /**
      * 加密次数
      */
-    public final static int AES_NUMBER = Integer.parseInt(PRO.getProperty("aes.number","1"));
+    public final static int AES_NUMBER =
+            getProInt("aes.number", 1);
     /**
      * 请求数据时，根据该key名解析数据(rest风格)
      */
-    public final static String REQUEST_DATA_KEY = PRO.getProperty("body.request.key","value");
+    public final static String REQUEST_DATA_KEY =
+            getProString("body.request.key", "value");
     /**
      * 返回数据时，使用的最外层key名(rest风格)
      */
-    public final static String RESPONSE_DATA_KEY = PRO.getProperty("body.response.key","value");
+    public final static String RESPONSE_DATA_KEY =
+            getProString("body.response.key", "value");
+
+    public final static String RESPONSE_MESSAGE_LANG =
+            getProString("body.response.message.lang", "en");
     /**
      * 特殊请求不进行解析(包括版本控制和解析json等)
      */
@@ -68,11 +58,13 @@ public class QmFrameContent {
     /**
      * 是否开启版本控制(ture时,每个请求需在header带上version参数,参数值version)
      */
-    public final static Boolean VERSION_START = Boolean.parseBoolean(PRO.getProperty("version.start","false"));
+    public final static boolean VERSION_START =
+            getProBoolean("version.start", false);
     /**
      * 系统目前版本编号
      */
-    public final static String VERSION_NOW = PRO.getProperty("version.now","0.0.1");
+    public final static String VERSION_NOW =
+            getProString("version.now", "0.0.1");
 
     /**
      * 系统容忍请求版本编号(默认允许当前版本)
@@ -81,21 +73,23 @@ public class QmFrameContent {
     /**
      * 记录日志类路径
      */
-    public final static String LOGGER_AOP_EXTEND_CLASS = PRO.getProperty("controller.aop.extend.class",null);
+    public final static String LOGGER_AOP_EXTEND_CLASS =
+            getProString("controller.aop.extend.class", null);
 
     /**
      * 获取特殊请求
+     *
      * @return
      */
-    private final static List<String> getRequestSpecialUri(){
+    private final static List<String> getRequestSpecialUri() {
         List<String> specialUriList = new ArrayList<>();
         boolean is = true;
         int num = 0;
-        while (is){
-            String tempVersion = PRO.getProperty("request.special.uri-[" + num + "]",null);
+        while (is) {
+            String tempVersion = PRO.getProperty("request.special.uri-[" + num + "]", null);
             if (tempVersion != null) {
                 specialUriList.add(tempVersion);
-            }else{
+            } else {
                 is = false;
             }
             num++;
@@ -104,19 +98,44 @@ public class QmFrameContent {
     }
 
 
+    public static boolean getProBoolean(String key) {
+        return Boolean.parseBoolean(PRO.getProperty(key, "false"));
+    }
+
+    public static boolean getProBoolean(String key, boolean defaultVal) {
+        return Boolean.parseBoolean(PRO.getProperty(key, String.valueOf(defaultVal)));
+    }
+
+    public static int getProInt(String key) {
+        return Integer.parseInt(PRO.getProperty(key, "0"));
+    }
+
+    public static int getProInt(String key, int defaultVal) {
+        return Integer.parseInt(PRO.getProperty(key, String.valueOf(defaultVal)));
+    }
+
+    public static String getProString(String key) {
+        return PRO.getProperty(key);
+    }
+
+    public static String getProString(String key, String defaultVal) {
+        return PRO.getProperty(key, defaultVal);
+    }
+
     /**
      * 获取允许版本号
+     *
      * @return
      */
-    private final static List<String> getVersionAllows(){
+    private final static List<String> getVersionAllows() {
         List<String> allows = new ArrayList<>();
         boolean is = true;
         int num = 0;
-        while (is){
-            String tempVersion = PRO.getProperty("version.allows-[" + num + "]",null);
+        while (is) {
+            String tempVersion = PRO.getProperty("version.allows-[" + num + "]", null);
             if (tempVersion != null) {
                 allows.add(tempVersion);
-            }else{
+            } else {
                 is = false;
             }
             num++;
@@ -124,7 +143,7 @@ public class QmFrameContent {
         return allows;
     }
 
-    private final static Properties getProperties(){
+    private final static Properties getProperties() {
         try {
             Properties properties = new Properties();
             // 读取properties文件,使用InputStreamReader字符流防止文件中出现中文导致乱码
@@ -135,7 +154,7 @@ public class QmFrameContent {
             inStream.close();
             return properties;
         } catch (Exception e) {
-            throw new QmFrameException("读取qm-frame.properties发生了异常！",e);
+            throw new QmFrameException("读取qm-frame.properties发生了异常！", e);
         }
     }
 }

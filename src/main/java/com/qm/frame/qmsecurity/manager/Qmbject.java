@@ -17,6 +17,7 @@ public interface Qmbject {
 
     /**
      * 登录
+     *
      * @param qmTokenInfo 参与签名的信息对象
      * @param expireTime  有效时长(秒单位)
      * @return
@@ -25,6 +26,7 @@ public interface Qmbject {
 
     /**
      * session模式登录
+     *
      * @param qmSessionInfo
      * @param roleId
      * @param expireTime
@@ -33,12 +35,14 @@ public interface Qmbject {
 
     /**
      * session模式获取用户对象
+     *
      * @return
      */
     QmSessionInfo getSessionInfo();
 
     /**
      * session模式设置用户对象
+     *
      * @param qmSessionInfo
      */
     void setSessionInfo(final QmSessionInfo qmSessionInfo);
@@ -48,11 +52,12 @@ public interface Qmbject {
      * isNew=false：
      * 则缓存中如果不存在的情况下，通过自定义的realm的authorizationPermissions方法获取最新信息。
      * 如果存在则直接获取该对象。
-     *
+     * <p>
      * isNew=true：
      * 则无论如何都从自定义的realm的authorizationPermissions方法获取最新信息，并更新到缓存中。
+     *
      * @param roleId 角色id
-     * @param isNew 是否一定获取最新信息
+     * @param isNew  是否一定获取最新信息
      * @return QmPermissions 返回角色权限对象
      */
     QmPermissions extractQmPermissions(final int roleId, final boolean isNew);
@@ -60,6 +65,7 @@ public interface Qmbject {
 
     /**
      * 获取缓存中的所有角色权限信息
+     *
      * @return
      */
     List<QmPermissions> getAllQmPermissions();
@@ -67,6 +73,7 @@ public interface Qmbject {
 
     /**
      * 获取通过校验的token信息
+     *
      * @return
      */
     QmTokenInfo getTokenInfo();

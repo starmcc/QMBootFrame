@@ -9,7 +9,7 @@ package com.qm.frame.mybatis.note;
  */
 public enum QmStyle {
 
-    HUMP("驼峰模式"),UNDERLINE("下划线模式");
+    HUMP("驼峰模式"), UNDERLINE("下划线模式");
 
     private String name;
 
@@ -17,7 +17,7 @@ public enum QmStyle {
         return name;
     }
 
-    private QmStyle(String name){
+    private QmStyle(String name) {
         this.name = name;
     }
 

@@ -18,12 +18,14 @@ public @interface QmParams {
 
     /**
      * 字段别名
+     *
      * @return
      */
     String name() default "";
 
     /**
      * 是否排除该字段
+     *
      * @return
      */
     boolean except() default false;

@@ -62,7 +62,7 @@ public final class QmBaseDto {
             // 判断是否需要主键策略
             if (isPrimaryKey && primaryKey == null) {
                 // 序列化该主键
-                if(setPrimaryKey(field)){
+                if (setPrimaryKey(field)) {
                     continue;
                 }
             }

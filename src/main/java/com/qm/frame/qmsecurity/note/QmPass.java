@@ -18,6 +18,7 @@ public @interface QmPass {
     /**
      * 是否需要登录(标注了该注解且该字段为true时,QmSecurity只做登录校验)
      * 默认为false，则忽略所有安全认证。
+     *
      * @return
      */
     boolean needLogin() default false;

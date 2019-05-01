@@ -10,7 +10,7 @@ import com.qm.frame.qmsecurity.entity.QmPermissions;
 import com.qm.frame.qmsecurity.entity.QmSessionInfo;
 import com.qm.frame.qmsecurity.entity.QmTokenInfo;
 import com.qm.frame.qmsecurity.util.QmSecurityAESUtil;
-import com.qm.frame.qmsecurity.util.QmSecuritySpringApplication;
+import com.qm.frame.qmsecurity.util.QmSecuritySpringMapnager;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.thymeleaf.util.StringUtils;
@@ -51,7 +51,7 @@ public class QmSecurityManager implements Qmbject {
             application = request.getSession().getServletContext();
         }
         try {
-            qmSecurityContent = QmSecuritySpringApplication.getBean(QmSecurityContent.class);
+            qmSecurityContent = QmSecuritySpringMapnager.getBean(QmSecurityContent.class);
         } catch (Exception e) {
             return;
         }
@@ -151,7 +151,7 @@ public class QmSecurityManager implements Qmbject {
                 qmPermissions = QmPermissionsLis.get(i);
                 if (isNew) {
                     // 如果是真，则肯定会更新信息。
-                    QmSecurityRealm qmSecurityRealm = QmSecuritySpringApplication.getBean(QmSecurityRealm.class);
+                    QmSecurityRealm qmSecurityRealm = QmSecuritySpringMapnager.getBean(QmSecurityRealm.class);
                     // 将该对象保存起来
                     List<String> matchUrls = qmSecurityRealm.authorizationPermissions(roleId);
                     // 替换该对象

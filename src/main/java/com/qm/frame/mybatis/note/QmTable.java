@@ -17,12 +17,14 @@ import java.lang.annotation.Target;
 public @interface QmTable {
     /**
      * 表名
+     *
      * @return
      */
     String name() default "";
 
     /**
      * 数据库风格
+     *
      * @return
      */
     QmStyle style() default QmStyle.HUMP;

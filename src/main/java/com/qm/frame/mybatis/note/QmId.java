@@ -19,12 +19,14 @@ public @interface QmId {
 
     /**
      * 主键是否为UUID
+     *
      * @return
      */
     boolean uuid() default false;
 
     /**
      * 设置该字段的别名
+     *
      * @return
      */
     String name() default "";

@@ -3,8 +3,6 @@ package com.qm.frame.qmsecurity.config;
 import com.qm.frame.qmsecurity.basic.QmSecurityRealm;
 import com.qm.frame.qmsecurity.manager.QmSecuritySessionEvent;
 
-import java.util.List;
-
 /**
  * Copyright © 2018浅梦工作室}. All rights reserved.
  *
@@ -58,6 +56,7 @@ public class QmSecurityContent {
 
     /**
      * 静态资源排除拦截路径
+     *
      * @param excludePathPatterns
      */
     public void setExcludePathPatterns(String... excludePathPatterns) {

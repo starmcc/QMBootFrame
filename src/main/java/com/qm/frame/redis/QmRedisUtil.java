@@ -1,16 +1,15 @@
 package com.qm.frame.redis;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+
+import javax.annotation.PostConstruct;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
@@ -21,18 +20,9 @@ import org.springframework.util.CollectionUtils;
  */
 @Component
 public final class QmRedisUtil {
+    private static QmRedisUtil redisUtil;
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
-
-    private static QmRedisUtil redisUtil;
-
-    @PostConstruct //@PostConstruct修饰的方法会在服务器加载Servle的时候运行，并且只会被服务器执行一次。PostConstruct在构造函数之后执行,init()方法之前执行
-    public void init() {
-        redisUtil = this;
-        redisUtil.redisTemplate = this.redisTemplate;
-    }
-
-    // =============================common============================
 
     /**
      * 指定缓存失效时间
@@ -52,6 +42,8 @@ public final class QmRedisUtil {
             return false;
         }
     }
+
+    // =============================common============================
 
     /**
      * 根据key 获取过期时间
@@ -100,8 +92,6 @@ public final class QmRedisUtil {
         return false;
     }
 
-    // ============================String=============================
-
     /**
      * 普通缓存获取
      *
@@ -111,6 +101,8 @@ public final class QmRedisUtil {
     public static Object get(String key) {
         return key == null ? null : redisUtil.redisTemplate.opsForValue().get(key);
     }
+
+    // ============================String=============================
 
     /**
      * 普通缓存放入
@@ -179,8 +171,6 @@ public final class QmRedisUtil {
         return redisUtil.redisTemplate.opsForValue().increment(key, -delta);
     }
 
-    // ================================Map=================================
-
     /**
      * HashGet
      *
@@ -191,6 +181,8 @@ public final class QmRedisUtil {
     public static Object hget(String key, String item) {
         return redisUtil.redisTemplate.opsForHash().get(key, item);
     }
+
+    // ================================Map=================================
 
     /**
      * 获取hashKey对应的所有键值
@@ -325,8 +317,6 @@ public final class QmRedisUtil {
         return redisUtil.redisTemplate.opsForHash().increment(key, item, -by);
     }
 
-    // ============================set=============================
-
     /**
      * 根据key获取Set中的所有值
      *
@@ -341,6 +331,8 @@ public final class QmRedisUtil {
             return null;
         }
     }
+
+    // ============================set=============================
 
     /**
      * 根据value从一个set中查询,是否存在
@@ -426,8 +418,6 @@ public final class QmRedisUtil {
         }
     }
 
-    // ===============================list=================================
-
     /**
      * 获取list缓存的内容
      *
@@ -444,6 +434,8 @@ public final class QmRedisUtil {
             return null;
         }
     }
+
+    // ===============================list=================================
 
     /**
      * 获取list缓存的长度
@@ -586,5 +578,11 @@ public final class QmRedisUtil {
             e.printStackTrace();
             return 0;
         }
+    }
+
+    @PostConstruct //@PostConstruct修饰的方法会在服务器加载Servle的时候运行，并且只会被服务器执行一次。PostConstruct在构造函数之后执行,init()方法之前执行
+    public void init() {
+        redisUtil = this;
+        redisUtil.redisTemplate = this.redisTemplate;
     }
 }

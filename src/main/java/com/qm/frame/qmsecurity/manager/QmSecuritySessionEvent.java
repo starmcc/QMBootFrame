@@ -16,9 +16,10 @@ public interface QmSecuritySessionEvent {
 
     /**
      * 用户失效,过期,注销时触发该方法回调
-     * @param qmSessionInfo 用户session保存对象
+     *
+     * @param qmSessionInfo     用户session保存对象
      * @param qmSessionInfoList 所有用户集合
-     * @param event 触发事件对象
+     * @param event             触发事件对象
      */
     void loginUserSessionEvent(QmSessionInfo qmSessionInfo,
                                List<QmSessionInfo> qmSessionInfoList,

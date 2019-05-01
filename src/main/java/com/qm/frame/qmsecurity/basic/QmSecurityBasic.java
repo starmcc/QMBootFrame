@@ -110,7 +110,7 @@ public class QmSecurityBasic {
      * Spring提供的模糊路径匹配算法
      *
      * @param matchingUrl 匹配路径
-     * @param requestUrl 请求地址
+     * @param requestUrl  请求地址
      * @return
      */
     protected boolean verifyMatchURI(String matchingUrl, String requestUrl) {

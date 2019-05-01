@@ -7,10 +7,11 @@ package com.qm.frame.mybatis.dto;
  * @date 2019/1/13 3:31
  * @Description QmBaseDto异常
  */
-public class QmBaseDtoException extends RuntimeException{
+public class QmBaseDtoException extends RuntimeException {
 
     // 提供无参数的构造方法
-    public QmBaseDtoException() { }
+    public QmBaseDtoException() {
+    }
 
 
     // 提供一个有参数的构造方法，可自动生成

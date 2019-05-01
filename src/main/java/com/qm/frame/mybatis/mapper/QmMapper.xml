@@ -1,76 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- 全自动封装SQL -->
 <mapper namespace="QmBaseMapper">
 
-	<!-- 通用查询数据入口 -->
-	<select id="selectAuto" resultType="map">
-		SELECT *
-		FROM `${tableName}`
-		WHERE 1 = 1
-		<if test="params != null and params.size != 0">
-			<foreach item="item" collection="params">
-				AND `${item.key}` = #{item.value}
-			</foreach>
-		</if>
-	</select>
+    <!-- 通用查询数据入口 -->
+    <select id="selectAuto" resultType="map">
+        SELECT *
+        FROM `${tableName}`
+        WHERE 1 = 1
+        <if test="params != null and params.size != 0">
+            <foreach item="item" collection="params">
+                AND `${item.key}` = #{item.value}
+            </foreach>
+        </if>
+    </select>
 
-	<!-- 通用增加数据入口 -->
-	<insert id="insertAuto">
-		INSERT INTO `${tableName}`
-		(
-			<if test="primaryKey != null">`${primaryKey.key}`,</if>
-			<if test="params != null and params.size != 0">
-				<foreach item="item" collection="params" separator=",">
-					`${item.key}`
-				</foreach>
-			</if>
-		)
-		VALUES(
-		<if test="primaryKey != null">#{primaryKey.value},</if>
-			<if test="params != null and params.size != 0">
-				<foreach item="item" collection="params" separator=",">
-					#{item.value}
-				</foreach>
-			</if>
-		)
-	</insert>
+    <!-- 通用增加数据入口 -->
+    <insert id="insertAuto">
+        INSERT INTO `${tableName}`
+        (
+        <if test="primaryKey != null">`${primaryKey.key}`,</if>
+        <if test="params != null and params.size != 0">
+            <foreach item="item" collection="params" separator=",">
+                `${item.key}`
+            </foreach>
+        </if>
+        )
+        VALUES(
+        <if test="primaryKey != null">#{primaryKey.value},</if>
+        <if test="params != null and params.size != 0">
+            <foreach item="item" collection="params" separator=",">
+                #{item.value}
+            </foreach>
+        </if>
+        )
+    </insert>
 
-	<!-- 通用更新数据入口 -->
-	<update id="updateAuto">
-		UPDATE `${tableName}`
-		SET
-		<if test="params != null and params.size != 0">
-			<foreach item="item" collection="params" separator=",">
-				`${item.key}` = #{item.value}
-			</foreach>
-		</if>
-		WHERE `${primaryKey.key}` = #{primaryKey.value}
-	</update>
+    <!-- 通用更新数据入口 -->
+    <update id="updateAuto">
+        UPDATE `${tableName}`
+        SET
+        <if test="params != null and params.size != 0">
+            <foreach item="item" collection="params" separator=",">
+                `${item.key}` = #{item.value}
+            </foreach>
+        </if>
+        WHERE `${primaryKey.key}` = #{primaryKey.value}
+    </update>
 
-	<!-- 通用删除数据入口 -->
-	<delete id="deleteAuto">
-		DELETE FROM `${tableName}`
-		WHERE `${primaryKey.key}` = #{primaryKey.value}
-		<if test="params != null and params.size != 0">
-			<foreach open="AND" item="item" collection="params" separator="AND">
-				`${item.key}` = #{item.value}
-			</foreach>
-		</if>
-	</delete>
+    <!-- 通用删除数据入口 -->
+    <delete id="deleteAuto">
+        DELETE FROM `${tableName}`
+        WHERE `${primaryKey.key}` = #{primaryKey.value}
+        <if test="params != null and params.size != 0">
+            <foreach open="AND" item="item" collection="params" separator="AND">
+                `${item.key}` = #{item.value}
+            </foreach>
+        </if>
+    </delete>
 
-	<!-- 查询条数 -->
-	<select id="selectCount" resultType="Integer">
-		SELECT COUNT(1)
-		FROM `${tableName}`
-		WHERE 1 = 1
-		<if test="params != null and params.size != 0">
-			<foreach item="item" collection="params">
-				AND `${item.key}` = #{item.value}
-			</foreach>
-		</if>
-	</select>
-	<!-- 全自动End -->
+    <!-- 查询条数 -->
+    <select id="selectCount" resultType="Integer">
+        SELECT COUNT(1)
+        FROM `${tableName}`
+        WHERE 1 = 1
+        <if test="params != null and params.size != 0">
+            <foreach item="item" collection="params">
+                AND `${item.key}` = #{item.value}
+            </foreach>
+        </if>
+    </select>
+    <!-- 全自动End -->
 </mapper>

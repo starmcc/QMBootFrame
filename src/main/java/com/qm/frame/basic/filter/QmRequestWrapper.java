@@ -15,69 +15,70 @@ import java.util.Enumeration;
 
 /**
  * Copyright © 2018浅梦工作室. All rights reserved.
+ *
  * @author 浅梦
  * @date 2018年11月24日 上午1:23:44
- * @Description 实现重写RequestBody,并实现AES对称无缝解密
+ * @Description 实现重写RequestBody, 并实现AES对称无缝解密
  */
 public class QmRequestWrapper extends HttpServletRequestWrapper {
 
-	/**
-	 * body
-	 */
-	private final byte[] body;
+    /**
+     * body
+     */
+    private final byte[] body;
 
-	/**
-	 * @Title QmRequestWrapper
-	 * @param request
-	 * @throws IOException
-	 * @Description 主要通过构造方法实现
-	 */
-	public QmRequestWrapper(HttpServletRequest request) throws IOException {
-		super(request);
-		System.out.println("-------------------------------------------------");
-		Enumeration<String> e = request.getHeaderNames();
-		while (e.hasMoreElements()) {
-			String name = (String) e.nextElement();
-			String value = request.getHeader(name);
-			System.out.println(name + " = " + value);
-		}
-		String bodyTemp = getBodyString(request);
-		body =  getBodyByAes(bodyTemp).getBytes(Charset.forName("UTF-8"));
-	}
-
-	/**
-	 * @Title getBodyByDes
-	 * @param body
-	 * @return
-	 * @Description 请求解析，解析格式为{"配置的key名":{"param":"xxx","param2":"xxx"}}的JSON参数
-	 */
-	private String getBodyByAes(String body){
-		if (body == null || body.trim().equals("")) return body;
-		JSONObject jsonObject = JSONObject.parseObject(body);
-		String json = jsonObject.getString(QmFrameContent.REQUEST_DATA_KEY);
-		if (QmFrameContent.AES_START) {
-			try {
-				json = AESUtil.decryptAES(json);
-			} catch (Exception e) {
-				e.printStackTrace();
-				return null;
-			}
-		}
-    	return json;
+    /**
+     * @param request
+     * @throws IOException
+     * @Title QmRequestWrapper
+     * @Description 主要通过构造方法实现
+     */
+    public QmRequestWrapper(HttpServletRequest request) throws IOException {
+        super(request);
+        System.out.println("-------------------------------------------------");
+        Enumeration<String> e = request.getHeaderNames();
+        while (e.hasMoreElements()) {
+            String name = (String) e.nextElement();
+            String value = request.getHeader(name);
+            System.out.println(name + " = " + value);
+        }
+        String bodyTemp = getBodyString(request);
+        body = getBodyByAes(bodyTemp).getBytes(Charset.forName("UTF-8"));
     }
 
-	/**
-	 * @Title getBodyString
-	 * @param request
-	 * @return
-	 * @Description 获取请求Body
-	 */
+    /**
+     * @param body
+     * @return
+     * @Title getBodyByDes
+     * @Description 请求解析，解析格式为{"配置的key名":{"param":"xxx","param2":"xxx"}}的JSON参数
+     */
+    private String getBodyByAes(String body) {
+        if (body == null || body.trim().equals("")) return body;
+        JSONObject jsonObject = JSONObject.parseObject(body);
+        String json = jsonObject.getString(QmFrameContent.REQUEST_DATA_KEY);
+        if (QmFrameContent.AES_START) {
+            try {
+                json = AESUtil.decryptAES(json);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        return json;
+    }
+
+    /**
+     * @param request
+     * @return
+     * @Title getBodyString
+     * @Description 获取请求Body
+     */
     public String getBodyString(ServletRequest request) {
         StringBuilder sb = new StringBuilder();
         InputStream inputStream = null;
         BufferedReader reader = null;
         try {
-			inputStream = request.getInputStream();
+            inputStream = request.getInputStream();
             reader = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8")));
             String line = "";
             while ((line = reader.readLine()) != null) {
@@ -103,52 +104,53 @@ public class QmRequestWrapper extends HttpServletRequestWrapper {
         }
         return sb.toString();
     }
-	@Override
-	public BufferedReader getReader() throws IOException {
-		return new BufferedReader(new InputStreamReader(getInputStream()));
-	}
 
-	@Override
-	public ServletInputStream getInputStream() throws IOException {
+    @Override
+    public BufferedReader getReader() throws IOException {
+        return new BufferedReader(new InputStreamReader(getInputStream()));
+    }
 
-		final ByteArrayInputStream bais = new ByteArrayInputStream(body);
+    @Override
+    public ServletInputStream getInputStream() throws IOException {
 
-		return new ServletInputStream() {
-			@Override
-			public int read() throws IOException {
-				return bais.read();
-			}
+        final ByteArrayInputStream bais = new ByteArrayInputStream(body);
 
-			@Override
-			public boolean isFinished() {
-				return false;
-			}
+        return new ServletInputStream() {
+            @Override
+            public int read() throws IOException {
+                return bais.read();
+            }
 
-			@Override
-			public boolean isReady() {
-				return false;
-			}
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
 
-			@Override
-			public void setReadListener(ReadListener listener) {
+            @Override
+            public boolean isReady() {
+                return false;
+            }
 
-			}
-		};
-	}
+            @Override
+            public void setReadListener(ReadListener listener) {
 
-	@Override
-	public String getHeader(String name) {
-		return super.getHeader(name);
-	}
+            }
+        };
+    }
 
-	@Override
-	public Enumeration<String> getHeaderNames() {
-		return super.getHeaderNames();
-	}
+    @Override
+    public String getHeader(String name) {
+        return super.getHeader(name);
+    }
 
-	@Override
-	public Enumeration<String> getHeaders(String name) {
-		return super.getHeaders(name);
-	}
+    @Override
+    public Enumeration<String> getHeaderNames() {
+        return super.getHeaderNames();
+    }
+
+    @Override
+    public Enumeration<String> getHeaders(String name) {
+        return super.getHeaders(name);
+    }
 
 }

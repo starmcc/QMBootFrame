@@ -1,9 +1,10 @@
 package com.qm.frame.basic.exception;
 
 
-import com.qm.frame.basic.config.QmFrameContent;
 import com.qm.frame.basic.controller.QmCode;
 import com.qm.frame.basic.controller.QmController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -26,28 +27,34 @@ import java.io.IOException;
 @RequestMapping(value = "/error")
 public class QmExceptionHandler extends QmController {
 
+    private static final Logger LOG = LoggerFactory.getLogger(QmExceptionHandler.class);
+
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseBody
     public String httpRequestMethodNotSupportedException(HttpServletResponse response,
                                                          Exception e) {
+        LOG.info("请求方式错误,请核实请求方式 `GET` and `POST`");
         response.setStatus(200);
         return super.sendJSON(QmCode._405);
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
+    @ExceptionHandler(QmParamNullException.class)
     @ResponseBody
-    public String IllegalArgumentException(HttpServletResponse response,
-                                           Exception e) {
+    public String QmParamNullException(HttpServletResponse response,
+                                       Exception e) {
+        LOG.info("缺少某些请求参数,请核实请求参数是否正确!");
+        e.printStackTrace();
         response.setStatus(200);
         return super.sendJSON(QmCode._100);
     }
 
-    @ExceptionHandler(InstantiationException.class)
+    @ExceptionHandler(QmParamErrorException.class)
     @ResponseBody
-    public String InstantiationException(HttpServletResponse response,
-                                         Exception e) {
+    public String QmParamErrorException(HttpServletResponse response,
+                                        Exception e) {
+        LOG.info("请求参数错误,请核实请求参数是否正确!");
         response.setStatus(200);
-        return super.sendJSON(QmCode._100);
+        return super.sendJSON(QmCode._101);
     }
 
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
@@ -70,6 +77,7 @@ public class QmExceptionHandler extends QmController {
     @ResponseBody
     public String notFoundPage404(HttpServletResponse response,
                                   Exception e) throws IOException {
+        LOG.info("请求地址错误,请核实请求地址是否正确!");
         response.setStatus(200);
         return super.sendJSON(QmCode._404);
     }
@@ -85,6 +93,7 @@ public class QmExceptionHandler extends QmController {
     @ExceptionHandler(Exception.class)
     @ResponseBody
     public String defaultException(HttpServletResponse response, Exception e) throws IOException {
+        LOG.info("服务器遇到了错误,请检查相关问题!");
         e.printStackTrace();
         response.setStatus(200);
         return super.sendJSON(QmCode._500);

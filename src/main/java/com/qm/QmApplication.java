@@ -2,11 +2,11 @@ package com.qm;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-//SpringBoot启动注解
-@SpringBootApplication
 //@EnableCaching // 启动缓存r
+@EnableTransactionManagement // 启动事务注解
+@SpringBootApplication //SpringBoot启动注解
 public class QmApplication {
 	
 	/**

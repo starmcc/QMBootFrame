@@ -2,7 +2,6 @@ package com.qm.frame.mybatis.base;
 
 import com.qm.frame.basic.util.ConvertUtil;
 import com.qm.frame.mybatis.dto.QmBaseDto;
-import com.qm.frame.mybatis.dto.QmBaseDtoException;
 import com.qm.frame.mybatis.note.QmStyle;
 import com.qm.frame.mybatis.note.QmTable;
 import com.qm.frame.mybatis.util.QmBaseStyleUtils;
@@ -11,8 +10,6 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 

@@ -3,6 +3,8 @@ package com.qm.frame.basic.body;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.qm.frame.basic.controller.QmController;
+import com.qm.frame.basic.exception.QmParamErrorException;
+import com.qm.frame.basic.exception.QmParamNullException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.MethodParameter;
@@ -13,11 +15,13 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @version V1.0 Description: 自定义解析json数据
@@ -64,9 +68,9 @@ public class JsonPathArgumentResolver extends QmController implements HandlerMet
         }
         // 如果required = true 则不允许value == null
         if (value == null && qmBody.required()) {
-            throw new IllegalArgumentException(String.format("required param %s is not present", key));
-        }else if (value == null && qmBody.required() == false) {
-           return null;
+            throw new QmParamNullException(String.format("required param %s is not present", key));
+        } else if (value == null && qmBody.required() == false) {
+            return value;
         }
         Class<?> parameterType = parameter.getParameterType();
         // 通过注解的value或者参数名解析，能拿到value进行解析
@@ -80,7 +84,7 @@ public class JsonPathArgumentResolver extends QmController implements HandlerMet
             // 字符串类型
         } else if (parameterType == String.class) {
             if (StringUtils.isEmpty(value.toString())) {
-                throw new IllegalArgumentException(String.format("required param %s is not present", key));
+                throw new QmParamNullException(String.format("required param %s is not present", key));
             }
             return value.toString();
         }
@@ -92,18 +96,18 @@ public class JsonPathArgumentResolver extends QmController implements HandlerMet
         // 如果是list则解析list
         if (parameterType.isAssignableFrom(List.class)) {
             Type genericType = parameter.getGenericParameterType();
-            if(genericType instanceof ParameterizedType){
+            if (genericType instanceof ParameterizedType) {
                 try {
                     ParameterizedType pt = (ParameterizedType) genericType;
                     //得到泛型里的class类型对象
-                    Class<?> genericClazz = (Class<?>)pt.getActualTypeArguments()[0];
+                    Class<?> genericClazz = (Class<?>) pt.getActualTypeArguments()[0];
                     return JSON.parseArray(value.toString(), genericClazz);
                 } catch (Exception e) {
                     try {
                         return JSON.parseArray(value.toString());
                     } catch (Exception e1) {
                         if (qmBody.required()) {
-                            throw new IllegalArgumentException(String.format("required param %s is not present", key));
+                            throw new QmParamErrorException(String.format("required param %s is error", key));
                         }
                         return null;
                     }
@@ -207,7 +211,7 @@ public class JsonPathArgumentResolver extends QmController implements HandlerMet
                 jsonBody = IOUtils.toString(servletRequest.getReader());
                 webRequest.setAttribute(JSONBODY_ATTRIBUTE, jsonBody, NativeWebRequest.SCOPE_REQUEST);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new QmParamErrorException(e);
             }
         }
         return jsonBody;
