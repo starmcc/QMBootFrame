@@ -72,7 +72,7 @@ public class QmDataSourceFactory {
             // 添加过滤规则.
             filterFilterRegistrationBean.addUrlPatterns("/*");
             // 添加不需要忽略的格式信息.
-            String exclusions = getProString("druid.exclusions");
+            String exclusions = getProString("druid.exclusions","*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*");
             filterFilterRegistrationBean.addInitParameter("exclusions", exclusions);
         }
         return filterFilterRegistrationBean;

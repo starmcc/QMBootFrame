@@ -107,14 +107,4 @@ public class QmFrameConfig implements WebMvcConfigurer {
         return dataSource;
     }
 
-    @Bean
-    public ServletRegistrationBean<StatViewServlet> setDruidStatViewServlet() {
-        return QmDataSourceFactory.getServletRegistrationBean();
-    }
-
-    @Bean
-    public FilterRegistrationBean<WebStatFilter> setDruidWebStatFilter() {
-        return QmDataSourceFactory.getFilterFilterRegistrationBean();
-    }
-
 }

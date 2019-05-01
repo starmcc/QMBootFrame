@@ -17,7 +17,7 @@ public class UserServiceImpl implements UserService {
 	/**
 	 * mapper的命名空间，请按照约定格式书写，相对应的是sql包中的Mapper的namescapse
 	 */
-	private static final String NAMESCAPSE = "User-User-0-Mapper";
+	private static final String NAMESCAPSE = "UserManager-UserService-0-Mapper";
 
 	@Override
 	public List<User> getAutoList(User user) {

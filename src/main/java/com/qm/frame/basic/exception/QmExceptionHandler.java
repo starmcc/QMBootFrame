@@ -65,13 +65,7 @@ public class QmExceptionHandler extends QmController {
         return super.sendJSON(QmCode._415);
     }
 
-    /**
-     * 找不到接口或视图名
-     *
-     * @param response
-     * @param e
-     * @return
-     */
+
     @ExceptionHandler(NoHandlerFoundException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     @ResponseBody
@@ -83,13 +77,6 @@ public class QmExceptionHandler extends QmController {
     }
 
 
-    /**
-     * 服务器错误异常拦截
-     *
-     * @param response
-     * @param e
-     * @return
-     */
     @ExceptionHandler(Exception.class)
     @ResponseBody
     public String defaultException(HttpServletResponse response, Exception e) throws IOException {
