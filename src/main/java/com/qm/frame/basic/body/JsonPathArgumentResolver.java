@@ -83,7 +83,7 @@ public class JsonPathArgumentResolver extends QmController implements HandlerMet
             return parseBasicTypeWrapper(parameterType, value);
             // 字符串类型
         } else if (parameterType == String.class) {
-            if (StringUtils.isEmpty(value.toString())) {
+            if (StringUtils.isEmpty(value.toString()) && qmBody.required()) {
                 throw new QmParamNullException(String.format("required param %s is not present", key));
             }
             return value.toString();

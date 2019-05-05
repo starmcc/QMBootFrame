@@ -127,6 +127,6 @@ public class QmController {
         }
         Map<String, Map<String, Object>> resMap = new HashMap<>();
         resMap.put(QmFrameContent.RESPONSE_DATA_KEY, responseMap);
-        return StringEscapeUtils.unescapeJava(JSONObject.toJSONString(resMap, SerializerFeature.WriteMapNullValue));
+        return JSONObject.toJSONString(resMap, SerializerFeature.WriteMapNullValue);
     }
 }
