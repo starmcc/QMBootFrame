@@ -8,9 +8,10 @@ import java.util.List;
 
 /**
  * Copyright © 2019浅梦工作室. All rights reserved.
+ *
  * @author 浅梦
  * @date 2019/2/12 3:39
- * @Description 当使用session校验机制时,可实现该事件监听接口，当session销毁或过期时，内部自动调用该接口的loginUserSessionEvent方法。
+ * @Description 当使用session校验机制时, 可实现该事件监听接口，当session销毁或过期时，内部自动调用该接口的loginUserSessionEvent方法。
  */
 public class SessionLister implements QmSecuritySessionEvent {
     @Override

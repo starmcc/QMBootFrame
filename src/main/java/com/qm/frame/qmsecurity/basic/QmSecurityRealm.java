@@ -26,9 +26,9 @@ public interface QmSecurityRealm {
     /**
      * 当安全校验不通过时回调该方法
      *
-     * @param request HttpServletRequest
+     * @param request  HttpServletRequest
      * @param response HttpServletResponse
-     * @param type 1=找不到用户信息,登录超时 | 2=检测不到token拒绝访问 | 3=Token失效或已过期 | 4=请求ip校验失败 | 5=权限不足,拒绝访问
+     * @param type     1=找不到用户信息,登录超时 | 2=检测不到token拒绝访问 | 3=Token失效或已过期 | 4=请求ip校验失败 | 5=权限不足,拒绝访问
      */
     void noPassCallBack(HttpServletRequest request, HttpServletResponse response, int type);
 
