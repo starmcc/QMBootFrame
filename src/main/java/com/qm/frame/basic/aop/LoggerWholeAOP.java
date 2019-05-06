@@ -65,7 +65,7 @@ public class LoggerWholeAOP {
      */
     @Around("qmPointcut()")
     public Object around(ProceedingJoinPoint pjp) throws Throwable {
-        System.out.println("※※※※※※※※※※※※※※※※※※");
+        LOG.debug("※※※※※※※※※※※※※※※※※※");
         return pjp.proceed();
     }
 

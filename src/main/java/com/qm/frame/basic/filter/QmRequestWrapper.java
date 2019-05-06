@@ -3,6 +3,8 @@ package com.qm.frame.basic.filter;
 import com.alibaba.fastjson.JSONObject;
 import com.qm.frame.basic.config.QmFrameContent;
 import com.qm.frame.basic.util.AESUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
@@ -26,7 +28,7 @@ public class QmRequestWrapper extends HttpServletRequestWrapper {
      * body
      */
     private final byte[] body;
-
+    private static final Logger LOG = LoggerFactory.getLogger(QmRequestWrapper.class);
     /**
      * @param request
      * @throws IOException
@@ -35,13 +37,19 @@ public class QmRequestWrapper extends HttpServletRequestWrapper {
      */
     public QmRequestWrapper(HttpServletRequest request) throws IOException {
         super(request);
-        System.out.println("-------------------------------------------------");
         Enumeration<String> e = request.getHeaderNames();
+        // 日志打印
+        StringBuffer sbf = new StringBuffer();
         while (e.hasMoreElements()) {
             String name = (String) e.nextElement();
             String value = request.getHeader(name);
-            System.out.println(name + " = " + value);
+            sbf.append(name);
+            sbf.append("=");
+            sbf.append(value);
+            sbf.append("\n");
         }
+        LOG.debug(sbf.toString());
+        // 日志打印结束
         String bodyTemp = getBodyString(request);
         body = getBodyByAes(bodyTemp).getBytes(Charset.forName("UTF-8"));
     }

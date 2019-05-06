@@ -1,5 +1,6 @@
-package com.qm.frame.qmsecurity.util;
+package com.qm.frame.qmsecurity.basic;
 
+import com.qm.frame.basic.util.QmSpringManager;
 import com.qm.frame.qmsecurity.config.QmSecurityContent;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
@@ -24,7 +25,7 @@ public class QmSecurityAESUtil {
     private static QmSecurityContent qmSecurityContent;
 
     static {
-        qmSecurityContent = QmSecuritySpringMapnager.getBean(QmSecurityContent.class);
+        qmSecurityContent = QmSpringManager.getBean(QmSecurityContent.class);
     }
 
 

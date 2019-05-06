@@ -1,8 +1,6 @@
 package com.qm.code.sercurity;
 
-import com.qm.code.entity.Permissions;
 import com.qm.code.service.RoleService;
-import com.qm.code.service.UserService;
 import com.qm.frame.qmsecurity.basic.QmSecurityRealm;
 import org.springframework.beans.factory.annotation.Autowired;
 

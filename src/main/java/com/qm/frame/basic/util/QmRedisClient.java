@@ -1,4 +1,4 @@
-package com.qm.frame.redis;
+package com.qm.frame.basic.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -19,8 +19,12 @@ import java.util.concurrent.TimeUnit;
  * @Description Redis工具类
  */
 @Component
-public final class QmRedisUtil {
-    private static QmRedisUtil redisUtil;
+@SuppressWarnings("unchecked")
+public final class QmRedisClient {
+    /**
+     * 本类
+     */
+    private static QmRedisClient qmRedisClient;
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
@@ -34,7 +38,7 @@ public final class QmRedisUtil {
     public static boolean expire(String key, long time) {
         try {
             if (time > 0) {
-                redisUtil.redisTemplate.expire(key, time, TimeUnit.SECONDS);
+                qmRedisClient.redisTemplate.expire(key, time, TimeUnit.SECONDS);
             }
             return true;
         } catch (Exception e) {
@@ -43,8 +47,6 @@ public final class QmRedisUtil {
         }
     }
 
-    // =============================common============================
-
     /**
      * 根据key 获取过期时间
      *
@@ -52,7 +54,7 @@ public final class QmRedisUtil {
      * @return 时间(秒) 返回0代表为永久有效
      */
     public static long getExpire(String key) {
-        return redisUtil.redisTemplate.getExpire(key, TimeUnit.SECONDS);
+        return qmRedisClient.redisTemplate.getExpire(key, TimeUnit.SECONDS);
     }
 
     /**
@@ -63,26 +65,27 @@ public final class QmRedisUtil {
      */
     public static boolean hasKey(String key) {
         try {
-            return redisUtil.redisTemplate.hasKey(key);
+            return qmRedisClient.redisTemplate.hasKey(key);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
     }
 
+    // =============================common============================
+
     /**
      * 删除缓存
      *
      * @param key 可以传一个值 或多个
      */
-    @SuppressWarnings("unchecked")
     public static boolean del(String... key) {
         try {
             if (key != null && key.length > 0) {
                 if (key.length == 1) {
-                    return redisUtil.redisTemplate.delete(key[0]);
+                    return qmRedisClient.redisTemplate.delete(key[0]);
                 } else {
-                    Long res = redisUtil.redisTemplate.delete(CollectionUtils.arrayToList(key));
+                    Long res = qmRedisClient.redisTemplate.delete(CollectionUtils.arrayToList(key));
                     if (res < 1) return false;
                 }
             }
@@ -99,10 +102,8 @@ public final class QmRedisUtil {
      * @return 值
      */
     public static Object get(String key) {
-        return key == null ? null : redisUtil.redisTemplate.opsForValue().get(key);
+        return key == null ? null : qmRedisClient.redisTemplate.opsForValue().get(key);
     }
-
-    // ============================String=============================
 
     /**
      * 普通缓存放入
@@ -113,7 +114,7 @@ public final class QmRedisUtil {
      */
     public static boolean set(String key, Object value) {
         try {
-            redisUtil.redisTemplate.opsForValue().set(key, value);
+            qmRedisClient.redisTemplate.opsForValue().set(key, value);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -132,7 +133,7 @@ public final class QmRedisUtil {
     public static boolean set(String key, Object value, long time) {
         try {
             if (time > 0) {
-                redisUtil.redisTemplate.opsForValue().set(key, value, time, TimeUnit.SECONDS);
+                qmRedisClient.redisTemplate.opsForValue().set(key, value, time, TimeUnit.SECONDS);
             } else {
                 set(key, value);
             }
@@ -142,6 +143,8 @@ public final class QmRedisUtil {
             return false;
         }
     }
+
+    // ============================String=============================
 
     /**
      * 递增
@@ -154,7 +157,7 @@ public final class QmRedisUtil {
         if (delta < 0) {
             throw new RuntimeException("递增因子必须大于0");
         }
-        return redisUtil.redisTemplate.opsForValue().increment(key, delta);
+        return qmRedisClient.redisTemplate.opsForValue().increment(key, delta);
     }
 
     /**
@@ -168,7 +171,7 @@ public final class QmRedisUtil {
         if (delta < 0) {
             throw new RuntimeException("递减因子必须大于0");
         }
-        return redisUtil.redisTemplate.opsForValue().increment(key, -delta);
+        return qmRedisClient.redisTemplate.opsForValue().increment(key, -delta);
     }
 
     /**
@@ -179,10 +182,8 @@ public final class QmRedisUtil {
      * @return 值
      */
     public static Object hget(String key, String item) {
-        return redisUtil.redisTemplate.opsForHash().get(key, item);
+        return qmRedisClient.redisTemplate.opsForHash().get(key, item);
     }
-
-    // ================================Map=================================
 
     /**
      * 获取hashKey对应的所有键值
@@ -191,7 +192,7 @@ public final class QmRedisUtil {
      * @return 对应的多个键值
      */
     public static Map<Object, Object> hmget(String key) {
-        return redisUtil.redisTemplate.opsForHash().entries(key);
+        return qmRedisClient.redisTemplate.opsForHash().entries(key);
     }
 
     /**
@@ -203,13 +204,15 @@ public final class QmRedisUtil {
      */
     public static boolean hmset(String key, Map<String, Object> map) {
         try {
-            redisUtil.redisTemplate.opsForHash().putAll(key, map);
+            qmRedisClient.redisTemplate.opsForHash().putAll(key, map);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
     }
+
+    // ================================Map=================================
 
     /**
      * HashSet 并设置时间
@@ -221,7 +224,7 @@ public final class QmRedisUtil {
      */
     public static boolean hmset(String key, Map<String, Object> map, long time) {
         try {
-            redisUtil.redisTemplate.opsForHash().putAll(key, map);
+            qmRedisClient.redisTemplate.opsForHash().putAll(key, map);
             if (time > 0) {
                 expire(key, time);
             }
@@ -242,7 +245,7 @@ public final class QmRedisUtil {
      */
     public static boolean hset(String key, String item, Object value) {
         try {
-            redisUtil.redisTemplate.opsForHash().put(key, item, value);
+            qmRedisClient.redisTemplate.opsForHash().put(key, item, value);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -261,9 +264,9 @@ public final class QmRedisUtil {
      */
     public static boolean hset(String key, String item, Object value, long time) {
         try {
-            redisUtil.redisTemplate.opsForHash().put(key, item, value);
+            qmRedisClient.redisTemplate.opsForHash().put(key, item, value);
             if (time > 0) {
-                redisUtil.redisTemplate.expire(key, time, TimeUnit.SECONDS);
+                qmRedisClient.redisTemplate.expire(key, time, TimeUnit.SECONDS);
             }
             return true;
         } catch (Exception e) {
@@ -279,7 +282,7 @@ public final class QmRedisUtil {
      * @param item 项 可以使多个 不能为null
      */
     public static void hdel(String key, Object... item) {
-        redisUtil.redisTemplate.opsForHash().delete(key, item);
+        qmRedisClient.redisTemplate.opsForHash().delete(key, item);
     }
 
     /**
@@ -290,7 +293,7 @@ public final class QmRedisUtil {
      * @return true 存在 false不存在
      */
     public static boolean hHasKey(String key, String item) {
-        return redisUtil.redisTemplate.opsForHash().hasKey(key, item);
+        return qmRedisClient.redisTemplate.opsForHash().hasKey(key, item);
     }
 
     /**
@@ -302,7 +305,7 @@ public final class QmRedisUtil {
      * @return
      */
     public static double hincr(String key, String item, double by) {
-        return redisUtil.redisTemplate.opsForHash().increment(key, item, by);
+        return qmRedisClient.redisTemplate.opsForHash().increment(key, item, by);
     }
 
     /**
@@ -314,7 +317,7 @@ public final class QmRedisUtil {
      * @return
      */
     public static double hdecr(String key, String item, double by) {
-        return redisUtil.redisTemplate.opsForHash().increment(key, item, -by);
+        return qmRedisClient.redisTemplate.opsForHash().increment(key, item, -by);
     }
 
     /**
@@ -325,14 +328,12 @@ public final class QmRedisUtil {
      */
     public static Set<Object> sGet(String key) {
         try {
-            return redisUtil.redisTemplate.opsForSet().members(key);
+            return qmRedisClient.redisTemplate.opsForSet().members(key);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
-
-    // ============================set=============================
 
     /**
      * 根据value从一个set中查询,是否存在
@@ -343,7 +344,7 @@ public final class QmRedisUtil {
      */
     public static boolean sHasKey(String key, Object value) {
         try {
-            return redisUtil.redisTemplate.opsForSet().isMember(key, value);
+            return qmRedisClient.redisTemplate.opsForSet().isMember(key, value);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -359,12 +360,14 @@ public final class QmRedisUtil {
      */
     public static long sSet(String key, Object... values) {
         try {
-            return redisUtil.redisTemplate.opsForSet().add(key, values);
+            return qmRedisClient.redisTemplate.opsForSet().add(key, values);
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
         }
     }
+
+    // ============================set=============================
 
     /**
      * 将set数据放入缓存
@@ -376,9 +379,9 @@ public final class QmRedisUtil {
      */
     public static long sSetAndTime(String key, long time, Object... values) {
         try {
-            Long count = redisUtil.redisTemplate.opsForSet().add(key, values);
+            Long count = qmRedisClient.redisTemplate.opsForSet().add(key, values);
             if (time > 0)
-                redisUtil.redisTemplate.expire(key, time, TimeUnit.SECONDS);
+                qmRedisClient.redisTemplate.expire(key, time, TimeUnit.SECONDS);
             return count;
         } catch (Exception e) {
             e.printStackTrace();
@@ -394,7 +397,7 @@ public final class QmRedisUtil {
      */
     public static long sGetSetSize(String key) {
         try {
-            return redisUtil.redisTemplate.opsForSet().size(key);
+            return qmRedisClient.redisTemplate.opsForSet().size(key);
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
@@ -410,7 +413,7 @@ public final class QmRedisUtil {
      */
     public static long setRemove(String key, Object... values) {
         try {
-            Long count = redisUtil.redisTemplate.opsForSet().remove(key, values);
+            Long count = qmRedisClient.redisTemplate.opsForSet().remove(key, values);
             return count;
         } catch (Exception e) {
             e.printStackTrace();
@@ -428,14 +431,12 @@ public final class QmRedisUtil {
      */
     public static List<Object> lGet(String key, long start, long end) {
         try {
-            return redisUtil.redisTemplate.opsForList().range(key, start, end);
+            return qmRedisClient.redisTemplate.opsForList().range(key, start, end);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
-
-    // ===============================list=================================
 
     /**
      * 获取list缓存的长度
@@ -445,7 +446,7 @@ public final class QmRedisUtil {
      */
     public static long lGetListSize(String key) {
         try {
-            return redisUtil.redisTemplate.opsForList().size(key);
+            return qmRedisClient.redisTemplate.opsForList().size(key);
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
@@ -461,12 +462,14 @@ public final class QmRedisUtil {
      */
     public static Object lGetIndex(String key, long index) {
         try {
-            return redisUtil.redisTemplate.opsForList().index(key, index);
+            return qmRedisClient.redisTemplate.opsForList().index(key, index);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
+
+    // ===============================list=================================
 
     /**
      * 将list放入缓存
@@ -478,7 +481,7 @@ public final class QmRedisUtil {
      */
     public static boolean lSet(String key, Object value) {
         try {
-            redisUtil.redisTemplate.opsForList().rightPush(key, value);
+            qmRedisClient.redisTemplate.opsForList().rightPush(key, value);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -496,9 +499,9 @@ public final class QmRedisUtil {
      */
     public static boolean lSet(String key, Object value, long time) {
         try {
-            redisUtil.redisTemplate.opsForList().rightPush(key, value);
+            qmRedisClient.redisTemplate.opsForList().rightPush(key, value);
             if (time > 0)
-                redisUtil.redisTemplate.expire(key, time, TimeUnit.SECONDS);
+                qmRedisClient.redisTemplate.expire(key, time, TimeUnit.SECONDS);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -516,7 +519,7 @@ public final class QmRedisUtil {
      */
     public static boolean lSet(String key, List<Object> value) {
         try {
-            redisUtil.redisTemplate.opsForList().rightPushAll(key, value);
+            qmRedisClient.redisTemplate.opsForList().rightPushAll(key, value);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -534,9 +537,9 @@ public final class QmRedisUtil {
      */
     public static boolean lSet(String key, List<Object> value, long time) {
         try {
-            redisUtil.redisTemplate.opsForList().rightPushAll(key, value);
+            qmRedisClient.redisTemplate.opsForList().rightPushAll(key, value);
             if (time > 0)
-                redisUtil.redisTemplate.expire(key, time, TimeUnit.SECONDS);
+                qmRedisClient.redisTemplate.expire(key, time, TimeUnit.SECONDS);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -554,7 +557,7 @@ public final class QmRedisUtil {
      */
     public static boolean lUpdateIndex(String key, long index, Object value) {
         try {
-            redisUtil.redisTemplate.opsForList().set(key, index, value);
+            qmRedisClient.redisTemplate.opsForList().set(key, index, value);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -572,7 +575,7 @@ public final class QmRedisUtil {
      */
     public static long lRemove(String key, long count, Object value) {
         try {
-            Long remove = redisUtil.redisTemplate.opsForList().remove(key, count, value);
+            Long remove = qmRedisClient.redisTemplate.opsForList().remove(key, count, value);
             return remove;
         } catch (Exception e) {
             e.printStackTrace();
@@ -580,9 +583,12 @@ public final class QmRedisUtil {
         }
     }
 
-    @PostConstruct //@PostConstruct修饰的方法会在服务器加载Servle的时候运行，并且只会被服务器执行一次。PostConstruct在构造函数之后执行,init()方法之前执行
+    //@PostConstruct修饰的方法会在服务器加载Servle的时候运行，
+    // 并且只会被服务器执行一次。
+    // PostConstruct在构造函数之后执行,init()方法之前执行
+    @PostConstruct
     public void init() {
-        redisUtil = this;
-        redisUtil.redisTemplate = this.redisTemplate;
+        qmRedisClient = this;
+        qmRedisClient.redisTemplate = this.redisTemplate;
     }
 }

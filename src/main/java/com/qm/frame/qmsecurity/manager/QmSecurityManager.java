@@ -4,13 +4,13 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.qm.frame.basic.util.HttpApiUtil;
-import com.qm.frame.qmsecurity.basic.QmSecurityRealm;
+import com.qm.frame.basic.util.QmRedisClient;
+import com.qm.frame.basic.util.QmSpringManager;
+import com.qm.frame.qmsecurity.basic.QmSecurityAESUtil;
 import com.qm.frame.qmsecurity.config.QmSecurityContent;
 import com.qm.frame.qmsecurity.entity.QmPermissions;
 import com.qm.frame.qmsecurity.entity.QmSessionInfo;
 import com.qm.frame.qmsecurity.entity.QmTokenInfo;
-import com.qm.frame.qmsecurity.util.QmSecurityAESUtil;
-import com.qm.frame.qmsecurity.util.QmSecuritySpringMapnager;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.thymeleaf.util.StringUtils;
@@ -51,7 +51,7 @@ public class QmSecurityManager implements Qmbject {
             application = request.getSession().getServletContext();
         }
         try {
-            qmSecurityContent = QmSecuritySpringMapnager.getBean(QmSecurityContent.class);
+            qmSecurityContent = QmSpringManager.getBean(QmSecurityContent.class);
         } catch (Exception e) {
             return;
         }
@@ -138,8 +138,9 @@ public class QmSecurityManager implements Qmbject {
         session.setAttribute("userCountListener", qmUserSessionListener);
     }
 
+
     @Override
-    public QmPermissions extractQmPermissions(final int roleId, final boolean isNew) {
+    public QmPermissions extractQmPermissions(int roleId, boolean isNew) {
         // 首先调用获取所有的角色权限列表
         List<QmPermissions> QmPermissionsLis = this.getAllQmPermissions();
         // 外部定义qmPermissions
@@ -151,27 +152,34 @@ public class QmSecurityManager implements Qmbject {
                 qmPermissions = QmPermissionsLis.get(i);
                 if (isNew) {
                     // 如果是真，则肯定会更新信息。
-                    QmSecurityRealm qmSecurityRealm = QmSecuritySpringMapnager.getBean(QmSecurityRealm.class);
-                    // 将该对象保存起来
-                    List<String> matchUrls = qmSecurityRealm.authorizationPermissions(roleId);
-                    // 替换该对象
-                    qmPermissions.setMatchUrls(matchUrls);
+                    qmPermissions = this.updateRoleQmPermissionsPack(roleId);
+                    // 替换该对象,将该对象保存起来
                     QmPermissionsLis.set(i, qmPermissions);
-                    // 将该集合缓存起来
-                    application.setAttribute(QM_PERMISSIONS_KEY, QmPermissionsLis);
+                    this.setCacheQmPermissions(QmPermissionsLis);
                 }
                 break;
             }
         }
-        // 如果是空的则也使用调用者提供的方法去获取
+        // 如果是空的则表示在缓存中找不到该角色信息，也使用调用者提供的方法去获取
         if (qmPermissions == null) {
-            qmPermissions = new QmPermissions();
-            List<String> matchUrls = qmSecurityContent.getQmSecurityRealm().authorizationPermissions(roleId);
-            qmPermissions.setRoleId(roleId);
-            qmPermissions.setMatchUrls(matchUrls);
+            qmPermissions = this.updateRoleQmPermissionsPack(roleId);
             QmPermissionsLis.add(qmPermissions);
-            application.setAttribute(QM_PERMISSIONS_KEY, QmPermissionsLis);
+            this.setCacheQmPermissions(QmPermissionsLis);
         }
+        return qmPermissions;
+    }
+
+    /**
+     * 更新角色权限信息
+     *
+     * @param roleId
+     * @return
+     */
+    private QmPermissions updateRoleQmPermissionsPack(int roleId) {
+        QmPermissions qmPermissions = new QmPermissions();
+        List<String> matchUrls = qmSecurityContent.getQmSecurityRealm().authorizationPermissions(roleId);
+        qmPermissions.setRoleId(roleId);
+        qmPermissions.setMatchUrls(matchUrls);
         return qmPermissions;
     }
 
@@ -180,7 +188,7 @@ public class QmSecurityManager implements Qmbject {
         List<QmPermissions> QmPermissionsLis = null;
         try {
             // 从ServletContext全局缓存中获取到该角色权限集合对象
-            QmPermissionsLis = (List<QmPermissions>) application.getAttribute(QM_PERMISSIONS_KEY);
+            QmPermissionsLis = getCacheQmPermissions();
             if (QmPermissionsLis == null) {
                 // 如果是空的，则创建一个新的对象作为返回
                 QmPermissionsLis = new ArrayList<>();
@@ -191,6 +199,40 @@ public class QmSecurityManager implements Qmbject {
         }
         return QmPermissionsLis;
     }
+
+    /**
+     * 从缓存获取权限列表
+     *
+     * @return
+     */
+    private List<QmPermissions> getCacheQmPermissions() {
+        // 是否开启Redis管理权限
+        if (qmSecurityContent.isStartRedis()) {
+            return (List<QmPermissions>) QmRedisClient.get(QM_PERMISSIONS_KEY);
+        }
+        // 使用application进行缓存
+        return (List<QmPermissions>) application.getAttribute(QM_PERMISSIONS_KEY);
+    }
+
+    /**
+     * 从缓存设置权限列表
+     *
+     * @param qmPermissionsList
+     * @return
+     */
+    private void setCacheQmPermissions(List<QmPermissions> qmPermissionsList) {
+        // 是否开启Redis管理权限
+        if (qmSecurityContent.isStartRedis()) {
+            try {
+                QmRedisClient.set(QM_PERMISSIONS_KEY, qmPermissionsList);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        // 使用application进行缓存
+        application.setAttribute(QM_PERMISSIONS_KEY, qmPermissionsList);
+    }
+
 
     @Override
     public QmTokenInfo getTokenInfo() {

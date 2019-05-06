@@ -60,8 +60,7 @@ public interface Qmbject {
      * @param isNew  是否一定获取最新信息
      * @return QmPermissions 返回角色权限对象
      */
-    QmPermissions extractQmPermissions(final int roleId, final boolean isNew);
-
+    QmPermissions extractQmPermissions(int roleId, boolean isNew);
 
     /**
      * 获取缓存中的所有角色权限信息

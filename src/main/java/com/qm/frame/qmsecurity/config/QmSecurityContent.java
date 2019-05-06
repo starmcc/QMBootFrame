@@ -18,6 +18,8 @@ public class QmSecurityContent {
 
     private String headerTokenKeyName = "token";
 
+    private boolean startRedis = false;
+
     private int encryptNumber = 2;
 
     private String[] excludePathPatterns;
@@ -25,6 +27,10 @@ public class QmSecurityContent {
     private QmSecurityRealm qmSecurityRealm;
 
     private QmSecuritySessionEvent qmSecuritySessionEvent;
+
+    public boolean isStartRedis() {
+        return startRedis;
+    }
 
     public QmSecuritySessionEvent getQmSecuritySessionEvent() {
         return qmSecuritySessionEvent;
@@ -115,6 +121,15 @@ public class QmSecurityContent {
      */
     public void setQmSecurityRealm(QmSecurityRealm qmSecurityRealm) {
         this.qmSecurityRealm = qmSecurityRealm;
+    }
+
+
+    /**
+     * 设置是否开启Redis管理权限
+     * @param startRedis
+     */
+    public void setStartRedis(boolean startRedis) {
+        this.startRedis = startRedis;
     }
 
 }

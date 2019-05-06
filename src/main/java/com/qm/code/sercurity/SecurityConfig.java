@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 public class SecurityConfig {
 
     @Bean
-    public MyRealm settingRealm(){
+    public MyRealm settingRealm() {
         return new MyRealm();
     }
 
@@ -33,6 +33,8 @@ public class SecurityConfig {
         qmSecurityContent.setEncryptNumber(1);
         // 需要排除的静态资源路径
         qmSecurityContent.setExcludePathPatterns("/views/**");
+        // 是否开启Redis管理权限
+        qmSecurityContent.setStartRedis(false);
         return qmSecurityContent;
     }
 
