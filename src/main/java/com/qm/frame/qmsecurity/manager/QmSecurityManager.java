@@ -11,6 +11,7 @@ import com.qm.frame.qmsecurity.config.QmSecurityContent;
 import com.qm.frame.qmsecurity.entity.QmPermissions;
 import com.qm.frame.qmsecurity.entity.QmSessionInfo;
 import com.qm.frame.qmsecurity.entity.QmTokenInfo;
+import com.qm.frame.qmsecurity.exception.QmSecurityLoginErrorException;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.thymeleaf.util.StringUtils;
@@ -67,14 +68,11 @@ public class QmSecurityManager implements Qmbject {
     }
 
     @Override
-    public String login(final QmTokenInfo qmTokenInfo, final long expireTime) {
+    public String login(final QmTokenInfo qmTokenInfo, final long expireTime) throws QmSecurityLoginErrorException{
         // 判断是否存在必须的参数信息
-        if (StringUtils.isEmpty(qmTokenInfo.getUserName())
-                || expireTime <= 0) {
-            new Exception("请检查qmTokenInfo的参数是否完整！");
-            return null;
+        if (StringUtils.isEmpty(qmTokenInfo.getUserName()) || expireTime <= 0) {
+            throw new QmSecurityLoginErrorException("请检查qmTokenInfo的参数是否完整！");
         }
-
         JWTCreator.Builder builder = JWT.create();
         // 创建JWT Helder部分
         Map<String, Object> headerClaims = new HashMap<String, Object>();
@@ -97,7 +95,7 @@ public class QmSecurityManager implements Qmbject {
         // 获取当前时间的unix时间戳
         long currentTimeMillis = System.currentTimeMillis();
         // 设置token过期时间，毫秒 * 1000 + 当前时间戳
-        builder.withExpiresAt(new Date(currentTimeMillis + expireTime * 1000));
+        builder.withExpiresAt(new Date(currentTimeMillis + (expireTime * 1000)));
         // 签发时间 当前时间
         builder.withIssuedAt(new Date(currentTimeMillis));
         try {
@@ -107,9 +105,8 @@ public class QmSecurityManager implements Qmbject {
             token = QmSecurityAESUtil.encryptAES(token);
             return token;
         } catch (Exception e) {
-            System.out.println("签名错误");
+            throw new QmSecurityLoginErrorException("签名错误！",e);
         }
-        return null;
     }
 
     @Override

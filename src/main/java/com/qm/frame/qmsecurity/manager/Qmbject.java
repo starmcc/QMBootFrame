@@ -3,6 +3,7 @@ package com.qm.frame.qmsecurity.manager;
 import com.qm.frame.qmsecurity.entity.QmPermissions;
 import com.qm.frame.qmsecurity.entity.QmSessionInfo;
 import com.qm.frame.qmsecurity.entity.QmTokenInfo;
+import com.qm.frame.qmsecurity.exception.QmSecurityLoginErrorException;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ public interface Qmbject {
      * @param expireTime  有效时长(秒单位)
      * @return
      */
-    String login(final QmTokenInfo qmTokenInfo, final long expireTime);
+    String login(final QmTokenInfo qmTokenInfo, final long expireTime) throws QmSecurityLoginErrorException;
 
     /**
      * session模式登录

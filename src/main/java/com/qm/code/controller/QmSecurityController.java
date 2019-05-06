@@ -7,6 +7,7 @@ import com.qm.frame.basic.controller.QmCode;
 import com.qm.frame.basic.controller.QmController;
 import com.qm.frame.qmsecurity.entity.QmSessionInfo;
 import com.qm.frame.qmsecurity.entity.QmTokenInfo;
+import com.qm.frame.qmsecurity.exception.QmSecurityLoginErrorException;
 import com.qm.frame.qmsecurity.manager.QmSecurityManager;
 import com.qm.frame.qmsecurity.manager.Qmbject;
 import com.qm.frame.qmsecurity.note.QmPass;
@@ -46,7 +47,7 @@ public class QmSecurityController extends QmController {
         // 创建token签名信息QmTokenInfo，并配置该对象的信息
         QmTokenInfo qmTokenInfo = new QmTokenInfo();
         // userName为必须字段，用户唯一识别
-        qmTokenInfo.setUserName(user.getUserCode());
+        qmTokenInfo.setUserName(user.getUserName());
         // 角色id为必须字段，用户角色唯一id
         qmTokenInfo.setRoleId(user.getRoleId());
         // 设置其他信息，这里直接把整个user转json储存起来，实际开发中请勿这样操作。
@@ -54,7 +55,13 @@ public class QmSecurityController extends QmController {
         infoMap.put("userJson", JSON.toJSONString(user));
         qmTokenInfo.setInfoMap(infoMap);
         // 调用login方法，并设置他的过期时间，生成token
-        String token = qmbject.login(qmTokenInfo, 60 * 60);
+        String token = null;
+        try {
+            token = qmbject.login(qmTokenInfo, 60 * 60);
+        } catch (QmSecurityLoginErrorException e) {
+            e.printStackTrace();
+            System.out.println("签发token错误哦");
+        }
         // 将token返回给前端
         return super.sendJSON(QmCode._1, token);
     }
