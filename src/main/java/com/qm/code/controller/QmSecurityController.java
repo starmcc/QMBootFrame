@@ -46,7 +46,7 @@ public class QmSecurityController extends QmController {
         Qmbject qmbject = QmSecurityManager.getQmbject();
         // 创建token签名信息QmTokenInfo，并配置该对象的信息
         QmTokenInfo qmTokenInfo = new QmTokenInfo();
-        // userName为必须字段，用户唯一识别
+        // identify为必须字段，用户唯一识别
         qmTokenInfo.setIdentify(user.getUserName());
         // 角色id为必须字段，用户角色唯一id
         qmTokenInfo.setRoleId(user.getRoleId());
@@ -54,7 +54,7 @@ public class QmSecurityController extends QmController {
         Map<String,String> infoMap = new HashMap<>();
         infoMap.put("userJson", JSON.toJSONString(user));
         qmTokenInfo.setInfoMap(infoMap);
-        qmTokenInfo.setExpireTime(5);
+        qmTokenInfo.setExpireTime(10);
         // 调用login方法，并设置他的过期时间，生成token
         String token = null;
         try {

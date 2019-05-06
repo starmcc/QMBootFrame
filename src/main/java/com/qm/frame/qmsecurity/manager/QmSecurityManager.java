@@ -15,7 +15,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.thymeleaf.util.StringUtils;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.*;
@@ -55,7 +54,7 @@ public class QmSecurityManager implements Qmbject {
     }
 
     @Override
-    public String login(QmTokenInfo qmTokenInfo) throws QmSecurityLoginErrorException{
+    public String login(QmTokenInfo qmTokenInfo) throws QmSecurityLoginErrorException {
         // 判断是否存在必须的参数信息
         if (StringUtils.isEmpty(qmTokenInfo.getIdentify()) || qmTokenInfo.getExpireTime() <= 0) {
             throw new QmSecurityLoginErrorException("请检查qmTokenInfo的参数是否完整！");
@@ -67,12 +66,12 @@ public class QmSecurityManager implements Qmbject {
         headerClaims.put("typ", "JWT");
         builder.withHeader(headerClaims);
         // 创建主体信息
-        builder.withClaim("qm_security_userName", qmTokenInfo.getIdentify());
+        builder.withClaim("qm_security_identify", qmTokenInfo.getIdentify());
         builder.withClaim("qm_security_roleId", qmTokenInfo.getRoleId());
         // 封装ip
         String requestIp = HttpApiUtil.getHttpIp(request);
         builder.withClaim("qm_security_requestIp", requestIp);
-        builder.withClaim("qm_security_expireTime",qmTokenInfo.getExpireTime());
+        builder.withClaim("qm_security_expireTime", qmTokenInfo.getExpireTime());
         // 封装自定义信息
         Map<String, String> infoMap = qmTokenInfo.getInfoMap();
         if (infoMap != null) {
@@ -91,12 +90,13 @@ public class QmSecurityManager implements Qmbject {
             String token = builder.sign(Algorithm.HMAC256(QmSecurityContent.TOKEN_SECRET));
             // AES加密手段
             token = QmSecurityAESUtil.encryptAES(token);
-            QmRedisClient.set("Token_" + token,qmTokenInfo,60);
+            QmRedisClient.set("Token_" + token, qmTokenInfo, qmTokenInfo.getTokenActiveTime());
             return token;
         } catch (Exception e) {
-            throw new QmSecurityLoginErrorException("签名错误！",e);
+            throw new QmSecurityLoginErrorException("签名错误！", e);
         }
     }
+
 
     @Override
     public void loginForSession(QmSessionInfo qmSessionInfo, int expireTime) {
@@ -193,7 +193,7 @@ public class QmSecurityManager implements Qmbject {
      */
     private List<QmPermissions> getCacheQmPermissions() {
         // 是否开启Redis管理权限
-            return (List<QmPermissions>) QmRedisClient.get(QM_PERMISSIONS_KEY);
+        return (List<QmPermissions>) QmRedisClient.get(QM_PERMISSIONS_KEY);
     }
 
     /**
@@ -204,11 +204,11 @@ public class QmSecurityManager implements Qmbject {
      */
     private void setCacheQmPermissions(List<QmPermissions> qmPermissionsList) {
         // 是否开启Redis管理权限
-            try {
-                QmRedisClient.set(QM_PERMISSIONS_KEY, qmPermissionsList);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        try {
+            QmRedisClient.set(QM_PERMISSIONS_KEY, qmPermissionsList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
