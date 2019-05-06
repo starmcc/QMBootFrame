@@ -1,5 +1,6 @@
 package com.qm.frame.qmsecurity.basic;
 
+import com.alibaba.fastjson.JSON;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -22,12 +23,6 @@ import java.util.Map;
  * @Description QmSecurity安全框架底层
  */
 public class QmSecurityBasic {
-
-    private QmSecurityContent qmSecurityContent;
-
-    public QmSecurityBasic(QmSecurityContent qmSecurityContent) {
-        this.qmSecurityContent = qmSecurityContent;
-    }
 
     /**
      * 匹配角色授权url
@@ -74,7 +69,7 @@ public class QmSecurityBasic {
     protected QmTokenInfo getTokenInfo(String token) throws Exception {
         DecodedJWT jwt;
         try {
-            JWTVerifier verifier = JWT.require(Algorithm.HMAC256(qmSecurityContent.getTokenSecret())).build();
+            JWTVerifier verifier = JWT.require(Algorithm.HMAC256(QmSecurityContent.TOKEN_SECRET)).build();
             // jwt解密token
             jwt = verifier.verify(token);
         } catch (Exception e) {
@@ -90,12 +85,15 @@ public class QmSecurityBasic {
         claimMap.remove("qm_security_requestIp");
         Integer roleId = claimMap.get("qm_security_roleId").asInt();
         claimMap.remove("qm_security_roleId");
+        long expireTime = claimMap.get("qm_security_expireTime").asLong();
+        claimMap.remove("qm_security_expireTime");
         // 删除敏感的登录和失效时间
         claimMap.remove("exp");
         claimMap.remove("iat");
-        qmTokenInfo.setUserName(userName);
+        qmTokenInfo.setIdentify(userName);
         qmTokenInfo.setRequestIp(requestIp);
         qmTokenInfo.setRoleId(roleId);
+        qmTokenInfo.setExpireTime(expireTime);
         Map<String, String> infoMap = new HashMap<String, String>();
         for (String key : claimMap.keySet()) {
             infoMap.put(key, claimMap.get(key).asString());

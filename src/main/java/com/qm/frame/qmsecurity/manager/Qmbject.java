@@ -23,7 +23,7 @@ public interface Qmbject {
      * @param expireTime  有效时长(秒单位)
      * @return
      */
-    String login(final QmTokenInfo qmTokenInfo, final long expireTime) throws QmSecurityLoginErrorException;
+    String login(QmTokenInfo qmTokenInfo) throws QmSecurityLoginErrorException;
 
     /**
      * session模式登录

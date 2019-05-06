@@ -5,7 +5,6 @@ import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.qm.frame.basic.util.HttpApiUtil;
 import com.qm.frame.basic.util.QmRedisClient;
-import com.qm.frame.basic.util.QmSpringManager;
 import com.qm.frame.qmsecurity.basic.QmSecurityAESUtil;
 import com.qm.frame.qmsecurity.config.QmSecurityContent;
 import com.qm.frame.qmsecurity.entity.QmPermissions;
@@ -35,10 +34,6 @@ public class QmSecurityManager implements Qmbject {
 
     // request
     private HttpServletRequest request;
-    // 依赖Servlet的全局上下文作用域
-    private ServletContext application;
-    // 依赖配置类
-    private QmSecurityContent qmSecurityContent;
 
 
     /**
@@ -47,14 +42,6 @@ public class QmSecurityManager implements Qmbject {
     public QmSecurityManager() {
         if (request == null) {
             request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        }
-        if (application == null) {
-            application = request.getSession().getServletContext();
-        }
-        try {
-            qmSecurityContent = QmSpringManager.getBean(QmSecurityContent.class);
-        } catch (Exception e) {
-            return;
         }
     }
 
@@ -68,9 +55,9 @@ public class QmSecurityManager implements Qmbject {
     }
 
     @Override
-    public String login(final QmTokenInfo qmTokenInfo, final long expireTime) throws QmSecurityLoginErrorException{
+    public String login(QmTokenInfo qmTokenInfo) throws QmSecurityLoginErrorException{
         // 判断是否存在必须的参数信息
-        if (StringUtils.isEmpty(qmTokenInfo.getUserName()) || expireTime <= 0) {
+        if (StringUtils.isEmpty(qmTokenInfo.getIdentify()) || qmTokenInfo.getExpireTime() <= 0) {
             throw new QmSecurityLoginErrorException("请检查qmTokenInfo的参数是否完整！");
         }
         JWTCreator.Builder builder = JWT.create();
@@ -80,11 +67,12 @@ public class QmSecurityManager implements Qmbject {
         headerClaims.put("typ", "JWT");
         builder.withHeader(headerClaims);
         // 创建主体信息
-        builder.withClaim("qm_security_userName", qmTokenInfo.getUserName());
+        builder.withClaim("qm_security_userName", qmTokenInfo.getIdentify());
         builder.withClaim("qm_security_roleId", qmTokenInfo.getRoleId());
         // 封装ip
         String requestIp = HttpApiUtil.getHttpIp(request);
         builder.withClaim("qm_security_requestIp", requestIp);
+        builder.withClaim("qm_security_expireTime",qmTokenInfo.getExpireTime());
         // 封装自定义信息
         Map<String, String> infoMap = qmTokenInfo.getInfoMap();
         if (infoMap != null) {
@@ -95,14 +83,15 @@ public class QmSecurityManager implements Qmbject {
         // 获取当前时间的unix时间戳
         long currentTimeMillis = System.currentTimeMillis();
         // 设置token过期时间，毫秒 * 1000 + 当前时间戳
-        builder.withExpiresAt(new Date(currentTimeMillis + (expireTime * 1000)));
+        builder.withExpiresAt(new Date(currentTimeMillis + (qmTokenInfo.getExpireTime() * 1000)));
         // 签发时间 当前时间
         builder.withIssuedAt(new Date(currentTimeMillis));
         try {
             // 将这些信息生成token签名
-            String token = builder.sign(Algorithm.HMAC256(qmSecurityContent.getTokenSecret()));
+            String token = builder.sign(Algorithm.HMAC256(QmSecurityContent.TOKEN_SECRET));
             // AES加密手段
             token = QmSecurityAESUtil.encryptAES(token);
+            QmRedisClient.set("Token_" + token,qmTokenInfo,60);
             return token;
         } catch (Exception e) {
             throw new QmSecurityLoginErrorException("签名错误！",e);
@@ -174,7 +163,7 @@ public class QmSecurityManager implements Qmbject {
      */
     private QmPermissions updateRoleQmPermissionsPack(int roleId) {
         QmPermissions qmPermissions = new QmPermissions();
-        List<String> matchUrls = qmSecurityContent.getQmSecurityRealm().authorizationPermissions(roleId);
+        List<String> matchUrls = QmSecurityContent.REALM.authorizationPermissions(roleId);
         qmPermissions.setRoleId(roleId);
         qmPermissions.setMatchUrls(matchUrls);
         return qmPermissions;
@@ -204,11 +193,7 @@ public class QmSecurityManager implements Qmbject {
      */
     private List<QmPermissions> getCacheQmPermissions() {
         // 是否开启Redis管理权限
-        if (qmSecurityContent.isStartRedis()) {
             return (List<QmPermissions>) QmRedisClient.get(QM_PERMISSIONS_KEY);
-        }
-        // 使用application进行缓存
-        return (List<QmPermissions>) application.getAttribute(QM_PERMISSIONS_KEY);
     }
 
     /**
@@ -219,15 +204,11 @@ public class QmSecurityManager implements Qmbject {
      */
     private void setCacheQmPermissions(List<QmPermissions> qmPermissionsList) {
         // 是否开启Redis管理权限
-        if (qmSecurityContent.isStartRedis()) {
             try {
                 QmRedisClient.set(QM_PERMISSIONS_KEY, qmPermissionsList);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-        // 使用application进行缓存
-        application.setAttribute(QM_PERMISSIONS_KEY, qmPermissionsList);
     }
 
 

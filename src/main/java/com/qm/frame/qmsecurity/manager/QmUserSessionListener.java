@@ -1,6 +1,5 @@
 package com.qm.frame.qmsecurity.manager;
 
-import com.qm.frame.basic.util.QmSpringManager;
 import com.qm.frame.qmsecurity.config.QmSecurityContent;
 import com.qm.frame.qmsecurity.entity.QmSessionInfo;
 
@@ -29,8 +28,7 @@ public class QmUserSessionListener implements HttpSessionBindingListener {
      * 初始化该监听回调接口
      */
     public QmUserSessionListener() {
-        QmSecurityContent qmSecurityContent = QmSpringManager.getBean(QmSecurityContent.class);
-        this.qmSecuritySessionEvent = qmSecurityContent.getQmSecuritySessionEvent();
+        this.qmSecuritySessionEvent = QmSecurityContent.SESSION_EVENT;
     }
 
     /**

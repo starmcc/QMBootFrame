@@ -1,5 +1,8 @@
 package com.qm.frame.qmsecurity.basic;
 
+import com.qm.frame.qmsecurity.entity.QmTokenInfo;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**

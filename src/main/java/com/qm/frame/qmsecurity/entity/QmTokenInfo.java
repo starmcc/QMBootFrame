@@ -11,10 +11,28 @@ import java.util.Map;
  */
 public class QmTokenInfo {
 
-    private String userName;
+    private String identify;
     private int roleId;
     private String requestIp;
     private Map<String, String> infoMap;
+    private long expireTime = 60 * 60; // 有效期 默认1小时
+    private long tokenActiveTime = 60 * 30; // 默认半小时活跃期
+
+    public long getTokenActiveTime() {
+        return tokenActiveTime;
+    }
+
+    public void setTokenActiveTime(long tokenActiveTime) {
+        this.tokenActiveTime = tokenActiveTime;
+    }
+
+    public long getExpireTime() {
+        return expireTime;
+    }
+
+    public void setExpireTime(long expireTime) {
+        this.expireTime = expireTime;
+    }
 
     public Map<String, String> getInfoMap() {
         return infoMap;
@@ -24,12 +42,12 @@ public class QmTokenInfo {
         this.infoMap = infoMap;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getIdentify() {
+        return identify;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setIdentify(String identify) {
+        this.identify = identify;
     }
 
     public int getRoleId() {
