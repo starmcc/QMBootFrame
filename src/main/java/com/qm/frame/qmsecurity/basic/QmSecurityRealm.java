@@ -1,8 +1,7 @@
 package com.qm.frame.qmsecurity.basic;
 
-import com.qm.frame.qmsecurity.entity.QmTokenInfo;
-
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -23,5 +22,14 @@ public interface QmSecurityRealm {
      * @return
      */
     List<String> authorizationPermissions(int roleId);
+
+    /**
+     * 当安全校验不通过时回调该方法
+     *
+     * @param request HttpServletRequest
+     * @param response HttpServletResponse
+     * @param type 1=找不到用户信息,登录超时,2=检测不到token拒绝访问,3=Token失效或已过期,4=请求ip校验失败,5=权限不足,拒绝访问
+     */
+    void noPassCallBack(HttpServletRequest request, HttpServletResponse response, int type);
 
 }

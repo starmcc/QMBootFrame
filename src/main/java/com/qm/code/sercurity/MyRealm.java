@@ -1,9 +1,14 @@
 package com.qm.code.sercurity;
 
 import com.qm.code.service.RoleService;
+import com.qm.frame.basic.controller.QmCode;
+import com.qm.frame.basic.controller.QmController;
 import com.qm.frame.qmsecurity.basic.QmSecurityRealm;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +19,7 @@ import java.util.List;
  * @date 2018/12/23 2:20
  * @Description 自定义realm
  */
-public class MyRealm implements QmSecurityRealm {
+public class MyRealm extends QmController implements QmSecurityRealm {
 
     @Autowired
     private RoleService roleService;
@@ -31,5 +36,15 @@ public class MyRealm implements QmSecurityRealm {
         //}
         matchUrls.add("/**");
         return matchUrls;
+    }
+
+
+    @Override
+    public void noPassCallBack(HttpServletRequest request, HttpServletResponse response, int type) {
+        try {
+            response.getWriter().print(super.sendJSON(QmCode._104));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -1,7 +1,5 @@
 package com.qm.frame.qmsecurity.basic;
 
-import com.qm.frame.basic.controller.QmCode;
-import com.qm.frame.basic.controller.QmController;
 import com.qm.frame.basic.util.HttpApiUtil;
 import com.qm.frame.basic.util.QmRedisClient;
 import com.qm.frame.qmsecurity.config.QmSecurityContent;
@@ -30,7 +28,7 @@ import java.lang.reflect.Method;
  * @date 2018/12/22 16:56
  * @Description QmSecurity安全拦截器
  */
-public class QmSecurityInterceptor extends QmController implements HandlerInterceptor {
+public class QmSecurityInterceptor implements HandlerInterceptor {
 
     // 日志工具
     private static final Logger LOG = LoggerFactory.getLogger(QmSecurityInterceptor.class);
@@ -76,7 +74,7 @@ public class QmSecurityInterceptor extends QmController implements HandlerInterc
             QmUserSessionListener qmUserSessionListener = (QmUserSessionListener) session.getAttribute("qmUserSessionListener");
             if (qmUserSessionListener == null) {
                 LOG.info("※找不到用户信息,登录超时※");
-                response.getWriter().print(super.sendJSON(QmCode._103));
+                QmSecurityContent.REALM.noPassCallBack(request,response,1);
                 return false;
             } else {
                 QmSessionInfo qmSessionInfo = qmUserSessionListener.getQmSessionInfo();
@@ -90,7 +88,7 @@ public class QmSecurityInterceptor extends QmController implements HandlerInterc
             // 如果为空则直接拦截
             if (token == null) {
                 LOG.info("※检测不到token拒绝访问※");
-                response.getWriter().print(super.sendJSON(QmCode._103));
+                QmSecurityContent.REALM.noPassCallBack(request,response,2);
                 return false;
             }
             LOG.info("※正在验证Token是否正确※");
@@ -102,7 +100,7 @@ public class QmSecurityInterceptor extends QmController implements HandlerInterc
                 // 重新签发token失败
                 if (qmTokenInfo == null) {
                     LOG.info("※Token失效或已过期※");
-                    response.getWriter().print(super.sendJSON(QmCode._103));
+                    QmSecurityContent.REALM.noPassCallBack(request,response,3);
                     return false;
                 }
             } else {
@@ -110,7 +108,7 @@ public class QmSecurityInterceptor extends QmController implements HandlerInterc
                 String requestIp = HttpApiUtil.getHttpIp(request);
                 if (!requestIp.equals(qmTokenInfo.getRequestIp())) {
                     LOG.info("※请求ip校验失败※");
-                    response.getWriter().print(super.sendJSON(QmCode._103));
+                    QmSecurityContent.REALM.noPassCallBack(request,response,4);
                     return false;
                 }
             }
@@ -131,7 +129,7 @@ public class QmSecurityInterceptor extends QmController implements HandlerInterc
             boolean is = qmSecurityBasic.verifyPermissions(path, qmPermissions.getMatchUrls());
             if (!is) {
                 LOG.info("※权限不足,拒绝访问※");
-                response.getWriter().print(super.sendJSON(QmCode._104));
+                QmSecurityContent.REALM.noPassCallBack(request,response,5);
                 return false;
             }
         }

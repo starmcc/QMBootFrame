@@ -40,7 +40,4 @@ public class QmSecurityContent {
      * 设置session监听器的回调
      */
     public static QmSecuritySessionEvent SESSION_EVENT;
-
-
-
 }
