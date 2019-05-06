@@ -42,7 +42,7 @@ public class MyRealm extends QmController implements QmSecurityRealm {
     @Override
     public void noPassCallBack(HttpServletRequest request, HttpServletResponse response, int type) {
         try {
-            response.getWriter().print(super.sendJSON(QmCode._104));
+            response.getWriter().print(super.sendJSON(QmCode._103));
         } catch (IOException e) {
             e.printStackTrace();
         }
