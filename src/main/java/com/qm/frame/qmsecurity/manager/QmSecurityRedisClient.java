@@ -9,10 +9,26 @@ package com.qm.frame.qmsecurity.manager;
  */
 public interface QmSecurityRedisClient {
 
+    /**
+     * 设置值到缓存中
+     * @param k 键
+     * @param v 值
+     */
     void set(String k,Object v);
 
+    /**
+     * 设置值到缓存中
+     * @param k 键
+     * @param v 值
+     * @param exp 单位(秒)
+     */
     void set(String k,Object v,long exp);
 
+    /**
+     * 获取缓存中该键的值
+     * @param k 键
+     * @return 值
+     */
     Object get(String k);
 
 }
