@@ -1,7 +1,5 @@
 package com.qm.frame.basic.init;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -15,15 +13,13 @@ import javax.annotation.PreDestroy;
 @Component
 public class InitStartApi {
 
-    private final static Logger LOG = LoggerFactory.getLogger(InitStartApi.class);
-
     /**
      * @Title init
      * @Description 项目启动时，只执行一次
      */
     @PostConstruct
     public void init() {
-        LOG.info("\n" +
+        System.out.println("\n" +
                 " .----------------. .----------------. .----------------. .----------------. .----------------. .----------------. .----------------. \n" +
                 "| .--------------. | .--------------. | .--------------. | .--------------. | .--------------. | .--------------. | .--------------. |\n" +
                 "| |    ___       | | | ____    ____ | | |  _________   | | |  _______     | | |      __      | | | ____    ____ | | |  _________   | |\n" +
@@ -41,9 +37,8 @@ public class InitStartApi {
                 "\n帮助文档:[https://github.com/starmcc/QMBoootFrame/wiki]");
     }
 
-
     @PreDestroy
     public void preDestroy() {
-        LOG.info("浅梦gitHub:https://github.com/starmcc/QMBoootFrame");
+        System.out.println("浅梦gitHub:https://github.com/starmcc/QMBoootFrame");
     }
 }

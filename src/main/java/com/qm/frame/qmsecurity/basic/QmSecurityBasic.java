@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 
+import javax.crypto.IllegalBlockSizeException;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
@@ -61,9 +62,11 @@ public class QmSecurityBasic {
             return getTokenInfo(token);
         } catch (JWTVerificationException e) {
             LOG.info("token已失效!");
+        } catch (IllegalBlockSizeException e) {
+            LOG.info("解析token错误,系统无法识别该token!");
         } catch (UnsupportedEncodingException e) {
             throw new QmSecurityEncodingException("jwt转码发生了异常!",e);
-        } catch (Exception e) {
+        } catch (Exception e){
             e.printStackTrace();
         }
         return null;
@@ -76,7 +79,7 @@ public class QmSecurityBasic {
      * @return
      * @throws Exception
      */
-    protected static QmTokenInfo getTokenInfo(String token) throws Exception {
+    protected static QmTokenInfo getTokenInfo(String token) throws IllegalBlockSizeException, UnsupportedEncodingException {
         JWTVerifier verifier = JWT.require(Algorithm.HMAC256(QmSecurityContent.tokenSecret)).build();
         // jwt校验token
         DecodedJWT jwt = verifier.verify(token);
