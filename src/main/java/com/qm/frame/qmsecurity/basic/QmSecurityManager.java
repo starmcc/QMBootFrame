@@ -8,6 +8,7 @@ import com.qm.frame.qmsecurity.config.QmSecurityContent;
 import com.qm.frame.qmsecurity.entity.QmPermissions;
 import com.qm.frame.qmsecurity.entity.QmSessionInfo;
 import com.qm.frame.qmsecurity.entity.QmTokenInfo;
+import com.qm.frame.qmsecurity.exception.QmSecurityRedisException;
 import com.qm.frame.qmsecurity.exception.QmSecuritySignTokenException;
 import com.qm.frame.qmsecurity.manager.QmUserSessionListener;
 import com.qm.frame.qmsecurity.manager.Qmbject;
@@ -95,7 +96,11 @@ public class QmSecurityManager implements Qmbject {
             String token = builder.sign(Algorithm.HMAC256(QmSecurityContent.tokenSecret));
             // AES加密手段
             token = QmSecurityAesTools.encryptAES(token);
-            QmSecurityContent.redisclient.set("Token_" + token, qmTokenInfo, qmTokenInfo.getTokenActiveTime());
+            try {
+                QmSecurityContent.redisclient.set("Token_" + token, qmTokenInfo, qmTokenInfo.getTokenActiveTime());
+            } catch (Exception e) {
+                throw new QmSecurityRedisException(e);
+            }
             return token;
         } catch (Exception e) {
             throw new QmSecuritySignTokenException("签名错误！", e);
@@ -198,7 +203,11 @@ public class QmSecurityManager implements Qmbject {
      */
     private List<QmPermissions> getCacheQmPermissions() {
         // 是否开启Redis管理权限
-        return (List<QmPermissions>) QmSecurityContent.redisclient.get(QM_PERMISSIONS_KEY);
+        try {
+            return (List<QmPermissions>) QmSecurityContent.redisclient.get(QM_PERMISSIONS_KEY);
+        } catch (Exception e) {
+            throw new QmSecurityRedisException(e);
+        }
     }
 
     /**
@@ -212,7 +221,7 @@ public class QmSecurityManager implements Qmbject {
         try {
             QmSecurityContent.redisclient.set(QM_PERMISSIONS_KEY, qmPermissionsList);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new QmSecurityRedisException(e);
         }
     }
 
@@ -280,7 +289,11 @@ public class QmSecurityManager implements Qmbject {
             // 保存到作用域中提供直接缓存
             request.setAttribute(QmTokenInfo.class.getName(), qmTokenInfo);
             // 缓存 token 活跃期
-            QmSecurityContent.redisclient.set("token_" + token, qmTokenInfo, qmTokenInfo.getTokenActiveTime());
+            try {
+                QmSecurityContent.redisclient.set("token_" + token, qmTokenInfo, qmTokenInfo.getTokenActiveTime());
+            } catch (Exception e) {
+                throw new QmSecurityRedisException(e);
+            }
         }
         // 该判断为如果标注了@QmPass且needLogin为true时，则isPerssions为false，就不会进入授权匹配了。
         if (isPerssions) {
@@ -308,11 +321,16 @@ public class QmSecurityManager implements Qmbject {
      * @return
      */
     private QmTokenInfo restartAuth(HttpServletResponse response, String token) {
+        Object obj = null;
         try {
             // 查看缓存中是否存在该对象qmTokenInfo
-            Object obj = QmSecurityContent.redisclient.get("token_" + token);
-            // 如果找不到证明不活跃已过期
-            if (obj == null) return null;
+            obj = QmSecurityContent.redisclient.get("token_" + token);
+        } catch (Exception e) {
+            throw new QmSecurityRedisException(e);
+        }
+        // 如果找不到证明不活跃已过期
+        if (obj == null) return null;
+        try {
             QmTokenInfo qmTokenInfo = (QmTokenInfo) obj;
             // 获取到qmTokenInfo对象后，进行重新登录
             token = QmSecurityManager.getQmbject().login(qmTokenInfo);
