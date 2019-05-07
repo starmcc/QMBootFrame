@@ -29,8 +29,8 @@ public class QmSecurityAesTools {
     protected static String encryptAES(String data) throws Exception {
         Date date = new Date();
         String str = data;
-        for (int i = 0; i < QmSecurityContent.ENCRYPT_NUMBER; i++) {
-            str = encryptAES(str, QmSecurityContent.TOKEN_SECRET);
+        for (int i = 0; i < QmSecurityContent.encryptNumber; i++) {
+            str = encryptAES(str, QmSecurityContent.tokenSecret);
         }
         LOG.debug("加密用时：" + (new Date().getTime() - date.getTime()));
         return str;
@@ -46,8 +46,8 @@ public class QmSecurityAesTools {
     protected static String decryptAES(String data) throws Exception {
         Date date = new Date();
         String str = data;
-        for (int i = 0; i < QmSecurityContent.ENCRYPT_NUMBER; i++) {
-            str = decryptAES(str, QmSecurityContent.TOKEN_SECRET);
+        for (int i = 0; i < QmSecurityContent.encryptNumber; i++) {
+            str = decryptAES(str, QmSecurityContent.tokenSecret);
         }
         LOG.debug("解密用时：" + (new Date().getTime() - date.getTime()));
         return str;

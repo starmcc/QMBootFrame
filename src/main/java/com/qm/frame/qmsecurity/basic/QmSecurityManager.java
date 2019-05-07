@@ -4,7 +4,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.qm.frame.basic.util.HttpApiUtil;
-import com.qm.frame.basic.util.QmRedisClient;
 import com.qm.frame.qmsecurity.config.QmSecurityContent;
 import com.qm.frame.qmsecurity.entity.QmPermissions;
 import com.qm.frame.qmsecurity.entity.QmSessionInfo;
@@ -93,10 +92,10 @@ public class QmSecurityManager implements Qmbject {
         builder.withIssuedAt(new Date(currentTimeMillis));
         try {
             // 将这些信息生成token签名
-            String token = builder.sign(Algorithm.HMAC256(QmSecurityContent.TOKEN_SECRET));
+            String token = builder.sign(Algorithm.HMAC256(QmSecurityContent.tokenSecret));
             // AES加密手段
             token = QmSecurityAesTools.encryptAES(token);
-            QmRedisClient.set("Token_" + token, qmTokenInfo, qmTokenInfo.getTokenActiveTime());
+            QmSecurityContent.redisclient.set("Token_" + token, qmTokenInfo, qmTokenInfo.getTokenActiveTime());
             return token;
         } catch (Exception e) {
             throw new QmSecuritySignTokenException("签名错误！", e);
@@ -169,7 +168,7 @@ public class QmSecurityManager implements Qmbject {
      */
     private QmPermissions updateRoleQmPermissionsPack(int roleId) {
         QmPermissions qmPermissions = new QmPermissions();
-        List<String> matchUrls = QmSecurityContent.REALM.authorizationPermissions(roleId);
+        List<String> matchUrls = QmSecurityContent.realm.authorizationPermissions(roleId);
         qmPermissions.setRoleId(roleId);
         qmPermissions.setMatchUrls(matchUrls);
         return qmPermissions;
@@ -199,7 +198,7 @@ public class QmSecurityManager implements Qmbject {
      */
     private List<QmPermissions> getCacheQmPermissions() {
         // 是否开启Redis管理权限
-        return (List<QmPermissions>) QmRedisClient.get(QM_PERMISSIONS_KEY);
+        return (List<QmPermissions>) QmSecurityContent.redisclient.get(QM_PERMISSIONS_KEY);
     }
 
     /**
@@ -211,7 +210,7 @@ public class QmSecurityManager implements Qmbject {
     private void setCacheQmPermissions(List<QmPermissions> qmPermissionsList) {
         // 是否开启Redis管理权限
         try {
-            QmRedisClient.set(QM_PERMISSIONS_KEY, qmPermissionsList);
+            QmSecurityContent.redisclient.set(QM_PERMISSIONS_KEY, qmPermissionsList);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -230,7 +229,7 @@ public class QmSecurityManager implements Qmbject {
     @Override
     public boolean verifyToken(HttpServletRequest request, HttpServletResponse response, boolean isPerssions) {
         // 校验类型
-        String typeName = QmSecurityContent.SESSION_OR_TOKEN;
+        String typeName = QmSecurityContent.sessionOrToken;
         // 角色id
         Integer roleId;
         if (typeName.trim().equalsIgnoreCase("session")) {
@@ -239,7 +238,7 @@ public class QmSecurityManager implements Qmbject {
             QmUserSessionListener qmUserSessionListener = (QmUserSessionListener) session.getAttribute("qmUserSessionListener");
             if (qmUserSessionListener == null) {
                 LOG.info("※找不到用户信息,登录超时※");
-                QmSecurityContent.REALM.noPassCallBack(request, response, 1);
+                QmSecurityContent.realm.noPassCallBack(request, response, 1);
                 return false;
             } else {
                 QmSessionInfo qmSessionInfo = qmUserSessionListener.getQmSessionInfo();
@@ -249,11 +248,11 @@ public class QmSecurityManager implements Qmbject {
             }
         } else {
             // 从头部获取token字段
-            String token = request.getHeader(QmSecurityContent.HEADER_TOKEN_KEYNAME);
+            String token = request.getHeader(QmSecurityContent.headerTokenKeyName);
             // 如果为空则直接拦截
             if (token == null) {
                 LOG.info("※检测不到token拒绝访问※");
-                QmSecurityContent.REALM.noPassCallBack(request, response, 2);
+                QmSecurityContent.realm.noPassCallBack(request, response, 2);
                 return false;
             }
             LOG.info("※正在验证Token是否正确※");
@@ -265,7 +264,7 @@ public class QmSecurityManager implements Qmbject {
                 // 重新签发token失败
                 if (qmTokenInfo == null) {
                     LOG.info("※Token失效或已过期※");
-                    QmSecurityContent.REALM.noPassCallBack(request, response, 3);
+                    QmSecurityContent.realm.noPassCallBack(request, response, 3);
                     return false;
                 }
             } else {
@@ -273,7 +272,7 @@ public class QmSecurityManager implements Qmbject {
                 String requestIp = HttpApiUtil.getHttpIp(request);
                 if (!requestIp.equals(qmTokenInfo.getRequestIp())) {
                     LOG.info("※请求ip校验失败※");
-                    QmSecurityContent.REALM.noPassCallBack(request, response, 4);
+                    QmSecurityContent.realm.noPassCallBack(request, response, 4);
                     return false;
                 }
             }
@@ -281,7 +280,7 @@ public class QmSecurityManager implements Qmbject {
             // 保存到作用域中提供直接缓存
             request.setAttribute(QmTokenInfo.class.getName(), qmTokenInfo);
             // 缓存 token 活跃期
-            QmRedisClient.set("token_" + token, qmTokenInfo, qmTokenInfo.getTokenActiveTime());
+            QmSecurityContent.redisclient.set("token_" + token, qmTokenInfo, qmTokenInfo.getTokenActiveTime());
         }
         // 该判断为如果标注了@QmPass且needLogin为true时，则isPerssions为false，就不会进入授权匹配了。
         if (isPerssions) {
@@ -294,7 +293,7 @@ public class QmSecurityManager implements Qmbject {
             boolean is = QmSecurityBasic.verifyPermissions(path, qmPermissions.getMatchUrls());
             if (!is) {
                 LOG.info("※权限不足,拒绝访问※");
-                QmSecurityContent.REALM.noPassCallBack(request, response, 5);
+                QmSecurityContent.realm.noPassCallBack(request, response, 5);
                 return false;
             }
         }
@@ -311,14 +310,14 @@ public class QmSecurityManager implements Qmbject {
     private QmTokenInfo restartAuth(HttpServletResponse response, String token) {
         try {
             // 查看缓存中是否存在该对象qmTokenInfo
-            Object obj = QmRedisClient.get("token_" + token);
+            Object obj = QmSecurityContent.redisclient.get("token_" + token);
             // 如果找不到证明不活跃已过期
             if (obj == null) return null;
             QmTokenInfo qmTokenInfo = (QmTokenInfo) obj;
             // 获取到qmTokenInfo对象后，进行重新登录
             token = QmSecurityManager.getQmbject().login(qmTokenInfo);
             if (token != null) {
-                response.setHeader(QmSecurityContent.HEADER_TOKEN_KEYNAME, token);
+                response.setHeader(QmSecurityContent.headerTokenKeyName, token);
                 return qmTokenInfo;
             }
         } catch (QmSecuritySignTokenException e) {

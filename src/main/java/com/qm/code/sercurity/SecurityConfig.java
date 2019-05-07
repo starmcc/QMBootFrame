@@ -32,16 +32,16 @@ public class SecurityConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         // 设置使用哪种校验机制 session or token
-        QmSecurityContent.SESSION_OR_TOKEN = "token";
+        QmSecurityContent.sessionOrToken = "token";
         // setTokenSecret 设置token加密秘钥
-        QmSecurityContent.TOKEN_SECRET = "key2018s2312tarmcc";
+        QmSecurityContent.tokenSecret = "key2018s2312tarmcc";
         // setQmSecurityRealm 设置自定义的Realm
-        QmSecurityContent.REALM = myRealm;
+        QmSecurityContent.realm = myRealm;
         // 设置加密次数
-        QmSecurityContent.ENCRYPT_NUMBER = 1;
+        QmSecurityContent.encryptNumber = 1;
         // 设置自定义的realm
         // (这里需要注意的是,自定义的realm如果需要spring注入内容的话最好在上方用Bean注入后，在Spring中拿出来放进去)
-        QmSecurityContent.REALM = myRealm;
+        QmSecurityContent.realm = myRealm;
         // 把框架添加到拦截器队列中,设置接管所有访问路径。
         QmSecurityInterceptor qmSecurityInterceptor = new QmSecurityInterceptor();
         // 添加拦截器

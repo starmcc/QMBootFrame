@@ -77,7 +77,7 @@ public class QmSecurityBasic {
      * @throws Exception
      */
     protected static QmTokenInfo getTokenInfo(String token) throws Exception {
-        JWTVerifier verifier = JWT.require(Algorithm.HMAC256(QmSecurityContent.TOKEN_SECRET)).build();
+        JWTVerifier verifier = JWT.require(Algorithm.HMAC256(QmSecurityContent.tokenSecret)).build();
         // jwt校验token
         DecodedJWT jwt = verifier.verify(token);
         //这里是一个坑，jwt.getClaims()的不是HashMap,调用remove方法报错,直接给他新的HashMap;

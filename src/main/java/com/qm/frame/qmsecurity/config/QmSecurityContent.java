@@ -1,8 +1,6 @@
 package com.qm.frame.qmsecurity.config;
 
-import com.qm.frame.qmsecurity.manager.QmSecurityRealm;
-import com.qm.frame.qmsecurity.manager.QmSecurityRealmTemplate;
-import com.qm.frame.qmsecurity.manager.QmSecuritySessionEvent;
+import com.qm.frame.qmsecurity.manager.*;
 
 /**
  * Copyright © 2018浅梦工作室}. All rights reserved.
@@ -16,29 +14,34 @@ public class QmSecurityContent {
     /**
      * 校验机制
      */
-    public static String SESSION_OR_TOKEN = "token";
+    public static String sessionOrToken = "token";
 
     /**
      * 设置token加密秘钥
      */
-    public static String TOKEN_SECRET = "TOKEN_SECRET";
+    public static String tokenSecret = "tokenSecret";
 
     /**
      * 设置请求头中携带的token
      */
-    public static String HEADER_TOKEN_KEYNAME = "token";
+    public static String headerTokenKeyName = "token";
 
     /**
      * 设置token加密次数，底层调用AES对称加密算法
      */
-    public static int ENCRYPT_NUMBER = 2;
+    public static int encryptNumber = 1;
 
     /**
      * 设置自定义的realm
      */
-    public static QmSecurityRealm REALM = new QmSecurityRealmTemplate();
+    public static QmSecurityRealm realm = new QmSecurityRealmTemplate();
     /**
      * 设置session监听器的回调
      */
-    public static QmSecuritySessionEvent SESSION_EVENT;
+    public static QmSecuritySessionEvent sessionEvent = new QmSecuritySessionEventTemplate();
+
+    /**
+     * 设置Redis实现类
+     */
+    public static QmSecurityRedisClient redisclient = new QmSecurityRedisClientTemplate();
 }

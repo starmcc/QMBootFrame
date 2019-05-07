@@ -28,7 +28,7 @@ public class QmUserSessionListener implements HttpSessionBindingListener {
      * 初始化该监听回调接口
      */
     public QmUserSessionListener() {
-        this.qmSecuritySessionEvent = QmSecurityContent.SESSION_EVENT;
+        this.qmSecuritySessionEvent = QmSecurityContent.sessionEvent;
     }
 
     /**
