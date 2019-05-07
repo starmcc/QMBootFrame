@@ -15,7 +15,7 @@ public class QmTokenInfo {
     private int roleId; // 角色id
     private String requestIp; // 请求ip地址
     private Map<String, String> infoMap; // 用户基本信息
-    private long expireTime = 60 * 60; // 有效期 默认1小时
+    private long expireTime = 60 * 60; // token有效期 默认1小时
     private long tokenActiveTime = 60 * 30; // 默认半小时活跃期
 
     public long getTokenActiveTime() {

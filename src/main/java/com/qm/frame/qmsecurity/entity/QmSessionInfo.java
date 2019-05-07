@@ -11,6 +11,15 @@ public class QmSessionInfo {
 
     private Object user;
     private Integer roleId;
+    private long expireTime = 60 * 60; // 有效期 默认1小时
+
+    public long getExpireTime() {
+        return expireTime;
+    }
+
+    public void setExpireTime(long expireTime) {
+        this.expireTime = expireTime;
+    }
 
     public Object getUser() {
         return user;

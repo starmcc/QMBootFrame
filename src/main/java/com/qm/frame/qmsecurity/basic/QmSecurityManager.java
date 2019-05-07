@@ -62,7 +62,7 @@ public class QmSecurityManager implements Qmbject {
     @Override
     public String login(QmTokenInfo qmTokenInfo) throws QmSecuritySignTokenException {
         // 判断是否存在必须的参数信息
-        if (StringUtils.isEmpty(qmTokenInfo.getIdentify()) || qmTokenInfo.getExpireTime() <= 0) {
+        if (StringUtils.isEmpty(qmTokenInfo.getIdentify())) {
             throw new QmSecuritySignTokenException("请检查qmTokenInfo的参数是否完整！");
         }
         JWTCreator.Builder builder = JWT.create();
@@ -109,12 +109,15 @@ public class QmSecurityManager implements Qmbject {
 
 
     @Override
-    public void loginForSession(QmSessionInfo qmSessionInfo, int expireTime) {
+    public void loginForSession(QmSessionInfo qmSessionInfo) throws QmSecuritySignTokenException{
+        if (qmSessionInfo.getUser() == null) {
+            throw new QmSecuritySignTokenException("请检查qmTokenInfo的参数是否完整！");
+        }
         HttpSession session = request.getSession();
         QmUserSessionListener qmUserSessionListener = new QmUserSessionListener();
         qmUserSessionListener.setQmSessionInfo(qmSessionInfo);
         session.setAttribute("userCountListener", qmUserSessionListener);
-        session.setMaxInactiveInterval(expireTime);
+        session.setMaxInactiveInterval((int)qmSessionInfo.getExpireTime());
     }
 
     @Override
