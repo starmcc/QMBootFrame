@@ -69,13 +69,14 @@ public class QmSecurityController extends QmController {
 
     @QmPass
     @GetMapping("/loginForSession")
-    public String loginForSession() {
+    public String loginForSession() throws QmSecuritySignTokenException {
         // 利用QmSecurityManager获取qmbject实例。
         Qmbject qmbject = QmSecurityManager.getQmbject();
         QmSessionInfo qmSessionInfo = new QmSessionInfo();
         qmSessionInfo.setUser("admin");
         qmSessionInfo.setRoleId(1);
-        qmbject.loginForSession(qmSessionInfo,100);
+        qmSessionInfo.setExpireTime(100);
+        qmbject.loginForSession(qmSessionInfo);
         return super.sendJSON(QmCode._1);
     }
 
