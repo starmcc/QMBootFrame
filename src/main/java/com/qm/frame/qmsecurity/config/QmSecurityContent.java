@@ -1,6 +1,7 @@
 package com.qm.frame.qmsecurity.config;
 
-import com.qm.frame.qmsecurity.basic.QmSecurityRealm;
+import com.qm.frame.qmsecurity.manager.QmSecurityRealm;
+import com.qm.frame.qmsecurity.manager.QmSecurityRealmTemplate;
 import com.qm.frame.qmsecurity.manager.QmSecuritySessionEvent;
 
 /**
@@ -35,7 +36,7 @@ public class QmSecurityContent {
     /**
      * 设置自定义的realm
      */
-    public static QmSecurityRealm REALM;
+    public static QmSecurityRealm REALM = new QmSecurityRealmTemplate();
     /**
      * 设置session监听器的回调
      */

@@ -3,8 +3,10 @@ package com.qm.frame.qmsecurity.manager;
 import com.qm.frame.qmsecurity.entity.QmPermissions;
 import com.qm.frame.qmsecurity.entity.QmSessionInfo;
 import com.qm.frame.qmsecurity.entity.QmTokenInfo;
-import com.qm.frame.qmsecurity.exception.QmSecurityLoginErrorException;
+import com.qm.frame.qmsecurity.exception.QmSecuritySignTokenException;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -23,7 +25,7 @@ public interface Qmbject {
      * @param expireTime  有效时长(秒单位)
      * @return
      */
-    String login(QmTokenInfo qmTokenInfo) throws QmSecurityLoginErrorException;
+    String login(QmTokenInfo qmTokenInfo) throws QmSecuritySignTokenException;
 
     /**
      * session模式登录
@@ -77,5 +79,12 @@ public interface Qmbject {
      * @return
      */
     QmTokenInfo getTokenInfo();
+
+    /**
+     *
+     * @param request
+     * @return
+     */
+    boolean verifyToken(HttpServletRequest request, HttpServletResponse response, boolean isPerssions);
 
 }

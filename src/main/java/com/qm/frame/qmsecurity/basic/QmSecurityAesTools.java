@@ -15,9 +15,9 @@ import java.util.Date;
 /**
  * AES对称加密技术
  */
-public class QmSecurityAESUtil {
+public class QmSecurityAesTools {
 
-    private static final Logger LOG = LoggerFactory.getLogger(QmSecurityAESUtil.class);
+    private static final Logger LOG = LoggerFactory.getLogger(QmSecurityAesTools.class);
 
     /**
      * 加密封装
@@ -26,7 +26,7 @@ public class QmSecurityAESUtil {
      * @return
      * @throws Exception
      */
-    public static String encryptAES(String data) throws Exception {
+    protected static String encryptAES(String data) throws Exception {
         Date date = new Date();
         String str = data;
         for (int i = 0; i < QmSecurityContent.ENCRYPT_NUMBER; i++) {
@@ -43,7 +43,7 @@ public class QmSecurityAESUtil {
      * @return
      * @throws Exception
      */
-    public static String decryptAES(String data) throws Exception {
+    protected static String decryptAES(String data) throws Exception {
         Date date = new Date();
         String str = data;
         for (int i = 0; i < QmSecurityContent.ENCRYPT_NUMBER; i++) {
@@ -51,16 +51,6 @@ public class QmSecurityAESUtil {
         }
         LOG.debug("解密用时：" + (new Date().getTime() - date.getTime()));
         return str;
-    }
-
-    /**
-     * main
-     */
-    public static void main(String[] args) throws Exception {
-        //...start...
-        String str = "测试加密文本";
-        String mw = encryptAES(str, "shdiosadoiwaoxczcs");
-        System.out.println(mw);
     }
 
 

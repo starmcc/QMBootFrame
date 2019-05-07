@@ -3,7 +3,7 @@ package com.qm.code.sercurity;
 import com.qm.code.service.RoleService;
 import com.qm.frame.basic.controller.QmCode;
 import com.qm.frame.basic.controller.QmController;
-import com.qm.frame.qmsecurity.basic.QmSecurityRealm;
+import com.qm.frame.qmsecurity.manager.QmSecurityRealm;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;

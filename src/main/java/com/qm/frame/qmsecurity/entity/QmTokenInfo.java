@@ -11,10 +11,10 @@ import java.util.Map;
  */
 public class QmTokenInfo {
 
-    private String identify;
-    private int roleId;
-    private String requestIp;
-    private Map<String, String> infoMap;
+    private String identify; // 身份校验唯一标识
+    private int roleId; // 角色id
+    private String requestIp; // 请求ip地址
+    private Map<String, String> infoMap; // 用户基本信息
     private long expireTime = 60 * 60; // 有效期 默认1小时
     private long tokenActiveTime = 60 * 30; // 默认半小时活跃期
 

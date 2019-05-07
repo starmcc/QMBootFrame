@@ -1,23 +1,11 @@
 package com.qm.frame.qmsecurity.basic;
 
-import com.qm.frame.basic.util.HttpApiUtil;
-import com.qm.frame.basic.util.QmRedisClient;
-import com.qm.frame.qmsecurity.config.QmSecurityContent;
-import com.qm.frame.qmsecurity.entity.QmPermissions;
-import com.qm.frame.qmsecurity.entity.QmSessionInfo;
-import com.qm.frame.qmsecurity.entity.QmTokenInfo;
-import com.qm.frame.qmsecurity.exception.QmSecurityLoginErrorException;
-import com.qm.frame.qmsecurity.manager.QmSecurityManager;
-import com.qm.frame.qmsecurity.manager.QmUserSessionListener;
 import com.qm.frame.qmsecurity.note.QmPass;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.lang.reflect.Method;
 
@@ -30,16 +18,7 @@ import java.lang.reflect.Method;
  */
 public class QmSecurityInterceptor implements HandlerInterceptor {
 
-    // 日志工具
-    private static final Logger LOG = LoggerFactory.getLogger(QmSecurityInterceptor.class);
     private QmSecurityBasic qmSecurityBasic;
-
-    /**
-     * 初始化该拦截器
-     */
-    public QmSecurityInterceptor() {
-        qmSecurityBasic = new QmSecurityBasic();
-    }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -64,102 +43,7 @@ public class QmSecurityInterceptor implements HandlerInterceptor {
                 }
             }
         }
-        // 校验类型
-        String typeName = QmSecurityContent.SESSION_OR_TOKEN;
-        // 角色id
-        Integer roleId;
-        if (typeName.trim().equalsIgnoreCase("session")) {
-            // 从session获取用户对象
-            HttpSession session = request.getSession();
-            QmUserSessionListener qmUserSessionListener = (QmUserSessionListener) session.getAttribute("qmUserSessionListener");
-            if (qmUserSessionListener == null) {
-                LOG.info("※找不到用户信息,登录超时※");
-                QmSecurityContent.REALM.noPassCallBack(request,response,1);
-                return false;
-            } else {
-                QmSessionInfo qmSessionInfo = qmUserSessionListener.getQmSessionInfo();
-                // 保存到作用域中提供直接缓存
-                request.setAttribute(QmUserSessionListener.class.getName(), qmSessionInfo);
-                roleId = qmSessionInfo.getRoleId();
-            }
-        } else {
-            // 从头部获取token字段
-            String token = request.getHeader(QmSecurityContent.HEADER_TOKEN_KEYNAME);
-            // 如果为空则直接拦截
-            if (token == null) {
-                LOG.info("※检测不到token拒绝访问※");
-                QmSecurityContent.REALM.noPassCallBack(request,response,2);
-                return false;
-            }
-            LOG.info("※正在验证Token是否正确※");
-            QmTokenInfo qmTokenInfo = qmSecurityBasic.verifyToken(token);
-            if (qmTokenInfo == null) {
-                // 尝试重新签发token
-                LOG.info("※正在尝试重新签发Token※");
-                qmTokenInfo = restartAuth(response,token);
-                // 重新签发token失败
-                if (qmTokenInfo == null) {
-                    LOG.info("※Token失效或已过期※");
-                    QmSecurityContent.REALM.noPassCallBack(request,response,3);
-                    return false;
-                }
-            } else {
-                LOG.info("※进行请求Ip单点匹配※");
-                String requestIp = HttpApiUtil.getHttpIp(request);
-                if (!requestIp.equals(qmTokenInfo.getRequestIp())) {
-                    LOG.info("※请求ip校验失败※");
-                    QmSecurityContent.REALM.noPassCallBack(request,response,4);
-                    return false;
-                }
-            }
-            roleId = qmTokenInfo.getRoleId();
-            // 保存到作用域中提供直接缓存
-            request.setAttribute(QmTokenInfo.class.getName(), qmTokenInfo);
-            // 缓存 token 活跃期
-            QmRedisClient.set("token_" + token, qmTokenInfo, qmTokenInfo.getTokenActiveTime());
-        }
-        // 该判断为如果标注了@QmPass且needLogin为true时，则isPerssions为false，就不会进入授权匹配了。
-        if (isPerssions) {
-            LOG.info("※正在进行授权访问匹配※");
-            // 获取请求路由
-            String path = request.getServletPath();
-            // 获取该角色的权限信息
-            QmPermissions qmPermissions = QmSecurityManager.getQmbject().extractQmPermissions(roleId, false);
-            // 校验该角色是否存在匹配当前请求url的匹配规则。
-            boolean is = qmSecurityBasic.verifyPermissions(path, qmPermissions.getMatchUrls());
-            if (!is) {
-                LOG.info("※权限不足,拒绝访问※");
-                QmSecurityContent.REALM.noPassCallBack(request,response,5);
-                return false;
-            }
-        }
-        LOG.info("※用户通过安全校验※");
-        return true;
-    }
-
-    /**
-     * 重新签发token
-     *
-     * @param token
-     * @return
-     */
-    private QmTokenInfo restartAuth(HttpServletResponse response,String token) {
-        try {
-            // 查看缓存中是否存在该对象qmTokenInfo
-            Object obj = QmRedisClient.get("token_" + token);
-            // 如果找不到证明不活跃已过期
-            if (obj == null) return null;
-            QmTokenInfo qmTokenInfo = (QmTokenInfo) obj;
-            // 获取到qmTokenInfo对象后，进行重新登录
-            token = QmSecurityManager.getQmbject().login(qmTokenInfo);
-            if (token != null) {
-                response.setHeader("token", token);
-                return qmTokenInfo;
-            }
-        } catch (QmSecurityLoginErrorException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return QmSecurityManager.getQmbject().verifyToken(request, response, isPerssions);
     }
 
 }

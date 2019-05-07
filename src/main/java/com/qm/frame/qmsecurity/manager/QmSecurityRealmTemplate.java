@@ -1,4 +1,4 @@
-package com.qm.frame.qmsecurity.basic;
+package com.qm.frame.qmsecurity.manager;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

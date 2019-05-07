@@ -8,11 +8,13 @@ import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.qm.frame.qmsecurity.config.QmSecurityContent;
 import com.qm.frame.qmsecurity.entity.QmTokenInfo;
+import com.qm.frame.qmsecurity.exception.QmSecurityEncodingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +37,7 @@ public class QmSecurityBasic {
      * @param matchingUrls
      * @return
      */
-    protected boolean verifyPermissions(String path, List<String> matchingUrls) {
+    protected static boolean verifyPermissions(String path, List<String> matchingUrls) {
         for (String matchUrl : matchingUrls) {
             if (verifyMatchURI(matchUrl, path)) {
                 return true;
@@ -51,14 +53,16 @@ public class QmSecurityBasic {
      * @param token
      * @return
      */
-    protected QmTokenInfo verifyToken(String token) {
+    protected static QmTokenInfo verifyToken(String token) {
         try {
             // AES解密token
-            token = QmSecurityAESUtil.decryptAES(token);
+            token = QmSecurityAesTools.decryptAES(token);
             // 获取token信息,期间已经进行了一次校验机制。如果过期返回的是空。
             return getTokenInfo(token);
         } catch (JWTVerificationException e) {
             LOG.info("token已失效!");
+        } catch (UnsupportedEncodingException e) {
+            throw new QmSecurityEncodingException("jwt转码发生了异常!",e);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -72,7 +76,7 @@ public class QmSecurityBasic {
      * @return
      * @throws Exception
      */
-    protected QmTokenInfo getTokenInfo(String token) throws Exception {
+    protected static QmTokenInfo getTokenInfo(String token) throws Exception {
         JWTVerifier verifier = JWT.require(Algorithm.HMAC256(QmSecurityContent.TOKEN_SECRET)).build();
         // jwt校验token
         DecodedJWT jwt = verifier.verify(token);
@@ -111,7 +115,7 @@ public class QmSecurityBasic {
      * @param requestUrl  请求地址
      * @return
      */
-    protected boolean verifyMatchURI(String matchingUrl, String requestUrl) {
+    protected static boolean verifyMatchURI(String matchingUrl, String requestUrl) {
         PathMatcher matcher = new AntPathMatcher();
         return matcher.match(matchingUrl, requestUrl);
     }

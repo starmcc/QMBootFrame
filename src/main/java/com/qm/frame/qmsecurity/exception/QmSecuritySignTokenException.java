@@ -7,13 +7,13 @@ package com.qm.frame.qmsecurity.exception;
  * @date 2019/5/6 21:50
  * @Description 登录异常
  */
-public class QmSecurityLoginErrorException extends Exception {
+public class QmSecuritySignTokenException extends Exception {
 
-    public QmSecurityLoginErrorException(String message) {
+    public QmSecuritySignTokenException(String message) {
         super(message);
     }
 
-    public QmSecurityLoginErrorException(String message, Throwable cause) {
+    public QmSecuritySignTokenException(String message, Throwable cause) {
         super(message, cause);
     }
 }

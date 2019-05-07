@@ -37,7 +37,7 @@ public class InitFilter extends QmController implements Filter {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html;charset=utf-8");
         HttpServletRequest req = (HttpServletRequest) request;
-        LOG.info("/n" + "请求URI：" + req.getRequestURI());
+        LOG.info("请求URI：" + req.getRequestURI());
         //特殊请求
         if (verifySpecialURI(req)) {
             chain.doFilter(request, response);

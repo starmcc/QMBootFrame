@@ -7,8 +7,8 @@ import com.qm.frame.basic.controller.QmCode;
 import com.qm.frame.basic.controller.QmController;
 import com.qm.frame.qmsecurity.entity.QmSessionInfo;
 import com.qm.frame.qmsecurity.entity.QmTokenInfo;
-import com.qm.frame.qmsecurity.exception.QmSecurityLoginErrorException;
-import com.qm.frame.qmsecurity.manager.QmSecurityManager;
+import com.qm.frame.qmsecurity.exception.QmSecuritySignTokenException;
+import com.qm.frame.qmsecurity.basic.QmSecurityManager;
 import com.qm.frame.qmsecurity.manager.Qmbject;
 import com.qm.frame.qmsecurity.note.QmPass;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,12 +54,12 @@ public class QmSecurityController extends QmController {
         Map<String,String> infoMap = new HashMap<>();
         infoMap.put("userJson", JSON.toJSONString(user));
         qmTokenInfo.setInfoMap(infoMap);
-        qmTokenInfo.setExpireTime(10);
+        qmTokenInfo.setExpireTime(60 * 60);
         // 调用login方法，并设置他的过期时间，生成token
         String token = null;
         try {
             token = qmbject.login(qmTokenInfo);
-        } catch (QmSecurityLoginErrorException e) {
+        } catch (QmSecuritySignTokenException e) {
             e.printStackTrace();
             System.out.println("签发token错误哦");
         }
