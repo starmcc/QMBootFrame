@@ -22,7 +22,7 @@ public class QmSecurityContent {
     public static String tokenSecret = "tokenSecret";
 
     /**
-     * 设置请求头中携带的token
+     * 设置请求头中携带token的字段名
      */
     public static String headerTokenKeyName = "token";
 
