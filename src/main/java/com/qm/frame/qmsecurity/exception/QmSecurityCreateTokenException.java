@@ -7,7 +7,7 @@ package com.qm.frame.qmsecurity.exception;
  * @date 2019/5/7 9:12
  * @Description 签发token时系统错误
  */
-public class QmSecurityCreateTokenException extends RuntimeException {
+public class QmSecurityCreateTokenException extends Exception {
 
     public QmSecurityCreateTokenException() {
         super();

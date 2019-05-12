@@ -7,6 +7,7 @@ import com.qm.frame.basic.controller.QmCode;
 import com.qm.frame.basic.controller.QmController;
 import com.qm.frame.qmsecurity.entity.QmUserInfo;
 import com.qm.frame.qmsecurity.exception.QmSecurityCacheException;
+import com.qm.frame.qmsecurity.exception.QmSecurityCreateTokenException;
 import com.qm.frame.qmsecurity.exception.QmSecurityQmUserInfoException;
 import com.qm.frame.qmsecurity.note.QmPass;
 import com.qm.frame.qmsecurity.qmbject.QmSecurityManager;
@@ -64,13 +65,17 @@ public class QmSecurityController extends QmController {
         try {
             token = qmbject.login(qmUserInfo);
         } catch (QmSecurityQmUserInfoException e) {
-            // 签发token时发生了异常!
+            // qmUserInfo参数异常
             e.printStackTrace();
-            return super.sendJSON(QmCode._3, "签名时发生了异常!", null);
+            return super.sendJSON(QmCode._3, "qmUserInfo参数异常!", null);
         } catch (QmSecurityCacheException e) {
             // 缓存异常!
             e.printStackTrace();
             return super.sendJSON(QmCode._4, "缓存异常!", null);
+        } catch (QmSecurityCreateTokenException e) {
+            // 签发token时发生了异常
+            e.printStackTrace();
+            return super.sendJSON(QmCode._3, "签名时发生了异常!", null);
         }
         // 将token返回给前端
         return super.sendJSON(QmCode._1, token);
