@@ -29,7 +29,7 @@ public interface Qmbject {
      * @param qmUserInfo 参与签名的信息对象
      * @return
      */
-    public String login(QmUserInfo qmUserInfo)
+    String login(QmUserInfo qmUserInfo)
             throws QmSecurityQmUserInfoException, QmSecurityCreateTokenException, QmSecurityCacheException;
 
     /**
