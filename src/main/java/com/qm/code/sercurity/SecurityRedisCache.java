@@ -8,7 +8,7 @@ import com.qm.frame.qmsecurity.cache.QmSecurityCache;
  *
  * @author 浅梦
  * @date 2019/5/7 9:50
- * @Description QmSecurity安全框架缓存默认模板
+ * @Description QmSecurity安全框架缓存接口实现
  */
 public class SecurityRedisCache implements QmSecurityCache {
 

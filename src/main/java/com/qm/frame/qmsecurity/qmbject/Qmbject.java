@@ -33,14 +33,14 @@ public interface Qmbject {
             throws QmSecurityQmUserInfoException, QmSecurityCreateTokenException, QmSecurityCacheException;
 
     /**
-     * 获取通过校验的用户对象
+     * 获取当前登录用户对象
      *
      * @return
      */
     QmUserInfo getUserInfo();
 
     /**
-     * 设置用户对象
+     * 更新当前登录用户对象
      *
      * @param qmUserInfo
      */

@@ -38,7 +38,7 @@ public class SecurityConfig implements WebMvcConfigurer {
         // 设置自定义的realm
         // (这里需要注意的是,自定义的realm如果需要spring注入内容的话最好在上方用Bean注入后，在Spring中拿出来放进去)
         QmSecurityContent.realm = myRealm;
-        // 设置redis缓存
+        // 设置redis缓存 注意如果不设置，则默认使用mapcache进行缓存。建议设置为redis缓存。
         QmSecurityContent.qmSecurityCache = new SecurityRedisCache();
         // 把框架添加到拦截器队列中,设置接管所有访问路径。
         QmSecurityInterceptor qmSecurityInterceptor = new QmSecurityInterceptor();
