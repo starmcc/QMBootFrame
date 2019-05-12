@@ -85,7 +85,7 @@ public class QmSecurityBasicImplementation implements QmSecurityBasic {
         if (isPerssions) {
             LOG.info("※正在进行授权URI匹配※");
             // 获取该角色的权限信息
-            List<String> matchingUrls = QmSecurityManager.getQmbject().extractMatchingUrls(false);
+            List<String> matchingUrls = QmSecurityManager.getQmbject().extractMatchingURI(false);
             // 获取请求路由 校验该角色是否存在匹配当前请求url的匹配规则。
             boolean is = this.verifyMatchingURI(request.getServletPath(), matchingUrls);
             if (!is) {

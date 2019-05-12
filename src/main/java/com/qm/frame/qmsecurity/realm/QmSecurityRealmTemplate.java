@@ -18,7 +18,7 @@ import java.util.List;
 public class QmSecurityRealmTemplate implements QmSecurityRealm {
 
     @Override
-    public List<String> authorizationPermissions(QmUserInfo qmUserInfo) {
+    public List<String> authorizationMatchingURI(QmUserInfo qmUserInfo) {
         List<String> list = new ArrayList<>();
         list.add("/**");
         return list;

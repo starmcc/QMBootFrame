@@ -31,7 +31,7 @@ public class MyRealm extends QmController implements QmSecurityRealm {
     }
 
     @Override
-    public List<String> authorizationPermissions(QmUserInfo qmUserInfo) {
+    public List<String> authorizationMatchingURI(QmUserInfo qmUserInfo) {
         // 获取用户对象
         User user = (User) qmUserInfo.getUser();
         // 获取角色id

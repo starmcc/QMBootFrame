@@ -23,7 +23,7 @@ public interface QmSecurityRealm {
      * @param qmUserInfo
      * @return
      */
-    List<String> authorizationPermissions(QmUserInfo qmUserInfo);
+    List<String> authorizationMatchingURI(QmUserInfo qmUserInfo);
 
 
     /**

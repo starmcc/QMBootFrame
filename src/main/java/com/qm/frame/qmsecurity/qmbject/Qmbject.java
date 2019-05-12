@@ -49,16 +49,15 @@ public interface Qmbject {
     /**
      * 动态获取角色权限
      * isNew=false：
-     * 则缓存中如果不存在的情况下，通过自定义的realm的authorizationPermissions方法获取最新信息。
+     * 则缓存中如果不存在的情况下，通过自定义的realm的authorizationMatchingURI方法获取最新信息。
      * 如果存在则直接获取该对象。
-     * <p>
      * isNew=true：
-     * 则无论如何都从自定义的realm的authorizationPermissions方法获取最新信息，并更新到缓存中。
+     * 则无论如何都从自定义的realm的authorizationMatchingURI方法获取最新信息，并更新到缓存中。
      *
      * @param isNew 是否一定获取最新信息
      * @return List<String> 返回角色权限
      */
-    List<String> extractMatchingUrls(boolean isNew);
+    List<String> extractMatchingURI(boolean isNew);
 
     /**
      * 注销用户

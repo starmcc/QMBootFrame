@@ -93,12 +93,12 @@ public class QmSecurityManager implements Qmbject {
 
 
     @Override
-    public List<String> extractMatchingUrls(boolean isNew) {
+    public List<String> extractMatchingURI(boolean isNew) {
         QmUserInfo qmUserInfo = this.getUserInfo();
         // 首先获取当前用户的许可URI
         List<String> matchingUrls = (List<String>) QmSecurityContent.qmSecurityCache.get("matchingUrls_" + qmUserInfo.getIdentify());
         if (isNew || matchingUrls == null) {
-            matchingUrls = QmSecurityContent.realm.authorizationPermissions(qmUserInfo);
+            matchingUrls = QmSecurityContent.realm.authorizationMatchingURI(qmUserInfo);
             // 半小时缓存时间
             QmSecurityContent.qmSecurityCache.put("matchingUrls_" + qmUserInfo.getIdentify(), matchingUrls, 60 * 30);
         }
