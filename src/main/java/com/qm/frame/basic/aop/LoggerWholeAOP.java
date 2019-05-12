@@ -65,7 +65,7 @@ public class LoggerWholeAOP {
      */
     @Around("qmPointcut()")
     public Object around(ProceedingJoinPoint pjp) throws Throwable {
-        LOG.debug("※※※※※※※※※※※※※※※※※※");
+        //LOG.debug("※※※※※※※※※※※※※※※※※※");
         return pjp.proceed();
     }
 
@@ -77,16 +77,14 @@ public class LoggerWholeAOP {
     @Before("qmPointcut()")
     public void before(JoinPoint jp) {
         starTime = System.currentTimeMillis();
-        StringBuffer logStr = new StringBuffer();
         // getTarget得到被代理的目标对象(要切入的目标对象)
-        logStr.append("\n※※※※※※※※※※※※※※※※※※\n");
-        logStr.append("请求定位:" + jp.getTarget().getClass().getName() + "\n");
+        LOG.info("※※※※※※※※※※※※※※※※※※");
+        LOG.info("请求定位:" + jp.getTarget().getClass().getName());
         // getSignature得到被代理的目标对象的方法名(返回被切入的目标方法名)
-        logStr.append("请求方法:【" + jp.getSignature().getName() + "】\n");
+        LOG.info("请求方法:【" + jp.getSignature().getName() + "】");
         // Arrays.toString(jp.getArgs())获得目标方法的参数列表
-        logStr.append("参数列表:【" + Arrays.toString(jp.getArgs()) + "】\n");
-        logStr.append("※※※※※※※※※※※※※※※※※※\n");
-        LOG.info(logStr.toString());
+        LOG.info("参数列表:【" + Arrays.toString(jp.getArgs()) + "】");
+        LOG.info("※※※※※※※※※※※※※※※※※※");
     }
 
     /**
@@ -97,10 +95,10 @@ public class LoggerWholeAOP {
      */
     @AfterReturning(pointcut = "qmPointcut()", returning = "result")
     public void afterReturning(JoinPoint jp, Object result) {
-        LOG.debug("\n※※※※※※※※※返回结果:【" + result + "】※※※※※※※※※\n");
+        LOG.debug("※※※※※※※※※响应结果:【" + result + "】※※※※※※※※※");
         Long endTime = System.currentTimeMillis();
         Long time = endTime - starTime;
-        LOG.info("\n※※※※※※※※※请求响应耗时：" + time + "/ms※※※※※※※※※");
+        LOG.info("※※※※※※※※※响应耗时：" + time + "/ms※※※※※※※※※");
         if (QM_OUT_METHOD != null) {
             QM_OUT_METHOD.responseOutHandling(jp, result, time);
         }

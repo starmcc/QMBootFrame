@@ -6,6 +6,8 @@ import com.qm.frame.mybatis.note.QmStyle;
 import com.qm.frame.mybatis.note.QmTable;
 import com.qm.frame.mybatis.util.QmBaseStyleUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -18,6 +20,9 @@ import java.util.*;
  * @Description 数据持久层封装DTO
  */
 public final class QmBaseDto {
+
+    private static final Logger LOG = LoggerFactory.getLogger(QmBaseDto.class);
+
     private final Object bean;
 
     private String tableName;
@@ -35,7 +40,6 @@ public final class QmBaseDto {
      */
     public <T> QmBaseDto(T bean, boolean isPrimaryKey) {
         this.bean = bean;
-        //this.isPrimaryKey = isPrimaryKey;
         final Class<?> clamm = bean.getClass();
         // 获取该实体的表名
         qmTable = clamm.getAnnotation(QmTable.class);
@@ -173,7 +177,7 @@ public final class QmBaseDto {
         resMap.put("primaryKey", primaryKey);
         resMap.put("params", params);
         resMap.put("tableName", tableName);
-        System.out.println(resMap);
+        LOG.debug("注入MyBatis数据：" + resMap.toString());
         return resMap;
     }
 

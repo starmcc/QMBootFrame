@@ -39,9 +39,10 @@ public class ConvertUtil {
      * @return
      * @Description 将map装换为javabean对象
      */
-    public static <T> void mapToBean(Map<String, Object> map, T bean) {
+    public static <T> T mapToBean(Map<String, Object> map, T bean) {
         BeanMap beanMap = BeanMap.create(bean);
         beanMap.putAll(map);
+        return bean;
     }
 
     /**

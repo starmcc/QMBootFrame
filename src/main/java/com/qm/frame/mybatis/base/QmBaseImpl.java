@@ -21,14 +21,13 @@ import java.util.Map;
 @Component
 public final class QmBaseImpl implements QmBase {
 
-    // 获取Mybatis SqlSession
-    @Autowired
-    private SqlSessionFactory sqlSessionFactory;
-
     /**
      * 命名空间
      */
     private static final String QM_NAMESPACE = "QmBaseMapper.";
+    // 获取Mybatis SqlSession
+    @Autowired
+    private SqlSessionFactory sqlSessionFactory;
 
     /**
      * 注入sqlSessionFactory
@@ -46,90 +45,83 @@ public final class QmBaseImpl implements QmBase {
      * @return
      */
     private String getSqlName(String sqlName) {
-        String methodName = null;
-        String nameSpace = null;
         try {
-            methodName = sqlName.substring(sqlName.indexOf("Mapper") + 6);
-            nameSpace = sqlName.substring(0, sqlName.indexOf("Mapper") + 6);
+            String methodName = sqlName.substring(sqlName.indexOf("Mapper") + 6);
+            String nameSpace = sqlName.substring(0, sqlName.indexOf("Mapper") + 6);
+            return nameSpace + "." + methodName;
         } catch (Exception e) {
             throw new QmBaseException("Mapper命名空间错误!'" + sqlName + "' Error！", e);
         }
-        return nameSpace + "." + methodName;
     }
 
     @Override
     public <M> List<M> selectList(String sqlName, Object params) {
         SqlSession session = sqlSessionFactory.openSession();
-        List<M> list = null;
         try {
-            list = session.selectList(getSqlName(sqlName), params);
+            List<M> list = session.selectList(getSqlName(sqlName), params);
             session.commit();
+            return list;
         } catch (Exception e) {
-            throw new QmBaseException("SQL Error！", e);
+            throw new QmBaseException(getErrorMsg("selectList"), e);
         } finally {
             session.close();
         }
-        return list;
     }
 
     @Override
     public <M> M selectOne(String sqlName, Object params) {
         SqlSession session = sqlSessionFactory.openSession();
-        M obj = null;
         try {
-            obj = session.selectOne(getSqlName(sqlName), params);
+            M obj = session.selectOne(getSqlName(sqlName), params);
             session.commit();
+            return obj;
         } catch (Exception e) {
-            throw new QmBaseException("SQL Error！", e);
+            throw new QmBaseException(getErrorMsg("selectOne"), e);
         } finally {
             session.close();
         }
-        return obj;
     }
 
     @Override
     public int insert(String sqlName, Object params) {
         SqlSession session = sqlSessionFactory.openSession();
-        int result = 0;
         try {
-            result = session.insert(getSqlName(sqlName), params);
+            int result = session.insert(getSqlName(sqlName), params);
             session.commit();
+            return result;
         } catch (Exception e) {
-            throw new QmBaseException("SQL Error！", e);
+            throw new QmBaseException(getErrorMsg("insert"), e);
         } finally {
             session.close();
         }
-        return result;
     }
 
     @Override
     public int update(String sqlName, Object params) {
         SqlSession session = sqlSessionFactory.openSession();
-        int result = 0;
         try {
-            result = session.update(getSqlName(sqlName), params);
+            int result = session.update(getSqlName(sqlName), params);
             session.commit();
+            return result;
         } catch (Exception e) {
-            throw new QmBaseException("SQL Error！", e);
+            throw new QmBaseException(getErrorMsg("update"), e);
         } finally {
             session.close();
         }
-        return result;
     }
 
     @Override
     public int delete(String sqlName, Object params) {
         SqlSession session = sqlSessionFactory.openSession();
-        int result = 0;
         try {
-            result = session.delete(getSqlName(sqlName), params);
+            int result = session.delete(getSqlName(sqlName), params);
             session.commit();
+            return result;
         } catch (Exception e) {
-            throw new QmBaseException("SQL Error！", e);
+            throw new QmBaseException(getErrorMsg("delete"), e);
         } finally {
             session.close();
         }
-        return result;
     }
 
     @Override
@@ -137,17 +129,16 @@ public final class QmBaseImpl implements QmBase {
         SqlSession session = sqlSessionFactory.openSession();
         List<Map<String, Object>> mapLis;
         try {
-            mapLis = session.selectList(QM_NAMESPACE + "selectAuto",
-                    new QmBaseDto(entity, false).getParamsMap());
+            if (entity == null) entity = clamm.newInstance();
+            mapLis = session.selectList(QM_NAMESPACE + "selectAuto", new QmBaseDto(entity, false).getParamsMap());
             session.commit();
         } catch (Exception e) {
-            throw new QmBaseException("SQL Error！", e);
+            throw new QmBaseException(getErrorMsg("autoSelectList"), e);
         } finally {
             session.close();
         }
         // 如果是空的直接返回null
         if (mapLis == null) return null;
-
         // 如果数据库字段是下划线样式 则进行转换
         QmTable qmTable = entity.getClass().getAnnotation(QmTable.class);
         if (qmTable != null && qmTable.style() == QmStyle.UNDERLINE) {
@@ -164,92 +155,94 @@ public final class QmBaseImpl implements QmBase {
     public <Q> Q autoSelectOne(Q entity, Class<Q> clamm) {
         SqlSession session = sqlSessionFactory.openSession();
         Map<String, Object> map;
-        Q obj = null;
         try {
-            obj = clamm.newInstance();
-        } catch (Exception e) {
-            throw new QmBaseException("Entity newInstance Error!", e);
-        }
-        try {
-            map = session.selectOne(QM_NAMESPACE + "selectAuto", new QmBaseDto(entity, false).getParamsMap());
+            if (entity == null) entity = clamm.newInstance();
+            map = session.selectOne(QM_NAMESPACE + "selectAutoOne", new QmBaseDto(entity, false).getParamsMap());
             session.commit();
         } catch (Exception e) {
-            throw new QmBaseException("SQL Error！", e);
+            throw new QmBaseException(getErrorMsg("autoSelectOne"), e);
         } finally {
             session.close();
         }
-        // 如果是空的直接返回null
         if (map == null) return null;
         // 如果数据库字段是下划线样式 则进行转换
         QmTable qmTable = entity.getClass().getAnnotation(QmTable.class);
         if (qmTable != null && qmTable.style() == QmStyle.UNDERLINE) {
             map = QmBaseStyleUtils.transformMapForHump(map);
         }
-        ConvertUtil.mapToBean(map, obj);
-        return obj;
+        // 如果是空的直接返回null
+        return ConvertUtil.mapToBean(map, entity);
     }
-
 
     @Override
     public <Q> int autoInsert(Q entity) {
+        if (entity == null) return -1;
         SqlSession session = sqlSessionFactory.openSession();
-        int result = 0;
         try {
-            result = session.insert(QM_NAMESPACE + "insertAuto", new QmBaseDto(entity, true).getParamsMap());
+            int result = session.insert(QM_NAMESPACE + "insertAuto", new QmBaseDto(entity, true).getParamsMap());
             session.commit();
+            return result;
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new QmBaseException("SQL Error！", e);
+            throw new QmBaseException(getErrorMsg("autoInsert"), e);
         } finally {
             session.close();
         }
-        return result;
     }
 
     @Override
     public <Q> int autoUpdate(Q entity) {
+        if (entity == null) return -1;
         SqlSession session = sqlSessionFactory.openSession();
-        int result = 0;
         try {
-            result = session.update(QM_NAMESPACE + "updateAuto", new QmBaseDto(entity, true).getParamsMap());
+            int result = session.update(QM_NAMESPACE + "updateAuto", new QmBaseDto(entity, true).getParamsMap());
             session.commit();
+            return result;
         } catch (Exception e) {
-            throw new QmBaseException("SQL Error！", e);
+            throw new QmBaseException(getErrorMsg("autoUpdate"), e);
         } finally {
             session.close();
         }
-        return result;
     }
 
 
     @Override
     public <Q> int autoDelete(Q entity) {
+        if (entity == null) return -1;
         SqlSession session = sqlSessionFactory.openSession();
-        int result = 0;
         try {
-            result = session.delete(QM_NAMESPACE + "deleteAuto", new QmBaseDto(entity, true).getParamsMap());
+            int result = session.delete(QM_NAMESPACE + "deleteAuto", new QmBaseDto(entity, true).getParamsMap());
             session.commit();
+            return result;
         } catch (Exception e) {
-            throw new QmBaseException("SQL Error！", e);
+            throw new QmBaseException(getErrorMsg("autoDelete"), e);
         } finally {
             session.close();
         }
-        return result;
     }
 
     @Override
     public <Q> int autoSelectCount(Q entity) {
+        if (entity == null) return -1;
         SqlSession session = sqlSessionFactory.openSession();
-        int result = 0;
         try {
-            result = session.selectOne(QM_NAMESPACE + "selectCount", new QmBaseDto(entity, false).getParamsMap());
+            int result = session.selectOne(QM_NAMESPACE + "selectCount", new QmBaseDto(entity, false).getParamsMap());
             session.commit();
+            return result;
         } catch (Exception e) {
-            throw new QmBaseException("SQL Error！", e);
+            throw new QmBaseException(getErrorMsg("autoSelectCount"), e);
         } finally {
             session.close();
         }
-        return result;
+    }
+
+    /**
+     * 配置错误信息
+     *
+     * @param methodName
+     * @return
+     */
+    private String getErrorMsg(String methodName) {
+        return "SQL error using " + methodName + "! 使用 " + methodName + " 发生SQL错误!";
     }
 
 }

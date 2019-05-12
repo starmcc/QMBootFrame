@@ -1,23 +1,21 @@
 package com.qm.code.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.qm.code.entity.User;
 import com.qm.code.service.UserService;
+import com.qm.frame.basic.body.QmBody;
 import com.qm.frame.basic.controller.QmCode;
 import com.qm.frame.basic.controller.QmController;
-import com.qm.frame.qmsecurity.entity.QmSessionInfo;
-import com.qm.frame.qmsecurity.entity.QmTokenInfo;
-import com.qm.frame.qmsecurity.exception.QmSecuritySignTokenException;
-import com.qm.frame.qmsecurity.basic.QmSecurityManager;
-import com.qm.frame.qmsecurity.manager.Qmbject;
+import com.qm.frame.qmsecurity.entity.QmUserInfo;
+import com.qm.frame.qmsecurity.exception.QmSecurityCacheException;
+import com.qm.frame.qmsecurity.exception.QmSecurityQmUserInfoException;
 import com.qm.frame.qmsecurity.note.QmPass;
+import com.qm.frame.qmsecurity.qmbject.QmSecurityManager;
+import com.qm.frame.qmsecurity.qmbject.Qmbject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Copyright © 2018浅梦工作室}. All rights reserved.
@@ -34,93 +32,87 @@ public class QmSecurityController extends QmController {
     private UserService userService;
 
 
-    @QmPass
-    @GetMapping("/login")
-    public String login() {
-        User user = userService.login("admin","123");
+    /**
+     * 登录示例
+     *
+     * @param username
+     * @param password
+     * @return
+     */
+    @QmPass // 增加该注解表示该方法不校验登录和权限。
+    @PostMapping("/login")
+    public String login(@QmBody String username, @QmBody String password) {
+        User user = userService.login(username, password);
         if (user == null) {
             // 登录失败
-            return super.sendJSON(QmCode._2);
+            return super.sendJSON(QmCode._2, "登录失败！", null);
         }
         // 利用QmSecurityManager获取qmbject实例。
         Qmbject qmbject = QmSecurityManager.getQmbject();
-        // 创建token签名信息QmTokenInfo，并配置该对象的信息
-        QmTokenInfo qmTokenInfo = new QmTokenInfo();
+        // 创建token签名信息QmUserInfo，并配置该对象的信息
+        QmUserInfo qmUserInfo = new QmUserInfo();
         // identify为必须字段，用户唯一识别
-        qmTokenInfo.setIdentify(user.getUserName());
-        // 角色id为必须字段，用户角色唯一id
-        qmTokenInfo.setRoleId(user.getRoleId());
-        // 设置其他信息，这里直接把整个user转json储存起来，实际开发中请勿这样操作。
-        Map<String,String> infoMap = new HashMap<>();
-        infoMap.put("userJson", JSON.toJSONString(user));
-        qmTokenInfo.setInfoMap(infoMap);
-        qmTokenInfo.setExpireTime(60 * 60);
+        qmUserInfo.setIdentify(user.getUserName());
+        // 设置用户缓存对象
+        qmUserInfo.setUser(user);
+        // 设置多久会失效 (秒) 1小时活跃登录失效
+        qmUserInfo.setLoginExpireTime(60 * 60);
+        // 设置token失效时间 (秒) 10分钟token失效
+        qmUserInfo.setTokenExpireTime(60 * 10);
         // 调用login方法，并设置他的过期时间，生成token
         String token = null;
         try {
-            token = qmbject.login(qmTokenInfo);
-        } catch (QmSecuritySignTokenException e) {
+            token = qmbject.login(qmUserInfo);
+        } catch (QmSecurityQmUserInfoException e) {
+            // 签发token时发生了异常!
             e.printStackTrace();
-            System.out.println("签发token错误哦");
+            return super.sendJSON(QmCode._3, "签名时发生了异常!", null);
+        } catch (QmSecurityCacheException e) {
+            // 缓存异常!
+            e.printStackTrace();
+            return super.sendJSON(QmCode._4, "缓存异常!", null);
         }
         // 将token返回给前端
         return super.sendJSON(QmCode._1, token);
     }
 
-    @QmPass
-    @GetMapping("/loginForSession")
-    public String loginForSession() throws QmSecuritySignTokenException {
-        // 利用QmSecurityManager获取qmbject实例。
-        Qmbject qmbject = QmSecurityManager.getQmbject();
-        QmSessionInfo qmSessionInfo = new QmSessionInfo();
-        qmSessionInfo.setUser("admin");
-        qmSessionInfo.setRoleId(1);
-        qmSessionInfo.setExpireTime(100);
-        qmbject.loginForSession(qmSessionInfo);
-        return super.sendJSON(QmCode._1);
-    }
 
-    @GetMapping("/test")
-    public String test() {
-        // 利用QmSecurityManager获取qmbject实例。
+    /**
+     * 利用QmSecurityManager获取qmbject实例。
+     *
+     * @return
+     */
+    @GetMapping("/getQmbject")
+    public String getQmbject() {
         Qmbject qmbject = QmSecurityManager.getQmbject();
-        return super.sendJSON(QmCode._1,qmbject.getSessionInfo());
+        return super.sendJSON(QmCode._1, qmbject.getUserInfo());
     }
 
 
     /**
-     * 如果只需要登录，不需要授权，
+     * 如果只需要登录，不需要校验权限URI
      * 则可以在此设置QmPass的属性needLogin = true
+     *
      * @return
      */
     @QmPass(needLogin = true)
-    @GetMapping("/hello")
-    public String hello() {
-        return super.sendJSON(QmCode._1, "helloWorld");
+    @GetMapping("/passAuth")
+    public String passAuth() {
+        return super.sendJSON(QmCode._1, "该请求不需要校验权限URI!");
     }
 
     /**
      * 没有加QmPass则会进入登录校验和权限校验，
-     * 只有当用户的角色拥有该路径权限时才允许访问。
+     * 只有当用户拥有该路径权限时才允许访问。
+     *
      * @return
      */
     @GetMapping("/getUserInfo")
     public String getUserInfo() {
         // 可获取登录时的用户信息
-        QmTokenInfo qmTokenInfo = QmSecurityManager.getQmbject().getTokenInfo();
-        // 登录时设置的userCode
-        String userCode = qmTokenInfo.getIdentify();
-        // 登陆时设置的userCode
-        Integer roleId = qmTokenInfo.getRoleId();
-        // 登陆时设置的infoMap
-        // 可获取登录时的其他信息
-        Map<String,String> infoMap = qmTokenInfo.getInfoMap();
-        // 转出封装
-        Map<String,Object> resMap = new HashMap<>();
-        resMap.put("userCode",userCode);
-        resMap.put("roleId",roleId);
-        resMap.put("infoMap",infoMap);
-        return super.sendJSON(QmCode._1, resMap);
+        QmUserInfo qmTokenInfo = QmSecurityManager.getQmbject().getUserInfo();
+        // 获取到用户对象
+        return super.sendJSON(QmCode._1, qmTokenInfo.getUser());
     }
 
 }

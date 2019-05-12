@@ -23,7 +23,6 @@ public class QmVerifyUtil {
      * properties读取对象
      */
     private final static Properties PRO = getProperties();
-
     /**
      * 打印日志工具
      */
@@ -75,6 +74,23 @@ public class QmVerifyUtil {
             e.printStackTrace();
             LOG.error("请检查正则表达式的格式是否有误！");
             return false;
+        }
+    }
+
+    /**
+     * 获取对应节点的错误信息
+     * @param node
+     * @return
+     */
+    public static String getErrorMsg(String node){
+        try {
+            String msg = PRO.getProperty(node + ".error.msg");
+            if (msg == null) {
+                return node + "校验失败!";
+            }
+            return msg;
+        } catch (Exception e) {
+            return node + "校验失败!";
         }
     }
 

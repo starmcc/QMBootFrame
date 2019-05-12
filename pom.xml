@@ -163,12 +163,6 @@
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 		</dependency>
-		<!-- JWT TOKEN 验证 -->
-		<dependency>
-            <groupId>com.auth0</groupId>
-            <artifactId>java-jwt</artifactId>
-            <version>3.3.0</version>
-        </dependency>
         <!-- 谷歌工具支持 -->
 		<dependency>
 		    <groupId>com.google.code.google-collections</groupId>

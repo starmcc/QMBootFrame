@@ -17,6 +17,19 @@
         </if>
     </select>
 
+    <!-- 通用查询单数据入口 -->
+    <select id="selectAutoOne" resultType="map">
+        SELECT *
+        FROM `${tableName}`
+        WHERE 1 = 1
+        <if test="params != null and params.size != 0">
+            <foreach item="item" collection="params">
+                AND `${item.key}` = #{item.value}
+            </foreach>
+        </if>
+        LIMIT 0,1
+    </select>
+
     <!-- 通用增加数据入口 -->
     <insert id="insertAuto">
         INSERT INTO `${tableName}`

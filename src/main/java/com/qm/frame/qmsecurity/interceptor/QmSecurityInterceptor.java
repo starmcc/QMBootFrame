@@ -1,12 +1,14 @@
-package com.qm.frame.qmsecurity.basic;
+package com.qm.frame.qmsecurity.interceptor;
 
+import com.qm.frame.qmsecurity.basic.QmSecurityBasic;
+import com.qm.frame.qmsecurity.basic.QmSecurityBasicImplementation;
 import com.qm.frame.qmsecurity.note.QmPass;
+import com.qm.frame.qmsecurity.utils.OptionsUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.lang.reflect.Method;
 
 /**
@@ -18,11 +20,22 @@ import java.lang.reflect.Method;
  */
 public class QmSecurityInterceptor implements HandlerInterceptor {
 
-    private QmSecurityBasic qmSecurityBasic;
+    // 单例底层
+    private static QmSecurityBasic qmSecurityBasic;
+
+    public QmSecurityInterceptor() {
+        if (qmSecurityBasic == null) {
+            qmSecurityBasic = new QmSecurityBasicImplementation();
+        }
+    }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-            throws IOException {
+            throws Exception {
+        // 放过跨域探路请求 如果项目中设置了跨域限制,会被拦截，框架本身放过处理。
+        if (OptionsUtils.isOptions(request)) {
+            return true;
+        }
         // 定义是否需要授权匹配，默认为true。当标注了@QmPass且用户给定needLogin为true时，则该值会变为false;
         boolean isPerssions = true;
         // 查找是否存在pass注解，如果存在则放过请求
@@ -43,7 +56,8 @@ public class QmSecurityInterceptor implements HandlerInterceptor {
                 }
             }
         }
-        return QmSecurityManager.getQmbject().verifyToken(request, response, isPerssions);
+        return qmSecurityBasic.securityCheck(request, response, isPerssions);
     }
+
 
 }

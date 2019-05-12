@@ -1,15 +1,15 @@
 package com.qm.code.sercurity;
 
+import com.qm.code.entity.User;
 import com.qm.code.service.RoleService;
 import com.qm.frame.basic.controller.QmCode;
 import com.qm.frame.basic.controller.QmController;
-import com.qm.frame.qmsecurity.manager.QmSecurityRealm;
+import com.qm.frame.qmsecurity.entity.QmUserInfo;
+import com.qm.frame.qmsecurity.realm.QmSecurityRealm;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,25 +26,23 @@ public class MyRealm extends QmController implements QmSecurityRealm {
 
 
     @Override
-    public List<String> authorizationPermissions(int roleId) {
-        //// 获取该角色的权限集合
-        //List<Permissions> permissionsList = roleService.getPermissions(roleId);
-        // 把权限拆箱出来，返回给框架
-        List<String> matchUrls = new ArrayList<>();
-        //for (Permissions permission : permissionsList) {
-        //    matchUrls.add(permission.getMatchUrl());
-        //}
-        matchUrls.add("/**");
-        return matchUrls;
+    public void noPassCallBack(HttpServletRequest request, HttpServletResponse response, int type) throws Exception {
+        response.getWriter().print(super.sendJSON(QmCode._103));
     }
 
+    @Override
+    public List<String> authorizationPermissions(QmUserInfo qmUserInfo) {
+        // 获取用户对象
+        User user = (User) qmUserInfo.getUser();
+        // 获取角色id
+        int roleId = user.getRoleId();
+        // 获取该角色的权限集合
+        List<String> matchUri = roleService.getAuthListByRoleId(roleId);
+        return matchUri;
+    }
 
     @Override
-    public void noPassCallBack(HttpServletRequest request, HttpServletResponse response, int type) {
-        try {
-            response.getWriter().print(super.sendJSON(QmCode._103));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public QmUserInfo authorizationUserInfo(QmUserInfo qmUserInfo) {
+        return qmUserInfo;
     }
 }

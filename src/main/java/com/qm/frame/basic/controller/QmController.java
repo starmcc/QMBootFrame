@@ -7,12 +7,7 @@ import com.qm.frame.basic.util.AESUtil;
 import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,17 +19,9 @@ import java.util.Map;
  * @date 2018年11月24日 上午1:42:26
  * @Description 父类Controller, 编写Controller请继承该类。
  */
-@Component
 public class QmController {
 
     private static final Logger LOG = LoggerFactory.getLogger(QmController.class);
-
-    @Autowired
-    protected HttpServletRequest request;
-    @Autowired(required = false)
-    protected HttpServletResponse response;
-    @Autowired
-    protected HttpSession session;
 
     /**
      * 接口回调方法

@@ -1,24 +1,7 @@
 package com.qm.frame.qmsecurity.basic;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.Claim;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.qm.frame.qmsecurity.config.QmSecurityContent;
-import com.qm.frame.qmsecurity.entity.QmTokenInfo;
-import com.qm.frame.qmsecurity.exception.QmSecurityEncodingException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.util.AntPathMatcher;
-import org.springframework.util.PathMatcher;
-
-import javax.crypto.IllegalBlockSizeException;
-import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Copyright © 2018浅梦工作室}. All rights reserved.
@@ -27,99 +10,18 @@ import java.util.Map;
  * @date 2018/12/23 1:14
  * @Description QmSecurity安全框架底层
  */
-public class QmSecurityBasic {
-
-    private static final Logger LOG = LoggerFactory.getLogger(QmSecurityBasic.class);
-
-    /**
-     * 匹配角色授权url
-     *
-     * @param path
-     * @param matchingUrls
-     * @return
-     */
-    protected static boolean verifyPermissions(String path, List<String> matchingUrls) {
-        for (String matchUrl : matchingUrls) {
-            if (verifyMatchURI(matchUrl, path)) {
-                return true;
-            }
-        }
-        return false;
-    }
+public interface QmSecurityBasic {
 
 
     /**
-     * 校验token
+     * 拦截器安全校验
      *
-     * @param token
+     * @param request     HttpServletRequest
+     * @param response    HttpServletResponse
+     * @param isPerssions boolean 是否校验权限
      * @return
      */
-    protected static QmTokenInfo verifyToken(String token) {
-        try {
-            // AES解密token
-            token = QmSecurityAesTools.decryptAES(token);
-            // 获取token信息,期间已经进行了一次校验机制。如果过期返回的是空。
-            return getTokenInfo(token);
-        } catch (JWTVerificationException e) {
-            LOG.info("token已失效!");
-        } catch (IllegalBlockSizeException e) {
-            LOG.info("解析token错误,系统无法识别该token!");
-        } catch (UnsupportedEncodingException e) {
-            throw new QmSecurityEncodingException("jwt转码发生了异常!",e);
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
-     * 获取token信息
-     *
-     * @param token
-     * @return
-     * @throws Exception
-     */
-    protected static QmTokenInfo getTokenInfo(String token) throws IllegalBlockSizeException, UnsupportedEncodingException {
-        JWTVerifier verifier = JWT.require(Algorithm.HMAC256(QmSecurityContent.tokenSecret)).build();
-        // jwt校验token
-        DecodedJWT jwt = verifier.verify(token);
-        //这里是一个坑，jwt.getClaims()的不是HashMap,调用remove方法报错,直接给他新的HashMap;
-        //下面是还原一个QmTokenInfo的内容
-        Map<String, Claim> claimMap = new HashMap<>(jwt.getClaims());
-        QmTokenInfo qmTokenInfo = new QmTokenInfo();
-        String identify = claimMap.get("qm_security_identify").asString();
-        claimMap.remove("qm_security_identify");
-        String requestIp = claimMap.get("qm_security_requestIp").asString();
-        claimMap.remove("qm_security_requestIp");
-        Integer roleId = claimMap.get("qm_security_roleId").asInt();
-        claimMap.remove("qm_security_roleId");
-        long expireTime = claimMap.get("qm_security_expireTime").asLong();
-        claimMap.remove("qm_security_expireTime");
-        // 删除敏感的登录和失效时间
-        claimMap.remove("exp");
-        claimMap.remove("iat");
-        qmTokenInfo.setIdentify(identify);
-        qmTokenInfo.setRequestIp(requestIp);
-        qmTokenInfo.setRoleId(roleId);
-        qmTokenInfo.setExpireTime(expireTime);
-        Map<String, String> infoMap = new HashMap<String, String>();
-        for (String key : claimMap.keySet()) {
-            infoMap.put(key, claimMap.get(key).asString());
-        }
-        qmTokenInfo.setInfoMap(infoMap);
-        return qmTokenInfo;
-    }
+    boolean securityCheck(HttpServletRequest request, HttpServletResponse response, boolean isPerssions) throws Exception;
 
 
-    /**
-     * Spring提供的模糊路径匹配算法
-     *
-     * @param matchingUrl 匹配路径
-     * @param requestUrl  请求地址
-     * @return
-     */
-    protected static boolean verifyMatchURI(String matchingUrl, String requestUrl) {
-        PathMatcher matcher = new AntPathMatcher();
-        return matcher.match(matchingUrl, requestUrl);
-    }
 }

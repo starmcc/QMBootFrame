@@ -20,9 +20,10 @@ import java.io.IOException;
 @RequestMapping("/mvc")
 public class MvcController extends QmController {
 
-    @QmPass
+    @QmPass // 该注解请查看 QmSecurityController 所述。
     @GetMapping("/index")
     public String index(){
         return "/index";
     }
+
 }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace是自定义的，但请规范它，规范在帮助文档中有所提及 -->
+<mapper namespace="UserManager-RoleServiceImpl-0-Mapper">
+
+	<!-- 获取该角色id的授权集合 -->
+    <select id="getAuthListByRoleId" resultType="String">
+		SELECT b.match_uri
+		FROM qm_role_auth AS a
+		LEFT JOIN auth AS b ON a.auth_id = b.id
+		WHERE a.role_id = #{roleId}
+	</select>
+
+</mapper>

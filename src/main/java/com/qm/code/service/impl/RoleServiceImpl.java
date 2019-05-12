@@ -1,7 +1,5 @@
 package com.qm.code.service.impl;
 
-import com.qm.code.entity.Permissions;
-import com.qm.code.entity.Role;
 import com.qm.code.service.RoleService;
 import com.qm.frame.mybatis.base.QmBase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Copyright © 2018浅梦工作室}. All rights reserved.
@@ -20,13 +19,17 @@ import java.util.List;
 @Service
 public class RoleServiceImpl implements RoleService {
 
+    /**
+     * mapper的命名空间，请按照约定格式书写，相对应的是sql包中的Mapper的namescapse
+     */
+    private static final String PAGE_NAME = "UserManager-RoleServiceImpl-0-Mapper";
     @Autowired
     private QmBase qmBase;
 
     @Override
-    public List<Permissions> getPermissions(int roleId) {
-        Permissions permissions = new Permissions();
-        permissions.setRoleId(roleId);
-        return qmBase.autoSelectList(permissions,Permissions.class);
+    public List<String> getAuthListByRoleId(int roleId) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("roleId", roleId);
+        return qmBase.selectList(PAGE_NAME + "getAuthListByRoleId", params);
     }
 }
