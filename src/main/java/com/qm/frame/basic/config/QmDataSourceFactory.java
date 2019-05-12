@@ -23,7 +23,7 @@ import java.util.Properties;
 public class QmDataSourceFactory {
 
     private static final Properties PRO = getProperties(); // properties 配置读取
-    private static String typeName = getProString("type-name", "druid"); // 连接池类型
+    private static String typeName = getProString("type-name", "dbcp2"); // 连接池类型
     private static String driverClassName = getProString("driver-class-name", "com.mysql.jdbc.Driver");
     private static String url = getProString("url", "");
     private static String userName = getProString("username", "root");
