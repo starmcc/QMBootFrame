@@ -16,19 +16,19 @@ import java.util.List;
 public interface QmSecurityRealm {
 
     /**
-     * 提供给调度者的授权方法。
-     * 该函数只有当系统缓存中没有该角色才会进行调用。
-     * 每调用一次将会把相关权限列表刷新到缓存中。
+     * 提供给调度者的授权接口。
+     * 该接口只有当系统缓存中没有该用户URI信息才会进行调用。
+     * 每调用一次将会把相关该用户URI放置到缓存中。
      *
-     * @param qmUserInfo
+     * @param qmUserInfo 用户对象
      * @return
      */
     List<String> authorizationMatchingURI(QmUserInfo qmUserInfo);
 
 
     /**
-     * 提供给调度者的检测用户是否合法函数
-     * 当用户每次请求时进入安全监测时会调用该函数。
+     * 提供给调度者的检测用户是否合法的接口
+     * 当用户每次请求时进入安全监测时会调用该接口。
      * 每调用一次将会把该用户对象刷新到缓存中。
      * 注意：返回null表示本次检测不通过，框架自动进行拦截。
      *
@@ -38,12 +38,12 @@ public interface QmSecurityRealm {
     QmUserInfo authorizationUserInfo(QmUserInfo qmUserInfo);
 
     /**
-     * 当安全检测不通过时回调该函数
-     * 回调该函数最好的处理方式是处理相关业务并推送错误信息。
+     * 当安全检测不通过时回调该接口
+     * 回调该接口最好的处理方式是处理相关业务并推送错误信息。
      *
      * @param request  HttpServletRequest
      * @param response HttpServletResponse
-     * @param type     1=找不到用户信息,登录超时 | 2=检测不到token拒绝访问 | 3=Token失效或已过期 | 4=请求ip校验失败 | 5=权限不足,拒绝访问
+     * @param type     1=检测不到token拒绝访问 | 2=非法token,token提取失败 | 3=用户登录已过期 | 4=重新签发Token异常 | 5=realm返回空对象 | 6=权限不足,拒绝访问
      */
     void noPassCallBack(HttpServletRequest request, HttpServletResponse response, int type) throws Exception;
 
