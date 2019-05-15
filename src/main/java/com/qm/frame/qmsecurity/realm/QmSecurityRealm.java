@@ -44,6 +44,7 @@ public interface QmSecurityRealm {
      * @param request  HttpServletRequest
      * @param response HttpServletResponse
      * @param type     1=检测不到token拒绝访问 | 2=非法token,token提取失败 | 3=用户登录已过期 | 4=重新签发Token异常 | 5=realm返回空对象 | 6=权限不足,拒绝访问
+     * @throws Exception
      */
     void noPassCallBack(HttpServletRequest request, HttpServletResponse response, int type) throws Exception;
 

@@ -8,17 +8,16 @@ package com.qm.frame.mybatis.note;
  * @Description 数据库字段风格
  */
 public enum QmStyle {
+    /**
+     * 驼峰模式
+     */
+    HUMP,
+    /**
+     * 下划线模式
+     */
+    UNDERLINE;
 
-    HUMP("驼峰模式"), UNDERLINE("下划线模式");
+    private QmStyle(){
 
-    private String name;
-
-    public String getName() {
-        return name;
     }
-
-    private QmStyle(String name) {
-        this.name = name;
-    }
-
 }

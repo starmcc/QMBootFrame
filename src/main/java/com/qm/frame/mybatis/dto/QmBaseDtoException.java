@@ -9,14 +9,20 @@ package com.qm.frame.mybatis.dto;
  */
 public class QmBaseDtoException extends RuntimeException {
 
-    // 提供无参数的构造方法
+    /**
+     * 提供无参数的构造方法
+     */
     public QmBaseDtoException() {
     }
 
 
-    // 提供一个有参数的构造方法，可自动生成
+    /**
+     * 提供一个有参数的构造方法，可自动生成
+     * @param message
+     */
     public QmBaseDtoException(String message) {
-        super(message);// 把参数传递给Throwable的带String参数的构造方法
+        // 把参数传递给Throwable的带String参数的构造方法
+        super(message);
     }
 
     public QmBaseDtoException(String message, Throwable cause) {

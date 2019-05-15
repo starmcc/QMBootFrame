@@ -25,7 +25,9 @@ public final class QmBaseImpl implements QmBase {
      * 命名空间
      */
     private static final String QM_NAMESPACE = "QmBaseMapper.";
-    // 获取Mybatis SqlSession
+    /**
+     * 获取Mybatis SqlSession
+     */
     @Autowired
     private SqlSessionFactory sqlSessionFactory;
 
@@ -129,7 +131,7 @@ public final class QmBaseImpl implements QmBase {
         SqlSession session = sqlSessionFactory.openSession();
         List<Map<String, Object>> mapLis;
         try {
-            if (entity == null) entity = clamm.newInstance();
+            if (entity == null) {entity = clamm.newInstance();}
             mapLis = session.selectList(QM_NAMESPACE + "selectAuto", new QmBaseDto(entity, false).getParamsMap());
             session.commit();
         } catch (Exception e) {
@@ -138,7 +140,7 @@ public final class QmBaseImpl implements QmBase {
             session.close();
         }
         // 如果是空的直接返回null
-        if (mapLis == null) return null;
+        if (mapLis == null) {return null;}
         // 如果数据库字段是下划线样式 则进行转换
         QmTable qmTable = entity.getClass().getAnnotation(QmTable.class);
         if (qmTable != null && qmTable.style() == QmStyle.UNDERLINE) {
@@ -156,7 +158,7 @@ public final class QmBaseImpl implements QmBase {
         SqlSession session = sqlSessionFactory.openSession();
         Map<String, Object> map;
         try {
-            if (entity == null) entity = clamm.newInstance();
+            if (entity == null) {entity = clamm.newInstance();}
             map = session.selectOne(QM_NAMESPACE + "selectAutoOne", new QmBaseDto(entity, false).getParamsMap());
             session.commit();
         } catch (Exception e) {
@@ -164,7 +166,7 @@ public final class QmBaseImpl implements QmBase {
         } finally {
             session.close();
         }
-        if (map == null) return null;
+        if (map == null) {return null;}
         // 如果数据库字段是下划线样式 则进行转换
         QmTable qmTable = entity.getClass().getAnnotation(QmTable.class);
         if (qmTable != null && qmTable.style() == QmStyle.UNDERLINE) {
@@ -176,7 +178,7 @@ public final class QmBaseImpl implements QmBase {
 
     @Override
     public <Q> int autoInsert(Q entity) {
-        if (entity == null) return -1;
+        if (entity == null) {return -1;}
         SqlSession session = sqlSessionFactory.openSession();
         try {
             int result = session.insert(QM_NAMESPACE + "insertAuto", new QmBaseDto(entity, true).getParamsMap());
@@ -191,7 +193,7 @@ public final class QmBaseImpl implements QmBase {
 
     @Override
     public <Q> int autoUpdate(Q entity) {
-        if (entity == null) return -1;
+        if (entity == null) {return -1;}
         SqlSession session = sqlSessionFactory.openSession();
         try {
             int result = session.update(QM_NAMESPACE + "updateAuto", new QmBaseDto(entity, true).getParamsMap());
@@ -207,7 +209,7 @@ public final class QmBaseImpl implements QmBase {
 
     @Override
     public <Q> int autoDelete(Q entity) {
-        if (entity == null) return -1;
+        if (entity == null) {return -1;}
         SqlSession session = sqlSessionFactory.openSession();
         try {
             int result = session.delete(QM_NAMESPACE + "deleteAuto", new QmBaseDto(entity, true).getParamsMap());
@@ -222,7 +224,7 @@ public final class QmBaseImpl implements QmBase {
 
     @Override
     public <Q> int autoSelectCount(Q entity) {
-        if (entity == null) return -1;
+        if (entity == null) {return -1;}
         SqlSession session = sqlSessionFactory.openSession();
         try {
             int result = session.selectOne(QM_NAMESPACE + "selectCount", new QmBaseDto(entity, false).getParamsMap());

@@ -16,7 +16,6 @@ import java.util.Properties;
  */
 public class QmFrameContent {
 
-    // properties
     private final static Properties PRO = getProperties();
     /**
      * 是否启用AES对称加密传输

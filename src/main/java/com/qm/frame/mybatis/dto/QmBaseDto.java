@@ -96,7 +96,7 @@ public final class QmBaseDto {
         if (obj != null) {
             // 不等于null
             // 判断是否设置别名
-            primaryKey = new HashMap<>();
+            primaryKey = new HashMap<>(16);
             if (StringUtils.isEmpty(idKey.name())) {
                 String key = filed.getName();
                 if (qmTable != null && qmTable.style() == QmStyle.UNDERLINE) {
@@ -110,10 +110,10 @@ public final class QmBaseDto {
             primaryKey.put("value", obj);
         } else {
             // 判断是否为uuid策略
-            if (idKey.uuid() == false) return false;
+            if (idKey.uuid() == false) {return false;};
             // 直接判断uuid规则还是自增规则
             // 判断是否设置别名
-            primaryKey = new HashMap<>();
+            primaryKey = new HashMap<>(16);
             if (StringUtils.isEmpty(idKey.name())) {
                 primaryKey.put("key", filed.getName());
             } else {
@@ -148,7 +148,7 @@ public final class QmBaseDto {
             throw new QmBaseDtoException("获取字段失败！");
         }
         // 开始获取字段并加入字段列表
-        Map<String, Object> fieldMap = new HashMap<String, Object>();
+        Map<String, Object> fieldMap = new HashMap<String, Object>(16);
         if (qmParams == null || StringUtils.isEmpty(qmParams.name())) {
             if (qmTable != null && qmTable.style() == QmStyle.UNDERLINE) {
                 fieldMap.put("key", QmBaseStyleUtils.transformNameByUnderline(field.getName()));

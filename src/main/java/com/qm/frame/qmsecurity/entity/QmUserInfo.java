@@ -11,12 +11,30 @@ import java.util.Date;
  */
 public class QmUserInfo {
 
-    private String identify; // 身份校验唯一标识
-    private Object user; // 用户对象
-    private Date signTime; // 签发token时间
-    private long loginExpireTime; // 登录缓存多久后销毁 (秒)
-    private long tokenExpireTime; // token多久后失效 (秒) 0无限
-    private String token; // 签发token保存
+    /**
+     * 身份校验唯一标识
+     */
+    private String identify;
+    /**
+     * 用户对象
+     */
+    private Object user;
+    /**
+     * 签发token时间
+     */
+    private Date signTime;
+    /**
+     * 登录缓存多久后销毁 (秒)
+     */
+    private long loginExpireTime;
+    /**
+     * token多久后失效 (秒) 0无限
+     */
+    private long tokenExpireTime;
+    /**
+     * 签发token保存
+     */
+    private String token;
 
     public String getIdentify() {
         return identify;
@@ -51,11 +69,11 @@ public class QmUserInfo {
     }
 
     public Date getSignTime() {
-        return signTime;
+        return new Date(this.signTime.getTime());
     }
 
     public void setSignTime(Date signTime) {
-        this.signTime = signTime;
+        this.signTime = new Date(signTime.getTime());
     }
 
     public String getToken() {

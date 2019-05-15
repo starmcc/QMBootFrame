@@ -18,11 +18,11 @@ import java.util.Arrays;
  * @date 2018年11月24日 上午1:34:28
  * @Description 接口日志，返回请求时间，参数，返回值等信息。
  */
-@Aspect // 等同于<aop:aspect ref="loggerWhole">
+@Aspect
 @Component
-public class LoggerWholeAOP {
+public class LoggerWholeAop {
 
-    private static final Logger LOG = LoggerFactory.getLogger(LoggerWholeAOP.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LoggerWholeAop.class);
 
     private final static QmOutMethod QM_OUT_METHOD = getQmOutMethod();
 
@@ -52,7 +52,7 @@ public class LoggerWholeAOP {
      * execution(* *..controller..*.*(..))
      * this(com.qm.frame.basic.controller.QmController)
      */
-    @Pointcut("this(com.qm.frame.basic.controller.QmController)")
+    @Pointcut("this(com.qm.frame.basic.controller.QmController) && execution(* *..controller..*.*(..))")
     public void qmPointcut() {
     }
 
@@ -65,7 +65,6 @@ public class LoggerWholeAOP {
      */
     @Around("qmPointcut()")
     public Object around(ProceedingJoinPoint pjp) throws Throwable {
-        //LOG.debug("※※※※※※※※※※※※※※※※※※");
         return pjp.proceed();
     }
 
@@ -79,11 +78,11 @@ public class LoggerWholeAOP {
         starTime = System.currentTimeMillis();
         // getTarget得到被代理的目标对象(要切入的目标对象)
         LOG.info("※※※※※※※※※※※※※※※※※※");
-        LOG.info("请求定位:" + jp.getTarget().getClass().getName());
+        LOG.info("执行位置:" + jp.getTarget().getClass().getName());
         // getSignature得到被代理的目标对象的方法名(返回被切入的目标方法名)
-        LOG.info("请求方法:【" + jp.getSignature().getName() + "】");
+        LOG.info("执行方法:[" + jp.getSignature().getName() + "]");
         // Arrays.toString(jp.getArgs())获得目标方法的参数列表
-        LOG.info("参数列表:【" + Arrays.toString(jp.getArgs()) + "】");
+        LOG.debug("参数列表:" + Arrays.toString(jp.getArgs()));
         LOG.info("※※※※※※※※※※※※※※※※※※");
     }
 
@@ -95,10 +94,10 @@ public class LoggerWholeAOP {
      */
     @AfterReturning(pointcut = "qmPointcut()", returning = "result")
     public void afterReturning(JoinPoint jp, Object result) {
-        LOG.debug("※※※※※※※※※响应结果:【" + result + "】※※※※※※※※※");
+        LOG.debug("※※※执行结果:[" + result + "]※※※");
         Long endTime = System.currentTimeMillis();
         Long time = endTime - starTime;
-        LOG.info("※※※※※※※※※响应耗时：" + time + "/ms※※※※※※※※※");
+        LOG.info("※※※执行耗时：" + time + "/ms※※※");
         if (QM_OUT_METHOD != null) {
             QM_OUT_METHOD.responseOutHandling(jp, result, time);
         }

@@ -1,6 +1,7 @@
 package com.qm.frame.qmsecurity.utils;
 
 import com.alibaba.fastjson.JSON;
+import com.qm.frame.basic.config.QmFrameContent;
 import com.qm.frame.qmsecurity.config.QmSecurityContent;
 import com.qm.frame.qmsecurity.entity.QmUserInfo;
 import com.qm.frame.qmsecurity.exception.QmSecurityAnalysisTokenException;
@@ -18,6 +19,7 @@ import java.util.Date;
 
 /**
  * AES对称加密技术
+ * @author 浅梦
  */
 public class QmSecurityTokenTools {
 
@@ -25,6 +27,7 @@ public class QmSecurityTokenTools {
 
     private static final String BASIC_KEY = "hfsdnvfjdmfkl";
 
+    private static final String ENCODING = "UTF-8";
     /**
      * 加密
      *
@@ -36,14 +39,14 @@ public class QmSecurityTokenTools {
     private static String basicEncryptAES(String data, String key) throws Exception {
         KeyGenerator kgen = KeyGenerator.getInstance("AES");
         SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
-        secureRandom.setSeed(key.getBytes());
+        secureRandom.setSeed(key.getBytes(ENCODING));
         kgen.init(128, secureRandom);
         SecretKey skey = kgen.generateKey();
         byte[] raw = skey.getEncoded();
         SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
-        byte[] encryptedData = cipher.doFinal(data.getBytes("UTF-8"));
+        byte[] encryptedData = cipher.doFinal(data.getBytes(ENCODING));
         String hexStr = Base64.encodeBase64String(encryptedData);
         return hexStr;
     }
@@ -58,9 +61,8 @@ public class QmSecurityTokenTools {
      */
     private static String basicDecryptAES(String data, String key) throws Exception {
         KeyGenerator kgen = KeyGenerator.getInstance("AES");
-        //kgen.init(128, new SecureRandom(key.getBytes()));
         SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
-        secureRandom.setSeed(key.getBytes());
+        secureRandom.setSeed(key.getBytes(ENCODING));
         kgen.init(128, secureRandom);
         SecretKey skey = kgen.generateKey();
         byte[] raw = skey.getEncoded();
@@ -68,7 +70,7 @@ public class QmSecurityTokenTools {
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.DECRYPT_MODE, skeySpec);
         byte[] decryptedData = cipher.doFinal(Base64.decodeBase64(data));
-        String respStr = new String(decryptedData, "UTF-8");
+        String respStr = new String(decryptedData, ENCODING);
         return respStr;
     }
 
@@ -102,7 +104,7 @@ public class QmSecurityTokenTools {
         stringBuffer.append("%@signTime@%");
         String sign = signMD5(stringBuffer.toString());
         stringBuffer.append(sign);
-        LOG.info("※token签发耗时：" + (new Date().getTime() - date.getTime()) + "/ms※");
+        LOG.info("※※※Token签发耗时：" + (System.currentTimeMillis() - date.getTime()) + "/ms※※※");
         return encryptAES(stringBuffer.toString()).split("==")[0];
     }
 
@@ -118,7 +120,7 @@ public class QmSecurityTokenTools {
         // 校验token是否失效
         if (exp != 0) {
             Date tokenExp = new Date(signTime + (exp * 1000));
-            if (tokenExp.getTime() <= new Date().getTime()) {
+            if (tokenExp.getTime() <= System.currentTimeMillis()) {
                 // 失效了。
                 return false;
             }
@@ -159,14 +161,18 @@ public class QmSecurityTokenTools {
             qmUserInfo.setIdentify(identify);
             qmUserInfo.setUser(JSON.parseObject(userJson, Class.forName(className)));
             long expTemp = 0;
-            if (!exp.equals("shdhwaxnlxhueicn")) {
-                expTemp = Long.valueOf(exp) / 1000;
+            String expInfinite = "shdhwaxnlxhueicn";
+            if (!expInfinite.equals(exp)) {
+                expTemp = Integer.parseInt(exp) / 1000;
             }
             qmUserInfo.setTokenExpireTime(expTemp);
-            qmUserInfo.setSignTime(new Date(Long.valueOf(signTime)));
+
+            qmUserInfo.setSignTime(new Date(Long.parseLong(signTime)));
             String sign = token.split("%@signTime@%")[1];
             String tokenReadSign = token.split("%@signTime@%")[0] + "%@signTime@%";
-            if (verifySign(sign, tokenReadSign) == false) throw new QmSecurityAnalysisTokenException("token签名错误!");
+            if (verifySign(sign, tokenReadSign) == false) {
+                throw new QmSecurityAnalysisTokenException("token签名错误!");
+            }
             return qmUserInfo;
         } catch (Exception e) {
             throw new QmSecurityAnalysisTokenException("token校验失败!", e);
@@ -199,13 +205,13 @@ public class QmSecurityTokenTools {
         if (str == null || str.length() == 0) {
             return null;
         }
-        char hexDigits[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'U', 'C', 'K', 'Z', 'H', 'G'};
+        char[] hexDigits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'U', 'C', 'K', 'Z', 'H', 'G'};
         try {
             MessageDigest mdTemp = MessageDigest.getInstance("MD5");
-            mdTemp.update(str.getBytes("UTF-8"));
+            mdTemp.update(str.getBytes(ENCODING));
             byte[] md = mdTemp.digest();
             int j = md.length;
-            char buf[] = new char[j * 2];
+            char[] buf = new char[j * 2];
             int k = 0;
             for (int i = 0; i < j; i++) {
                 byte byte0 = md[i];
@@ -214,6 +220,7 @@ public class QmSecurityTokenTools {
             }
             return new String(buf);
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }

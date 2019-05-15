@@ -14,15 +14,11 @@ import java.util.Properties;
  */
 public class PropertiesUtil {
 
-    private static Properties properties;
-
     /**
      * 如果需要读取其他配置文件请指定fileName的值;
      */
     public static String fileName = null;
-
-    private PropertiesUtil() {
-    }
+    private static Properties properties;
 
     static {
         properties = new Properties();
@@ -38,13 +34,18 @@ public class PropertiesUtil {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            try {
-                inStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (inStream != null) {
+                try {
+                    inStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
+    }
+
+    private PropertiesUtil() {
     }
 
     /**
@@ -67,7 +68,7 @@ public class PropertiesUtil {
      */
     public static String get(String key, String defaultValue) {
         String value = properties.getProperty(key, defaultValue);
-        if (value == null || value.trim().equals("")) {
+        if ("".equals(value.trim())) {
             value = defaultValue;
         }
         return value;
@@ -96,10 +97,12 @@ public class PropertiesUtil {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            try {
-                inStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (inStream != null) {
+                try {
+                    inStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
         return value;

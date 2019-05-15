@@ -34,7 +34,7 @@ public class QmBaseStyleUtils {
      */
     public static Map transformMapForHump(Map map) {
         Iterator iter = map.entrySet().iterator();
-        Map resMap = new HashMap();
+        Map resMap = new HashMap(16);
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
             String key = (String) entry.getKey();

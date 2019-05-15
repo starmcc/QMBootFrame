@@ -22,8 +22,14 @@ import java.util.Properties;
  */
 public class QmDataSourceFactory {
 
-    private static final Properties PRO = getProperties(); // properties 配置读取
-    private static String typeName = getProString("type-name", "dbcp2"); // 连接池类型
+    /**
+     * properties 配置读取
+     */
+    private static final Properties PRO = getProperties();
+    /**
+     * // 连接池类型
+     */
+    private static String typeName = getProString("type-name", "dbcp2");
     private static String driverClassName = getProString("driver-class-name", "com.mysql.jdbc.Driver");
     private static String url = getProString("url", "");
     private static String userName = getProString("username", "root");
@@ -37,27 +43,25 @@ public class QmDataSourceFactory {
      * @return ServletRegistrationBean<StatViewServlet>
      */
     public static ServletRegistrationBean<StatViewServlet> getServletRegistrationBean() {
-        if (servletRegistrationBean == null) {
-            String allow = getProString("druid.allow", "localhost");
-            String deny = getProString("druid.deny", "");
-            String loginUsername = getProString("druid.login.username", "admin");
-            String loginPassword = getProString("druid.login.password", "123");
-            String resetEnable = getProString("druid.reset.enable", "false");
-            String inMatchUrl = getProString("druid.inMatchUrl", "/druid/*");
-            //org.springframework.boot.context.embedded.ServletRegistrationBean提供类的进行注册.
-            servletRegistrationBean = new ServletRegistrationBean<StatViewServlet>
-                    (new StatViewServlet(), inMatchUrl);
-            //添加初始化参数：initParams
-            //白名单：
-            servletRegistrationBean.addInitParameter("allow", allow);
-            //IP黑名单 (存在共同时，deny优先于allow) : 如果满足deny的话提示:Sorry, you are not permitted to views this page.
-            servletRegistrationBean.addInitParameter("deny", deny);
-            //登录查看信息的账号密码.
-            servletRegistrationBean.addInitParameter("loginUsername", loginUsername);
-            servletRegistrationBean.addInitParameter("loginPassword", loginPassword);
-            //是否能够重置数据.
-            servletRegistrationBean.addInitParameter("resetEnable", resetEnable);
-        }
+        String allow = getProString("druid.allow", "localhost");
+        String deny = getProString("druid.deny", "");
+        String loginUsername = getProString("druid.login.username", "admin");
+        String loginPassword = getProString("druid.login.password", "123");
+        String resetEnable = getProString("druid.reset.enable", "false");
+        String inMatchUrl = getProString("druid.inMatchUrl", "/druid/*");
+        //org.springframework.boot.context.embedded.ServletRegistrationBean提供类的进行注册.
+        servletRegistrationBean = new ServletRegistrationBean<StatViewServlet>
+                (new StatViewServlet(), inMatchUrl);
+        //添加初始化参数：initParams
+        //白名单：
+        servletRegistrationBean.addInitParameter("allow", allow);
+        //IP黑名单 (存在共同时，deny优先于allow) : 如果满足deny的话提示:Sorry, you are not permitted to views this page.
+        servletRegistrationBean.addInitParameter("deny", deny);
+        //登录查看信息的账号密码.
+        servletRegistrationBean.addInitParameter("loginUsername", loginUsername);
+        servletRegistrationBean.addInitParameter("loginPassword", loginPassword);
+        //是否能够重置数据.
+        servletRegistrationBean.addInitParameter("resetEnable", resetEnable);
         return servletRegistrationBean;
     }
 
@@ -67,14 +71,12 @@ public class QmDataSourceFactory {
      * @return FilterRegistrationBean<WebStatFilter>
      */
     public static FilterRegistrationBean<WebStatFilter> getFilterFilterRegistrationBean() {
-        if (filterFilterRegistrationBean == null) {
-            filterFilterRegistrationBean = new FilterRegistrationBean<WebStatFilter>(new WebStatFilter());
-            // 添加过滤规则.
-            filterFilterRegistrationBean.addUrlPatterns("/*");
-            // 添加不需要忽略的格式信息.
-            String exclusions = getProString("druid.exclusions","*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*");
-            filterFilterRegistrationBean.addInitParameter("exclusions", exclusions);
-        }
+        filterFilterRegistrationBean = new FilterRegistrationBean<WebStatFilter>(new WebStatFilter());
+        // 添加过滤规则.
+        filterFilterRegistrationBean.addUrlPatterns("/*");
+        // 添加不需要忽略的格式信息.
+        String exclusions = getProString("druid.exclusions", "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*");
+        filterFilterRegistrationBean.addInitParameter("exclusions", exclusions);
         return filterFilterRegistrationBean;
     }
 
@@ -84,10 +86,13 @@ public class QmDataSourceFactory {
      */
     public static DataSource getDataSource() {
         DataSource dataSource = null;
+        final String[] typeFinal = {"druid", "dbcp2"};
         try {
-            if (typeName.equalsIgnoreCase("druid")) {
+            // if druid
+            if (typeFinal[0].equalsIgnoreCase(typeName)) {
                 dataSource = initDruidDataSource();
-            } else if (typeName.equalsIgnoreCase("dbcp2")) {
+                // if dbcp2
+            } else if (typeFinal[1].equalsIgnoreCase(typeName)) {
                 dataSource = initDbcp2DataSource();
             } else {
                 dataSource = null;

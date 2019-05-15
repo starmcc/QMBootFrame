@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.thymeleaf.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -24,12 +23,10 @@ import java.util.List;
  */
 public class QmSecurityManager implements Qmbject {
 
-    // 日志工具
     private static final Logger LOG = LoggerFactory.getLogger(QmSecurityManager.class);
-
-    // request
+    private static String userKey = "Qmbject_";
+    private static String matchingKey = "matchingUrls_";
     private HttpServletRequest request;
-
 
     /**
      * 注入相关Spring依赖
@@ -66,7 +63,7 @@ public class QmSecurityManager implements Qmbject {
         }
         // 缓存用户对象
         try {
-            QmSecurityContent.qmSecurityCache.put("Qmbject_" + qmUserInfo.getIdentify(),
+            QmSecurityContent.qmSecurityCache.put(userKey + qmUserInfo.getIdentify(),
                     qmUserInfo, qmUserInfo.getLoginExpireTime());
         } catch (Exception e) {
             throw new QmSecurityCacheException(e);
@@ -88,7 +85,7 @@ public class QmSecurityManager implements Qmbject {
     @Override
     public void setUserInfo(QmUserInfo qmUserInfo) {
         String identify = qmUserInfo.getIdentify();
-        QmSecurityContent.qmSecurityCache.put("Qmbject_" + identify, qmUserInfo, qmUserInfo.getLoginExpireTime());
+        QmSecurityContent.qmSecurityCache.put(userKey + identify, qmUserInfo, qmUserInfo.getLoginExpireTime());
     }
 
 
@@ -100,7 +97,7 @@ public class QmSecurityManager implements Qmbject {
         if (isNew || matchingUrls == null) {
             matchingUrls = QmSecurityContent.realm.authorizationMatchingURI(qmUserInfo);
             // 半小时缓存时间
-            QmSecurityContent.qmSecurityCache.put("matchingUrls_" + qmUserInfo.getIdentify(), matchingUrls, 60 * 30);
+            QmSecurityContent.qmSecurityCache.put(matchingUrls + qmUserInfo.getIdentify(), matchingUrls, 60 * 30);
         }
         return matchingUrls;
     }
@@ -112,18 +109,26 @@ public class QmSecurityManager implements Qmbject {
      * @return
      */
     private boolean verifyQmUserInfo(QmUserInfo qmUserInfo) {
-        if (qmUserInfo == null) return false;
-        if (StringUtils.isEmpty(qmUserInfo.getIdentify())) return false;
-        if (qmUserInfo.getUser() == null) return false;
+        if (qmUserInfo == null) {
+            return false;
+        }
+        if ("".equals(qmUserInfo.getIdentify())) {
+            return false;
+        }
+        if (qmUserInfo.getUser() == null) {
+            return false;
+        }
         return true;
     }
 
     @Override
     public boolean logout(String identify) {
-        if (StringUtils.isEmpty(identify)) return false;
-        if (!QmSecurityContent.qmSecurityCache.remove("Qmbject_" + identify)) {
+        if ("".equals(identify)) {
             return false;
         }
-        return QmSecurityContent.qmSecurityCache.remove("matchingUrls_" + identify);
+        if (!QmSecurityContent.qmSecurityCache.remove(userKey + identify)) {
+            return false;
+        }
+        return QmSecurityContent.qmSecurityCache.remove(matchingKey + identify);
     }
 }

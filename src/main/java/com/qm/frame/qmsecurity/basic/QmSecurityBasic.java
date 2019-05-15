@@ -15,11 +15,11 @@ public interface QmSecurityBasic {
 
     /**
      * 拦截器安全校验
-     *
-     * @param request     HttpServletRequest
-     * @param response    HttpServletResponse
-     * @param isPerssions boolean 是否校验权限
+     * @param request HttpServletRequest
+     * @param response HttpServletResponse
+     * @param isPerssions
      * @return
+     * @throws Exception
      */
     boolean securityCheck(HttpServletRequest request, HttpServletResponse response, boolean isPerssions) throws Exception;
 

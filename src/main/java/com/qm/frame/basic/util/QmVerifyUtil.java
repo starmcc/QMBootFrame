@@ -43,10 +43,12 @@ public class QmVerifyUtil {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            try {
-                inStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (inStream != null) {
+                try {
+                    inStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
         return null;
@@ -62,7 +64,9 @@ public class QmVerifyUtil {
      * @return 返回布尔类型
      */
     public static boolean isRegex(String node, String value) {
-        if (StringUtils.isEmpty(value)) return false;
+        if (StringUtils.isEmpty(value)) {
+            return false;
+        }
         try {
             String regex = PRO.getProperty(node);
             if (regex == null) {

@@ -4,6 +4,8 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import com.qm.frame.basic.body.JsonPathArgumentResolver;
+import com.qm.frame.basic.filter.InitFilter;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -12,10 +14,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
@@ -28,7 +28,6 @@ import java.util.List;
  * @date 2018年11月24日 上午1:33:11
  * @Description QMFrame框架的基础配置类
  */
-//@WebFilter(urlPatterns = "/**")
 @Configuration
 public class QmFrameConfig implements WebMvcConfigurer {
 
@@ -43,23 +42,43 @@ public class QmFrameConfig implements WebMvcConfigurer {
         WebMvcConfigurer.super.addResourceHandlers(registry);
     }
 
-    private CorsConfiguration buildConfig() {
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOrigin("*");
-        corsConfiguration.addAllowedHeader("*");
-        corsConfiguration.addAllowedMethod("*");
-        return corsConfiguration;
-    }
-
     /**
      * 跨域过滤器
+     *
      * @return
      */
     @Bean
-    public CorsFilter corsFilter() {
+    public FilterRegistrationBean corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", buildConfig());
-        return new CorsFilter(source);
+        //1.添加CORS配置信息
+        CorsConfiguration config = new CorsConfiguration();
+        //放行哪些原始域
+        config.addAllowedOrigin("*");
+        //是否发送Cookie信息
+        config.setAllowCredentials(true);
+        //放行哪些原始域(请求方式)
+        config.addAllowedMethod("*");
+        //放行哪些原始域(头部信息)
+        config.addAllowedHeader("*");
+        source.registerCorsConfiguration("/**", config);
+        FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
+        bean.setOrder(0);
+        return bean;
+    }
+
+
+    @Bean
+    public FilterRegistrationBean initFilter() {
+        FilterRegistrationBean registration = new FilterRegistrationBean();
+        //注入过滤器
+        registration.setFilter(new InitFilter());
+        //拦截规则
+        registration.addUrlPatterns("/*");
+        //过滤器名称
+        registration.setName("initFilter");
+        //过滤器顺序
+        registration.setOrder(2);
+        return registration;
     }
 
     /**

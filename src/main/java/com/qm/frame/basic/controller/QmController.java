@@ -3,7 +3,7 @@ package com.qm.frame.basic.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.qm.frame.basic.config.QmFrameContent;
-import com.qm.frame.basic.util.AESUtil;
+import com.qm.frame.basic.util.AesUtil;
 import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,7 @@ public class QmController {
      * @return
      */
     public String sendJSON(QmCode code) {
-        Map<String, Object> responseMap = new HashMap<>();
+        Map<String, Object> responseMap = new HashMap<>(16);
         responseMap.put("code", code.getCode());
         responseMap.put("msg", QmCode.getMsg(code));
         responseMap.put("data", null);
@@ -46,7 +46,7 @@ public class QmController {
      * @return
      */
     public String sendJSON(QmCode code, Object data) {
-        Map<String, Object> responseMap = new HashMap<>();
+        Map<String, Object> responseMap = new HashMap<>(16);
         responseMap.put("code", code.getCode());
         responseMap.put("msg", QmCode.getMsg(code));
         responseMap.put("data", data);
@@ -63,7 +63,7 @@ public class QmController {
      * @return
      */
     public String sendJSON(QmCode code, String msg, Object data) {
-        Map<String, Object> responseMap = new HashMap<>();
+        Map<String, Object> responseMap = new HashMap<>(16);
         responseMap.put("code", code.getCode());
         responseMap.put("msg", msg);
         responseMap.put("data", data);
@@ -82,7 +82,7 @@ public class QmController {
         String json = jsonObject.getString(QmFrameContent.REQUEST_DATA_KEY);
         if (QmFrameContent.AES_START) {
             try {
-                json = AESUtil.decryptAES(json);
+                json = AesUtil.decryptAES(json);
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -103,8 +103,8 @@ public class QmController {
         value = StringEscapeUtils.unescapeJava(value);
         try {
             if (QmFrameContent.AES_START) {
-                value = AESUtil.encryptAES(value);
-                Map<String, String> resMap = new HashMap<>();
+                value = AesUtil.encryptAES(value);
+                Map<String, String> resMap = new HashMap<>(16);
                 resMap.put(QmFrameContent.RESPONSE_DATA_KEY, value);
                 return StringEscapeUtils.unescapeJava(JSONObject.toJSONString(resMap, SerializerFeature.WriteMapNullValue));
             }
@@ -112,7 +112,7 @@ public class QmController {
             e.printStackTrace();
             LOG.debug("加密失败");
         }
-        Map<String, Map<String, Object>> resMap = new HashMap<>();
+        Map<String, Map<String, Object>> resMap = new HashMap<>(16);
         resMap.put(QmFrameContent.RESPONSE_DATA_KEY, responseMap);
         return JSONObject.toJSONString(resMap, SerializerFeature.WriteMapNullValue);
     }

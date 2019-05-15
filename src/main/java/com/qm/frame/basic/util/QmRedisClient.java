@@ -28,6 +28,7 @@ public final class QmRedisClient {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
+
     /**
      * 指定缓存失效时间
      *
@@ -86,7 +87,9 @@ public final class QmRedisClient {
                     return qmRedisClient.redisTemplate.delete(key[0]);
                 } else {
                     Long res = qmRedisClient.redisTemplate.delete(CollectionUtils.arrayToList(key));
-                    if (res < 1) return false;
+                    if (res < 1) {
+                        return false;
+                    }
                 }
             }
         } catch (Exception e) {
@@ -380,8 +383,9 @@ public final class QmRedisClient {
     public static long sSetAndTime(String key, long time, Object... values) {
         try {
             Long count = qmRedisClient.redisTemplate.opsForSet().add(key, values);
-            if (time > 0)
+            if (time > 0) {
                 qmRedisClient.redisTemplate.expire(key, time, TimeUnit.SECONDS);
+            }
             return count;
         } catch (Exception e) {
             e.printStackTrace();
@@ -500,8 +504,9 @@ public final class QmRedisClient {
     public static boolean lSet(String key, Object value, long time) {
         try {
             qmRedisClient.redisTemplate.opsForList().rightPush(key, value);
-            if (time > 0)
+            if (time > 0) {
                 qmRedisClient.redisTemplate.expire(key, time, TimeUnit.SECONDS);
+            }
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -538,8 +543,9 @@ public final class QmRedisClient {
     public static boolean lSet(String key, List<Object> value, long time) {
         try {
             qmRedisClient.redisTemplate.opsForList().rightPushAll(key, value);
-            if (time > 0)
+            if (time > 0) {
                 qmRedisClient.redisTemplate.expire(key, time, TimeUnit.SECONDS);
+            }
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -583,9 +589,9 @@ public final class QmRedisClient {
         }
     }
 
-    //@PostConstruct修饰的方法会在服务器加载Servle的时候运行，
-    // 并且只会被服务器执行一次。
-    // PostConstruct在构造函数之后执行,init()方法之前执行
+    /**
+     * @PostConstruct修饰的方法会在服务器加载Servle的时候运行，并且只会被服务器执行一次。 PostConstruct在构造函数之后执行, init()方法之前执行
+     */
     @PostConstruct
     public void init() {
         qmRedisClient = this;

@@ -24,7 +24,7 @@ public class NumberUtil {
         // 去掉"-"符号
         String temp = str.substring(0, 8) + str.substring(9, 13) + str.substring(14, 18) + str.substring(19, 23)
                 + str.substring(24);
-        if (prefix != null && !prefix.trim().equals("")) {
+        if (!"".equals(prefix.trim())) {
             temp = prefix + temp;
         }
         return temp;

@@ -89,9 +89,18 @@ public enum QmCode {
      */
     _999(999, "未知错误", "Server unknow");
 
-    private int code; // 编码
-    private String cnMsg; // 中文msg
-    private String enMsg; // 英文msg
+    /**
+     * 编码
+     */
+    private int code;
+    /**
+     * 中文msg
+     */
+    private String cnMsg;
+    /**
+     * 英文msg
+     */
+    private String enMsg;
 
     private QmCode(int code, String cnMsg, String enMsg) {
         this.code = code;
@@ -110,7 +119,6 @@ public enum QmCode {
      * @return msg
      */
     public static final String getMsg(QmCode code) {
-        return QmFrameContent.RESPONSE_MESSAGE_LANG
-                .equalsIgnoreCase("cn") ? code.cnMsg : code.enMsg;
+        return "cn".equalsIgnoreCase(QmFrameContent.RESPONSE_MESSAGE_LANG) ? code.cnMsg : code.enMsg;
     }
 }

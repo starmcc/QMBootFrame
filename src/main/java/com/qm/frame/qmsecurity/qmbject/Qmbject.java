@@ -28,9 +28,13 @@ public interface Qmbject {
      *
      * @param qmUserInfo 参与签名的信息对象
      * @return
+     * @throws QmSecurityQmUserInfoException
+     * @throws QmSecurityCreateTokenException
+     * @throws QmSecurityCacheException
      */
-    String login(QmUserInfo qmUserInfo)
-            throws QmSecurityQmUserInfoException, QmSecurityCreateTokenException, QmSecurityCacheException;
+    String login(QmUserInfo qmUserInfo) throws QmSecurityQmUserInfoException,
+            QmSecurityCreateTokenException,
+            QmSecurityCacheException;
 
     /**
      * 获取当前登录用户对象
@@ -61,6 +65,7 @@ public interface Qmbject {
 
     /**
      * 注销用户
+     *
      * @param identify
      * @return
      */

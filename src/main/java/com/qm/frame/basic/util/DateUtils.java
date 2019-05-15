@@ -15,6 +15,11 @@ public class DateUtils {
 
     //============================借助Calendar类获取今天、昨天、本周、上周、本年及特定时间的开始时间和结束时间（返回类型为date类型）========================
 
+    private static final String MONDAY_NUM = "1",
+            TUESDAY_NUM = "2", WEDNESDAY_NUM = "3",
+            THURSDAY_NUM = "4", FRIDAY_NUM = "5",
+            SATURDAY_NUM = "6", SUNDAY_NUM = "0";
+
     /**
      * 获取当天开始时间
      *
@@ -22,10 +27,14 @@ public class DateUtils {
      */
     public static Date getDayBegin() {
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY, 0);//0点
-        cal.set(Calendar.MINUTE, 0);//0分
-        cal.set(Calendar.SECOND, 0);//0秒
-        cal.set(Calendar.MILLISECOND, 0);//0毫秒
+        //0点
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        //0分
+        cal.set(Calendar.MINUTE, 0);
+        //0秒
+        cal.set(Calendar.SECOND, 0);
+        //0毫秒
+        cal.set(Calendar.MILLISECOND, 0);
         return cal.getTime();
     }
 
@@ -37,9 +46,12 @@ public class DateUtils {
      */
     public static Date getDayEnd() {
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY, 23);//23点
-        cal.set(Calendar.MINUTE, 59);//59分
-        cal.set(Calendar.SECOND, 59);//59秒
+        //23点
+        cal.set(Calendar.HOUR_OF_DAY, 23);
+        //59分
+        cal.set(Calendar.MINUTE, 59);
+        //59秒
+        cal.set(Calendar.SECOND, 59);
         return cal.getTime();
     }
 
@@ -51,8 +63,10 @@ public class DateUtils {
      */
     public static Date getBeginDayOfYesterday() {
         Calendar cal = Calendar.getInstance();
-        cal.setTime(getDayBegin());//当天开始时间
-        cal.add(Calendar.DAY_OF_MONTH, -1);//当天月份天数减1
+        //当天开始时间
+        cal.setTime(getDayBegin());
+        //当天月份天数减1
+        cal.add(Calendar.DAY_OF_MONTH, -1);
         return cal.getTime();
     }
 
@@ -64,8 +78,10 @@ public class DateUtils {
      */
     public static Date getEndDayOfYesterday() {
         Calendar cal = Calendar.getInstance();
-        cal.setTime(getDayEnd());//当天结束时间
-        cal.add(Calendar.DAY_OF_MONTH, -1);//当天月份天数减1
+        //当天结束时间
+        cal.setTime(getDayEnd());
+        //当天月份天数减1
+        cal.add(Calendar.DAY_OF_MONTH, -1);
         return cal.getTime();
     }
 
@@ -77,8 +93,10 @@ public class DateUtils {
      */
     public static Date getBeginDayOfTomorrow() {
         Calendar cal = Calendar.getInstance();
-        cal.setTime(getDayBegin());//当天开始时间
-        cal.add(Calendar.DAY_OF_MONTH, 1);//当天月份天数加1
+        //当天开始时间
+        cal.setTime(getDayBegin());
+        //当天月份天数加1
+        cal.add(Calendar.DAY_OF_MONTH, 1);
         return cal.getTime();
     }
 
@@ -90,8 +108,10 @@ public class DateUtils {
      */
     public static Date getEndDayOfTomorrow() {
         Calendar cal = Calendar.getInstance();
-        cal.setTime(getDayEnd());//当天结束时间
-        cal.add(Calendar.DAY_OF_MONTH, 1);//当天月份天数加1
+        //当天结束时间
+        cal.setTime(getDayEnd());
+        //当天月份天数加1
+        cal.add(Calendar.DAY_OF_MONTH, 1);
         return cal.getTime();
     }
 
@@ -142,9 +162,6 @@ public class DateUtils {
     @SuppressWarnings("unused")
     public static Date getBeginDayOfWeek() {
         Date date = new Date();
-        if (date == null) {
-            return null;
-        }
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
@@ -175,9 +192,6 @@ public class DateUtils {
      */
     public static Date getBeginDayOfLastWeek() {
         Date date = new Date();
-        if (date == null) {
-            return null;
-        }
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         int dayofweek = cal.get(Calendar.DAY_OF_WEEK);
@@ -321,8 +335,7 @@ public class DateUtils {
             throw new IllegalArgumentException("getDiffDays param is null!");
         }
         long diff = (endDate.getTime() - beginDate.getTime()) / (1000 * 60 * 60 * 24);
-        int days = new Long(diff).intValue();
-        return days;
+        return Long.valueOf(diff).intValue();
     }
 
 
@@ -354,7 +367,8 @@ public class DateUtils {
         if (endDate == null) {
             return beginDate;
         }
-        if (beginDate.after(endDate)) {//beginDate日期大于endDate
+        //beginDate日期大于endDate
+        if (beginDate.after(endDate)) {
             return beginDate;
         }
         return endDate;
@@ -389,10 +403,10 @@ public class DateUtils {
      * @return
      */
     public static Date getFirstSeasonDate(Date date) {
-        final int[] SEASON = {1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4};
+        final int[] season = {1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4};
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        int sean = SEASON[cal.get(Calendar.MONTH)];
+        int sean = season[cal.get(Calendar.MONTH)];
         cal.set(Calendar.MONTH, sean * 3 - 3);
         return cal.getTime();
     }
@@ -468,11 +482,12 @@ public class DateUtils {
             }
         } else {
             {
-                for (int j = beginMonth; j < 12; j++) {
+                int length = 12;
+                for (int j = beginMonth; j < length; j++) {
                     list.add(getTimeList(beginYear, j, k));
                 }
                 for (int i = beginYear + 1; i < endYear; i++) {
-                    for (int j = 0; j < 12; j++) {
+                    for (int j = 0; j < length; j++) {
                         list.add(getTimeList(i, j, k));
                     }
                 }
@@ -507,7 +522,7 @@ public class DateUtils {
      * @return
      * @throws ParseException
      */
-    public static Date StringToDate(String str, String pattern) throws ParseException {
+    public static Date stringToDate(String str, String pattern) throws ParseException {
         SimpleDateFormat formatter = new SimpleDateFormat(pattern);
         Date date = (Date) formatter.parse(str);
         return date;
@@ -521,7 +536,7 @@ public class DateUtils {
      * @return
      * @throws ParseException
      */
-    public static String CSTFormat(String str) throws ParseException {
+    public static String cstFormat(String str) throws ParseException {
         SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.US);
         Date date = (Date) formatter.parse(str);
         return dateFormat(date);
@@ -535,7 +550,7 @@ public class DateUtils {
      * @return
      * @throws ParseException
      */
-    public static Date LongToDare(long str) throws ParseException {
+    public static Date longToDare(long str) throws ParseException {
         return new Date(str * 1000);
     }
 
@@ -554,7 +569,7 @@ public class DateUtils {
         if (startDate == null || endDate == null) {
             return false;
         }
-        long currentTime = new Date().getTime();
+        long currentTime = System.currentTimeMillis();
         if (currentTime >= startDate.getTime()
                 && currentTime <= endDate.getTime()) {
             return true;
@@ -587,19 +602,20 @@ public class DateUtils {
     /**
      * 时间前推或后推分钟,其中JJ表示分钟.
      *
-     * @param StringTime：时间
+     * @param stringTime：时间
      * @param minute：分钟（有正负之分）
      * @return
      */
-    public static String getPreTime(String StringTime, String minute) {
+    public static String getPreTime(String stringTime, String minute) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String mydate1 = "";
         try {
-            Date date1 = format.parse(StringTime);
-            long Time = (date1.getTime() / 1000) + Integer.parseInt(minute) * 60;
-            date1.setTime(Time * 1000);
+            Date date1 = format.parse(stringTime);
+            long time = (date1.getTime() / 1000) + Integer.parseInt(minute) * 60;
+            date1.setTime(time * 1000);
             mydate1 = format.format(date1);
         } catch (Exception e) {
+            e.printStackTrace();
             return "";
         }
         return mydate1;
@@ -657,10 +673,11 @@ public class DateUtils {
         GregorianCalendar gc = (GregorianCalendar) Calendar.getInstance();
         gc.setTime(d);
         int year = gc.get(Calendar.YEAR);
-        if ((year % 400) == 0) {
+        int a = 400, b = 4, c = 100;
+        if ((year % a) == 0) {
             return true;
-        } else if ((year % 4) == 0) {
-            if ((year % 100) == 0) {
+        } else if ((year % b) == 0) {
+            if ((year % c) == 0) {
                 return false;
             } else {
                 return true;
@@ -700,16 +717,17 @@ public class DateUtils {
         cal1.setTime(date1);
         cal2.setTime(date2);
         int subYear = cal1.get(Calendar.YEAR) - cal2.get(Calendar.YEAR);
+        int a = 11;
         if (0 == subYear) {
             if (cal1.get(Calendar.WEEK_OF_YEAR) == cal2.get(Calendar.WEEK_OF_YEAR)) {
                 return true;
             }
-        } else if (1 == subYear && 11 == cal2.get(Calendar.MONTH)) {
+        } else if (1 == subYear && a == cal2.get(Calendar.MONTH)) {
             // 如果12月的最后一周横跨来年第一周的话则最后一周即算做来年的第一周
             if (cal1.get(Calendar.WEEK_OF_YEAR) == cal2.get(Calendar.WEEK_OF_YEAR)) {
                 return true;
             }
-        } else if (-1 == subYear && 11 == cal1.get(Calendar.MONTH)) {
+        } else if (-1 == subYear && a == cal1.get(Calendar.MONTH)) {
             if (cal1.get(Calendar.WEEK_OF_YEAR) == cal2.get(Calendar.WEEK_OF_YEAR)) {
                 return true;
             }
@@ -726,8 +744,9 @@ public class DateUtils {
     public static String getSeqWeek() {
         Calendar c = Calendar.getInstance(Locale.CHINA);
         String week = Integer.toString(c.get(Calendar.WEEK_OF_YEAR));
-        if (week.length() == 1)
+        if (week.length() == 1) {
             week = "0" + week;
+        }
         String year = Integer.toString(c.get(Calendar.YEAR));
         return year + "年第" + week + "周";
     }
@@ -745,20 +764,28 @@ public class DateUtils {
         Date dd = strToDate(sdate);
         Calendar c = Calendar.getInstance();
         c.setTime(dd);
-        if (num.equals("1")) // 返回星期一所在的日期
+        if (MONDAY_NUM.equals(num)) {
+            // 返回星期一所在的日期
             c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-        else if (num.equals("2")) // 返回星期二所在的日期
+        } else if (TUESDAY_NUM.equals(num)) {
+            // 返回星期二所在的日期
             c.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
-        else if (num.equals("3")) // 返回星期三所在的日期
+        } else if (WEDNESDAY_NUM.equals(num)) {
+            // 返回星期三所在的日期
             c.set(Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY);
-        else if (num.equals("4")) // 返回星期四所在的日期
+        } else if (THURSDAY_NUM.equals(num)) {
+            // 返回星期四所在的日期
             c.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
-        else if (num.equals("5")) // 返回星期五所在的日期
+        } else if (FRIDAY_NUM.equals(num)) {
+            // 返回星期五所在的日期
             c.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
-        else if (num.equals("6")) // 返回星期六所在的日期
+        } else if (SATURDAY_NUM.equals(num)) {
+            // 返回星期六所在的日期
             c.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
-        else if (num.equals("0")) // 返回星期日所在的日期
+        } else if (SUNDAY_NUM.equals(num)) {
+            // 返回星期日所在的日期
             c.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        }
         return new SimpleDateFormat("yyyy-MM-dd").format(c.getTime());
     }
 
@@ -774,7 +801,6 @@ public class DateUtils {
         Date date = strToDate(sdate);
         Calendar c = Calendar.getInstance();
         c.setTime(date);
-        // int hour=c.getQmResponseOut(Calendar.DAY_OF_WEEK);
         // hour中存的就是星期几了，其范围 1~7
         // 1=星期日 7=星期六，其他类推
         return new SimpleDateFormat("EEEE").format(c.getTime());
@@ -790,19 +816,19 @@ public class DateUtils {
     public static String getWeekStr(String sdate) {
         String str = "";
         str = getWeek(sdate);
-        if ("1".equals(str)) {
+        if (MONDAY_NUM.equals(str)) {
             str = "星期日";
-        } else if ("2".equals(str)) {
+        } else if (TUESDAY_NUM.equals(str)) {
             str = "星期一";
-        } else if ("3".equals(str)) {
+        } else if (WEDNESDAY_NUM.equals(str)) {
             str = "星期二";
-        } else if ("4".equals(str)) {
+        } else if (THURSDAY_NUM.equals(str)) {
             str = "星期三";
-        } else if ("5".equals(str)) {
+        } else if (FRIDAY_NUM.equals(str)) {
             str = "星期四";
-        } else if ("6".equals(str)) {
+        } else if (SATURDAY_NUM.equals(str)) {
             str = "星期五";
-        } else if ("7".equals(str)) {
+        } else if (SUNDAY_NUM.equals(str)) {
             str = "星期六";
         }
         return str;
@@ -817,10 +843,12 @@ public class DateUtils {
      * @return
      */
     public static long getDays(String date1, String date2) {
-        if (date1 == null || date1.equals(""))
+        if ("".equals(date1)) {
             return 0;
-        if (date2 == null || date2.equals(""))
+        }
+        if ("".equals(date2)) {
             return 0;
+        }
         // 转换为标准时间
         SimpleDateFormat myFormatter = new SimpleDateFormat("yyyy-MM-dd");
         java.util.Date date = null;
@@ -828,10 +856,12 @@ public class DateUtils {
         try {
             date = myFormatter.parse(date1);
             mydate = myFormatter.parse(date2);
+            long day = (date.getTime() - mydate.getTime()) / (24 * 60 * 60 * 1000);
+            return day;
         } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
         }
-        long day = (date.getTime() - mydate.getTime()) / (24 * 60 * 60 * 1000);
-        return day;
     }
 
 
@@ -878,14 +908,16 @@ public class DateUtils {
      */
     public static String getRandom(int i) {
         Random jjj = new Random();
-        // int suiJiShu = jjj.nextInt(9);
-        if (i == 0)
+        if (i == 0) {
             return "";
-        String jj = "";
-        for (int k = 0; k < i; k++) {
-            jj = jj + jjj.nextInt(9);
         }
-        return jj;
+        //String jj = "";
+        StringBuffer jj = new StringBuffer();
+        for (int k = 0; k < i; k++) {
+            jj.append(jj);
+            jj.append(jjj.nextInt(9));
+        }
+        return jj.toString();
     }
 
 

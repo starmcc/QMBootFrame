@@ -14,9 +14,10 @@ import java.util.Date;
 
 /**
  * AES对称加密技术
+ * @author 浅梦
  */
-public class AESUtil {
-    private static final Logger LOG = LoggerFactory.getLogger(AESUtil.class);
+public class AesUtil {
+    private static final Logger LOG = LoggerFactory.getLogger(AesUtil.class);
 
     /**
      * 加密封装
@@ -31,7 +32,7 @@ public class AESUtil {
         for (int i = 0; i < QmFrameContent.AES_NUMBER; i++) {
             str = encryptAES(str, QmFrameContent.AES_KEY);
         }
-        LOG.debug("加密用时：" + (new Date().getTime() - date.getTime()));
+        LOG.debug("加密用时：" + (System.currentTimeMillis() - date.getTime()));
         return str;
     }
 
@@ -48,7 +49,7 @@ public class AESUtil {
         for (int i = 0; i < QmFrameContent.AES_NUMBER; i++) {
             str = decryptAES(str, QmFrameContent.AES_KEY);
         }
-        LOG.debug("解密用时：" + (new Date().getTime() - date.getTime()));
+        LOG.debug("解密用时：" + (System.currentTimeMillis() - date.getTime()));
         return str;
     }
 
@@ -63,7 +64,7 @@ public class AESUtil {
     private static String encryptAES(String data, String key) throws Exception {
         KeyGenerator kgen = KeyGenerator.getInstance("AES");
         SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
-        secureRandom.setSeed(key.getBytes());
+        secureRandom.setSeed(key.getBytes(QmFrameContent.AES_ENCODING));
         kgen.init(128, secureRandom);
         SecretKey skey = kgen.generateKey();
         byte[] raw = skey.getEncoded();
@@ -86,9 +87,8 @@ public class AESUtil {
      */
     private static String decryptAES(String data, String key) throws Exception {
         KeyGenerator kgen = KeyGenerator.getInstance("AES");
-        //kgen.init(128, new SecureRandom(key.getBytes()));
         SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
-        secureRandom.setSeed(key.getBytes());
+        secureRandom.setSeed(key.getBytes(QmFrameContent.AES_ENCODING));
         kgen.init(128, secureRandom);
         SecretKey skey = kgen.generateKey();
         byte[] raw = skey.getEncoded();

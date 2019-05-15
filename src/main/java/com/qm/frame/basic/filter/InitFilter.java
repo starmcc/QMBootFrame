@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
@@ -23,9 +24,6 @@ import java.io.UnsupportedEncodingException;
  * @date 2018年11月24日 上午1:15:27
  * @Description 该过滤器主要实现版本控制、重写RequestBody、实现AES对称无痕解密
  */
-@Order(1)
-@Component
-@WebFilter(urlPatterns = "/*", filterName = "InitFilter")
 public class InitFilter extends QmController implements Filter {
     /**
      * Logger slf4j
@@ -37,9 +35,13 @@ public class InitFilter extends QmController implements Filter {
             throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
+        if (request.getMethod().equals(RequestMethod.OPTIONS.name())) {
+            chain.doFilter(request, response);
+            return;
+        }
         // 设置请求头和相应头
         settingRequsetOrResponse(request,response);
-        LOG.info("请求URI：" + request.getRequestURI());
+        LOG.info("※※※请求URI：" + request.getRequestURI() + "※※※");
         //特殊请求
         if (verifySpecialURI(request)) {
             chain.doFilter(request, response);
@@ -102,16 +104,16 @@ public class InitFilter extends QmController implements Filter {
      */
     private boolean verifyVersion(HttpServletRequest request) throws IOException {
         //不开启版本控制
-        if (!QmFrameContent.VERSION_START) return true;
+        if (!QmFrameContent.VERSION_START) {return true;};
         //目前版本号
         String versionRequest = request.getHeader("version");
-        LOG.debug("请求版本号：" + versionRequest);
-        LOG.debug("当前版本号：" + QmFrameContent.VERSION_NOW);
+        LOG.info("※※※请求版本号：" + versionRequest + "※※※");
+        LOG.info("※※※当前版本号：" + QmFrameContent.VERSION_NOW + "※※※");
         if (QmFrameContent.VERSION_NOW.equals(versionRequest)) {
             //通过
             return true;
         }
-        LOG.debug("进入版本控制判断");
+        LOG.debug("※※※进入版本控制判断※※※");
         if (QmFrameContent.VERSION_ALLOWS != null && QmFrameContent.VERSION_ALLOWS.size() > 0) {
             for (String version : QmFrameContent.VERSION_ALLOWS) {
                 if (version.equals(versionRequest)) {
@@ -119,11 +121,8 @@ public class InitFilter extends QmController implements Filter {
                     return true;
                 }
             }
-        } else {
-            LOG.debug("请求失败,服务器并无配置可允许版本");
-            return false;
         }
-        LOG.debug("错误失败返回");
+        LOG.debug("※※※请求失败,服务器并无配置可允许版本※※※");
         return false;
     }
 

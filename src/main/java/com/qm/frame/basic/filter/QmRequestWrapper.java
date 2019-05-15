@@ -2,7 +2,7 @@ package com.qm.frame.basic.filter;
 
 import com.alibaba.fastjson.JSONObject;
 import com.qm.frame.basic.config.QmFrameContent;
-import com.qm.frame.basic.util.AESUtil;
+import com.qm.frame.basic.util.AesUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,11 +24,12 @@ import java.util.Enumeration;
  */
 public class QmRequestWrapper extends HttpServletRequestWrapper {
 
+    private static final Logger LOG = LoggerFactory.getLogger(QmRequestWrapper.class);
     /**
      * body
      */
     private final byte[] body;
-    private static final Logger LOG = LoggerFactory.getLogger(QmRequestWrapper.class);
+
     /**
      * @param request
      * @throws IOException
@@ -61,12 +62,14 @@ public class QmRequestWrapper extends HttpServletRequestWrapper {
      * @Description 请求解析，解析格式为{"配置的key名":{"param":"xxx","param2":"xxx"}}的JSON参数
      */
     private String getBodyByAes(String body) {
-        if (body == null || body.trim().equals("")) return body;
+        if ("".equals(body.trim())) {
+            return body;
+        }
         JSONObject jsonObject = JSONObject.parseObject(body);
         String json = jsonObject.getString(QmFrameContent.REQUEST_DATA_KEY);
         if (QmFrameContent.AES_START) {
             try {
-                json = AESUtil.decryptAES(json);
+                json = AesUtil.decryptAES(json);
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;

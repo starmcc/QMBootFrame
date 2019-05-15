@@ -40,7 +40,7 @@ public class QmExceptionHandler extends QmController {
 
     @ExceptionHandler(QmParamNullException.class)
     @ResponseBody
-    public String QmParamNullException(HttpServletResponse response,
+    public String qmParamNullException(HttpServletResponse response,
                                        Exception e) {
         LOG.info("缺少某些请求参数,请核实请求参数是否正确!");
         e.printStackTrace();
@@ -50,7 +50,7 @@ public class QmExceptionHandler extends QmController {
 
     @ExceptionHandler(QmParamErrorException.class)
     @ResponseBody
-    public String QmParamErrorException(HttpServletResponse response,
+    public String qmParamErrorException(HttpServletResponse response,
                                         Exception e) {
         LOG.info("请求参数错误,请核实请求参数是否正确!");
         response.setStatus(200);

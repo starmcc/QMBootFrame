@@ -27,6 +27,7 @@ import java.util.Set;
  * @version V1.0 Description: 自定义解析json数据
  * @Title JsonPathArgumentResolver
  * @date 2018年9月10日
+ * @author 浅梦
  */
 public class JsonPathArgumentResolver extends QmController implements HandlerMethodArgumentResolver {
 
@@ -119,7 +120,12 @@ public class JsonPathArgumentResolver extends QmController implements HandlerMet
     }
 
 
-    // 基本类型解析
+    /**
+     * 基本类型解析
+     * @param parameterTypeName
+     * @param value
+     * @return
+     */
     private Object parsePrimitive(String parameterTypeName, Object value) {
         final String booleanTypeName = "boolean";
         if (booleanTypeName.equals(parameterTypeName)) {
@@ -156,7 +162,12 @@ public class JsonPathArgumentResolver extends QmController implements HandlerMet
         return null;
     }
 
-    // 基本类型包装类型解析
+    /**
+     * 基本类型包装类型解析
+     * @param parameterType
+     * @param value
+     * @return
+     */
     private Object parseBasicTypeWrapper(Class<?> parameterType, Object value) {
         if (Number.class.isAssignableFrom(parameterType)) {
             Number number = (Number) value;

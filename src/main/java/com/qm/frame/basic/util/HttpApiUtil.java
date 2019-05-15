@@ -24,7 +24,7 @@ import java.util.*;
  * @Description HttpApi工具类
  */
 public class HttpApiUtil {
-    // 提交方式
+
     private final static String POST = "post";
     private final static String GET = "getQmResponseOut";
     /**
@@ -48,7 +48,7 @@ public class HttpApiUtil {
      */
     public static String mobilePhoneHome(String mobile) {
         String url = "https://tcc.taobao.com/cc/json/mobile_tel_segment.htm";
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>(16);
         map.put("tel", mobile);
         String response = sendGet(url, map);
         return response;
@@ -61,7 +61,7 @@ public class HttpApiUtil {
      * localAddress={city:"广州市", province:"广东省"}
      */
     public static String getIpAddress(String ip) {
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<String, Object>(16);
         params.put("ip", "127.0.0.1");
         String content = sendGet("http://ip.ws.126.net/ipquery", params);
         String str = content.substring(content.indexOf("{") + 1, content.indexOf("}"));
@@ -85,19 +85,20 @@ public class HttpApiUtil {
      */
     public static String getHttpIp(HttpServletRequest request) {
         String ip = request.getHeader("x-forwarded-for");
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+        String unknown = "unknown";
+        if (ip == null || ip.length() == 0 || unknown.equalsIgnoreCase(ip)) {
             ip = request.getHeader("Proxy-Client-IP");
         }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+        if (ip == null || ip.length() == 0 || unknown.equalsIgnoreCase(ip)) {
             ip = request.getHeader("WL-Proxy-Client-IP");
         }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+        if (ip == null || ip.length() == 0 || unknown.equalsIgnoreCase(ip)) {
             ip = request.getHeader("HTTP_CLIENT_IP");
         }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+        if (ip == null || ip.length() == 0 || unknown.equalsIgnoreCase(ip)) {
             ip = request.getHeader("HTTP_X_FORWARDED_FOR");
         }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+        if (ip == null || ip.length() == 0 || unknown.equalsIgnoreCase(ip)) {
             ip = request.getRemoteAddr();
         }
         return ip;
@@ -225,9 +226,11 @@ public class HttpApiUtil {
      */
     private static HttpEntity handleParam(Map<String, Object> params, String encoding) {
         List<NameValuePair> pList = new ArrayList<NameValuePair>();
-        Set<String> keys = params.keySet();
-        for (String key : keys) {
-            Object value = params.get(key);
+        Iterator<Map.Entry<String, Object>> entrys = params.entrySet().iterator();
+        while (entrys.hasNext()) {
+            Map.Entry<String, Object> entry = entrys.next();
+            String key = entry.getKey();
+            Object value = entry.getValue();
             try {
                 // 处理数组
                 Object[] objs = (Object[]) value;
@@ -273,7 +276,7 @@ public class HttpApiUtil {
      * @Description 测试工具方法
      */
     public static void main(String[] args) throws ParseException, IOException {
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>(16);
         params.put("ip", "127.0.0.1");
         String content = sendGet("http://ip.ws.126.net/ipquery", params);
         System.out.println(content);

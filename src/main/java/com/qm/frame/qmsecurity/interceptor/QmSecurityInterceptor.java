@@ -3,7 +3,7 @@ package com.qm.frame.qmsecurity.interceptor;
 import com.qm.frame.qmsecurity.basic.QmSecurityBasic;
 import com.qm.frame.qmsecurity.basic.QmSecurityBasicImplementation;
 import com.qm.frame.qmsecurity.note.QmPass;
-import com.qm.frame.qmsecurity.utils.OptionsUtils;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -20,7 +20,9 @@ import java.lang.reflect.Method;
  */
 public class QmSecurityInterceptor implements HandlerInterceptor {
 
-    // 单例底层
+    /**
+     * 单例底层
+     */
     private static QmSecurityBasic qmSecurityBasic;
 
     public QmSecurityInterceptor() {
@@ -33,7 +35,7 @@ public class QmSecurityInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
         // 放过跨域探路请求 如果项目中设置了跨域限制,会被拦截，框架本身放过处理。
-        if (OptionsUtils.isOptions(request)) {
+        if (request.getMethod().equals(RequestMethod.OPTIONS.name())) {
             return true;
         }
         // 定义是否需要授权匹配，默认为true。当标注了@QmPass且用户给定needLogin为true时，则该值会变为false;
