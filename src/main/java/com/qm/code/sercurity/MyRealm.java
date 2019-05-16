@@ -42,7 +42,7 @@ public class MyRealm extends QmController implements QmSecurityRealm {
     }
 
     @Override
-    public QmUserInfo authorizationUserInfo(QmUserInfo qmUserInfo) {
+    public QmUserInfo authorizationUserInfo(HttpServletRequest request, HttpServletResponse response, QmUserInfo qmUserInfo) {
         return qmUserInfo;
     }
 }

@@ -24,8 +24,8 @@ import java.util.List;
 public class QmSecurityManager implements Qmbject {
 
     private static final Logger LOG = LoggerFactory.getLogger(QmSecurityManager.class);
-    private static String userKey = "Qmbject_";
-    private static String matchingKey = "matchingUrls_";
+    private static final String USER_KEY = "Qmbject_";
+    private static final String MATCHING_KEY = "matchingUrls_";
     private HttpServletRequest request;
 
     /**
@@ -63,7 +63,7 @@ public class QmSecurityManager implements Qmbject {
         }
         // 缓存用户对象
         try {
-            QmSecurityContent.qmSecurityCache.put(userKey + qmUserInfo.getIdentify(),
+            QmSecurityContent.qmSecurityCache.put(USER_KEY + qmUserInfo.getIdentify(),
                     qmUserInfo, qmUserInfo.getLoginExpireTime());
         } catch (Exception e) {
             throw new QmSecurityCacheException(e);
@@ -85,7 +85,7 @@ public class QmSecurityManager implements Qmbject {
     @Override
     public void setUserInfo(QmUserInfo qmUserInfo) {
         String identify = qmUserInfo.getIdentify();
-        QmSecurityContent.qmSecurityCache.put(userKey + identify, qmUserInfo, qmUserInfo.getLoginExpireTime());
+        QmSecurityContent.qmSecurityCache.put(USER_KEY + identify, qmUserInfo, qmUserInfo.getLoginExpireTime());
     }
 
 
@@ -93,11 +93,11 @@ public class QmSecurityManager implements Qmbject {
     public List<String> extractMatchingURI(boolean isNew) {
         QmUserInfo qmUserInfo = this.getUserInfo();
         // 首先获取当前用户的许可URI
-        List<String> matchingUrls = (List<String>) QmSecurityContent.qmSecurityCache.get("matchingUrls_" + qmUserInfo.getIdentify());
+        List<String> matchingUrls = (List<String>) QmSecurityContent.qmSecurityCache.get(MATCHING_KEY + qmUserInfo.getIdentify());
         if (isNew || matchingUrls == null) {
             matchingUrls = QmSecurityContent.realm.authorizationMatchingURI(qmUserInfo);
-            // 半小时缓存时间
-            QmSecurityContent.qmSecurityCache.put(matchingUrls + qmUserInfo.getIdentify(), matchingUrls, 60 * 30);
+            // 权限缓存失效时间与登录失效时间相同
+            QmSecurityContent.qmSecurityCache.put(MATCHING_KEY + qmUserInfo.getIdentify(), matchingUrls, qmUserInfo.getLoginExpireTime());
         }
         return matchingUrls;
     }
@@ -126,9 +126,9 @@ public class QmSecurityManager implements Qmbject {
         if ("".equals(identify)) {
             return false;
         }
-        if (!QmSecurityContent.qmSecurityCache.remove(userKey + identify)) {
+        if (!QmSecurityContent.qmSecurityCache.remove(USER_KEY + identify)) {
             return false;
         }
-        return QmSecurityContent.qmSecurityCache.remove(matchingKey + identify);
+        return QmSecurityContent.qmSecurityCache.remove(MATCHING_KEY + identify);
     }
 }

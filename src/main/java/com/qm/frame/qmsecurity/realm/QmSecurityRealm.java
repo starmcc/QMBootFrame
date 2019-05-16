@@ -31,11 +31,14 @@ public interface QmSecurityRealm {
      * 当用户每次请求时进入安全监测时会调用该接口。
      * 每调用一次将会把该用户对象刷新到缓存中。
      * 注意：返回null表示本次检测不通过，框架自动进行拦截。
-     *
-     * @param qmUserInfo
+     * @param request HttpServletRequest
+     * @param response HttpServletResponse
+     * @param qmUserInfo 用户对象
      * @return
      */
-    QmUserInfo authorizationUserInfo(QmUserInfo qmUserInfo);
+    QmUserInfo authorizationUserInfo(HttpServletRequest request,
+                                     HttpServletResponse response,
+                                     QmUserInfo qmUserInfo);
 
     /**
      * 当安全检测不通过时回调该接口

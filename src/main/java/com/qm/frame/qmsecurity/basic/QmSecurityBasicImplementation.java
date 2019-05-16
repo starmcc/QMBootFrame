@@ -3,6 +3,7 @@ package com.qm.frame.qmsecurity.basic;
 import com.qm.frame.qmsecurity.config.QmSecurityContent;
 import com.qm.frame.qmsecurity.entity.QmUserInfo;
 import com.qm.frame.qmsecurity.exception.QmSecurityAnalysisTokenException;
+import com.qm.frame.qmsecurity.exception.QmSecurityCreateTokenException;
 import com.qm.frame.qmsecurity.qmbject.QmSecurityManager;
 import com.qm.frame.qmsecurity.utils.QmSecurityTokenTools;
 import org.slf4j.Logger;
@@ -25,6 +26,8 @@ public class QmSecurityBasicImplementation implements QmSecurityBasic {
 
     private static final Logger LOG = LoggerFactory.getLogger(QmSecurityBasicImplementation.class);
 
+    private static final String USER_KEY = "Qmbject_";
+
     @Override
     public boolean securityCheck(HttpServletRequest request, HttpServletResponse response, boolean isPerssions)
             throws Exception {
@@ -32,58 +35,61 @@ public class QmSecurityBasicImplementation implements QmSecurityBasic {
         String token = request.getHeader(QmSecurityContent.headerTokenKeyName);
         // 如果为空则直接拦截
         if (token == null) {
-            LOG.info("※检测不到token拒绝访问※");
+            LOG.info("※获取token失败,拒绝访问※");
             QmSecurityContent.realm.noPassCallBack(request, response, 1);
             return false;
         }
         QmUserInfo qmUserInfo = null;
         try {
-            LOG.info("※正在分析并提取token信息※");
+            LOG.info("※分析并提取token信息※");
             qmUserInfo = QmSecurityTokenTools.analysisToken(token);
         } catch (QmSecurityAnalysisTokenException e) {
-            LOG.info("※非法token,token提取失败※");
+            LOG.info("※提取token失败※");
             QmSecurityContent.realm.noPassCallBack(request, response, 2);
             return false;
         }
         // 从缓存中获取该用户的登录信息。
-        qmUserInfo = (QmUserInfo) QmSecurityContent.qmSecurityCache.get("Qmbject_" + qmUserInfo.getIdentify());
-        if (qmUserInfo == null) {
+        qmUserInfo = (QmUserInfo) QmSecurityContent.qmSecurityCache.get(USER_KEY + qmUserInfo.getIdentify());
+        if (qmUserInfo == null || !token.equals(qmUserInfo.getToken())) {
             LOG.info("※用户登录已过期※");
             QmSecurityContent.realm.noPassCallBack(request, response, 3);
             return false;
         }
-        LOG.info("※正在验证Token是否过期※");
+        LOG.info("※验证token是否过期※");
         long exp = qmUserInfo.getTokenExpireTime();
         long signTime = qmUserInfo.getSignTime().getTime();
         if (!QmSecurityTokenTools.verifyTokenExp(exp, signTime)) {
-            // 尝试重新签发token
-            LOG.info("※正在尝试重新签发Token※");
             try {
+                // 尝试重新签发token
+                LOG.info("※尝试重新签发token※");
                 qmUserInfo = restartAuth(response, qmUserInfo);
-            } catch (Exception e) {
+                LOG.info("※重新签发token成功※");
+            } catch (QmSecurityCreateTokenException e) {
+                e.printStackTrace();
                 // 重新授权时发生异常
                 // 发生该异常的情况有以下情况：
                 // 1.qmuserinfo参数不完整,2.签发token失败,3.缓存异常!
                 QmSecurityContent.realm.noPassCallBack(request, response, 4);
                 return false;
             }
-            LOG.info("※重新签发token成功※");
         }
-        // 保存到作用域中提供框架调用
-        request.setAttribute(QmUserInfo.class.getName(), qmUserInfo);
         // 提供给调度者授权调用,可修改用户对象信息。
         // 如果返回空,则认为授权失败！否则需调度者返回实质上的用户对象。
-        qmUserInfo = QmSecurityContent.realm.authorizationUserInfo(qmUserInfo);
+        LOG.info("※进入授权验证※");
+        qmUserInfo = QmSecurityContent.realm.authorizationUserInfo(request, response, qmUserInfo);
         if (qmUserInfo == null) {
             QmSecurityContent.realm.noPassCallBack(request, response, 5);
             return false;
         }
+        LOG.info("※通过授权验证※");
+        // 保存到作用域中提供框架调用
+        request.setAttribute(QmUserInfo.class.getName(), qmUserInfo);
         // 缓存 token 活跃期
-        long exp1 = qmUserInfo.getLoginExpireTime();
-        QmSecurityContent.qmSecurityCache.put("Qmbject_" + qmUserInfo.getIdentify(), qmUserInfo, exp1);
+        QmSecurityContent.qmSecurityCache.put(USER_KEY + qmUserInfo.getIdentify(),
+                qmUserInfo, qmUserInfo.getLoginExpireTime());
         // 该判断为如果标注了@QmPass且needLogin为true时，则isPerssions为false，就不会进入授权匹配了。
         if (isPerssions) {
-            LOG.info("※正在进行授权URI匹配※");
+            LOG.info("※正在进行授权URI验证※");
             // 获取该角色的权限信息
             List<String> matchingUrls = QmSecurityManager.getQmbject().extractMatchingURI(false);
             // 获取请求路由 校验该角色是否存在匹配当前请求url的匹配规则。
@@ -94,7 +100,7 @@ public class QmSecurityBasicImplementation implements QmSecurityBasic {
                 return false;
             }
         }
-        LOG.info("※用户通过安全校验※");
+        LOG.info("※※用户已通过安全框架验证※※");
         return true;
     }
 
@@ -124,9 +130,17 @@ public class QmSecurityBasicImplementation implements QmSecurityBasic {
      * @return
      */
     private QmUserInfo restartAuth(HttpServletResponse response, QmUserInfo qmUserInfo) throws Exception {
-        // 获取到qmTokenInfo对象后，进行重新登录
-        String token = QmSecurityManager.getQmbject().login(qmUserInfo);
+        // 先删除该缓存的token值
+        QmSecurityContent.qmSecurityCache.remove(USER_KEY + qmUserInfo.getIdentify());
+        // 进行重新签发token
+        String token = QmSecurityTokenTools.createToken(qmUserInfo);
+        // headers放行获取token的key
+        String headerKey = "Access-Control-Expose-Headers";
+        String typeName = "Content-Type," + QmSecurityContent.headerTokenKeyName;
+        response.addHeader(headerKey, typeName);
+        // 保存到响应头response的headers中
         response.setHeader(QmSecurityContent.headerTokenKeyName, token);
+        // 替换新的token值
         qmUserInfo.setToken(token);
         return qmUserInfo;
     }
