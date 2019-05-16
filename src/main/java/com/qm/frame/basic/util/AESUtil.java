@@ -13,7 +13,7 @@ import java.security.SecureRandom;
 import java.util.Date;
 
 /**
- * AES对称加密技术
+ * AES对称加密技术 
  * @author 浅梦
  */
 public class AesUtil {
