@@ -31,24 +31,25 @@ public interface QmSecurityRealm {
      * 当用户每次请求时进入安全监测时会调用该接口。
      * 每调用一次将会把该用户对象刷新到缓存中。
      * 注意：返回null表示本次检测不通过，框架自动进行拦截。
-     * @param request HttpServletRequest
-     * @param response HttpServletResponse
+     *
      * @param qmUserInfo 用户对象
+     * @param request    HttpServletRequest
+     * @param response   HttpServletResponse
      * @return
      */
-    QmUserInfo authorizationUserInfo(HttpServletRequest request,
-                                     HttpServletResponse response,
-                                     QmUserInfo qmUserInfo);
+    QmUserInfo authorizationUserInfo(QmUserInfo qmUserInfo,
+                                     HttpServletRequest request,
+                                     HttpServletResponse response);
 
     /**
      * 当安全检测不通过时回调该接口
      * 回调该接口最好的处理方式是处理相关业务并推送错误信息。
      *
+     * @param type     1=检测不到token拒绝访问 | 2=非法token,token提取失败 | 3=用户登录已过期 | 4=重新签发Token异常 | 5=realm返回空对象 | 6=权限不足,拒绝访问
      * @param request  HttpServletRequest
      * @param response HttpServletResponse
-     * @param type     1=检测不到token拒绝访问 | 2=非法token,token提取失败 | 3=用户登录已过期 | 4=重新签发Token异常 | 5=realm返回空对象 | 6=权限不足,拒绝访问
      * @throws Exception
      */
-    void noPassCallBack(HttpServletRequest request, HttpServletResponse response, int type) throws Exception;
+    void noPassCallBack(int type, HttpServletRequest request, HttpServletResponse response) throws Exception;
 
 }

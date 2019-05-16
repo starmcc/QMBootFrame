@@ -36,7 +36,7 @@ public class QmSecurityBasicImplementation implements QmSecurityBasic {
         // 如果为空则直接拦截
         if (token == null) {
             LOG.info("※获取token失败,拒绝访问※");
-            QmSecurityContent.realm.noPassCallBack(request, response, 1);
+            QmSecurityContent.realm.noPassCallBack(1, request, response);
             return false;
         }
         QmUserInfo qmUserInfo = null;
@@ -45,14 +45,14 @@ public class QmSecurityBasicImplementation implements QmSecurityBasic {
             qmUserInfo = QmSecurityTokenTools.analysisToken(token);
         } catch (QmSecurityAnalysisTokenException e) {
             LOG.info("※提取token失败※");
-            QmSecurityContent.realm.noPassCallBack(request, response, 2);
+            QmSecurityContent.realm.noPassCallBack(2, request, response);
             return false;
         }
         // 从缓存中获取该用户的登录信息。
         qmUserInfo = (QmUserInfo) QmSecurityContent.qmSecurityCache.get(USER_KEY + qmUserInfo.getIdentify());
         if (qmUserInfo == null || !token.equals(qmUserInfo.getToken())) {
             LOG.info("※用户登录已过期※");
-            QmSecurityContent.realm.noPassCallBack(request, response, 3);
+            QmSecurityContent.realm.noPassCallBack(3, request, response);
             return false;
         }
         LOG.info("※验证token是否过期※");
@@ -69,16 +69,16 @@ public class QmSecurityBasicImplementation implements QmSecurityBasic {
                 // 重新授权时发生异常
                 // 发生该异常的情况有以下情况：
                 // 1.qmuserinfo参数不完整,2.签发token失败,3.缓存异常!
-                QmSecurityContent.realm.noPassCallBack(request, response, 4);
+                QmSecurityContent.realm.noPassCallBack(4, request, response);
                 return false;
             }
         }
         // 提供给调度者授权调用,可修改用户对象信息。
         // 如果返回空,则认为授权失败！否则需调度者返回实质上的用户对象。
         LOG.info("※进入授权验证※");
-        qmUserInfo = QmSecurityContent.realm.authorizationUserInfo(request, response, qmUserInfo);
+        qmUserInfo = QmSecurityContent.realm.authorizationUserInfo(qmUserInfo, request, response);
         if (qmUserInfo == null) {
-            QmSecurityContent.realm.noPassCallBack(request, response, 5);
+            QmSecurityContent.realm.noPassCallBack(5, request, response);
             return false;
         }
         LOG.info("※通过授权验证※");
@@ -96,7 +96,7 @@ public class QmSecurityBasicImplementation implements QmSecurityBasic {
             boolean is = this.verifyMatchingURI(request.getServletPath(), matchingUrls);
             if (!is) {
                 LOG.info("※权限不足,拒绝访问※");
-                QmSecurityContent.realm.noPassCallBack(request, response, 6);
+                QmSecurityContent.realm.noPassCallBack(6, request, response);
                 return false;
             }
         }

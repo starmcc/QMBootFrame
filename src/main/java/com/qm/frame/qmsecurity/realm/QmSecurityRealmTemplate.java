@@ -4,7 +4,6 @@ import com.qm.frame.qmsecurity.entity.QmUserInfo;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,12 +24,12 @@ public class QmSecurityRealmTemplate implements QmSecurityRealm {
     }
 
     @Override
-    public void noPassCallBack(HttpServletRequest request, HttpServletResponse response, int type) throws Exception {
-        response.getWriter().print("安全检测不通过!");
+    public QmUserInfo authorizationUserInfo(QmUserInfo qmUserInfo, HttpServletRequest request, HttpServletResponse response) {
+        return qmUserInfo;
     }
 
     @Override
-    public QmUserInfo authorizationUserInfo(QmUserInfo qmUserInfo) {
-        return qmUserInfo;
+    public void noPassCallBack(int type, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        response.getWriter().print("安全检测不通过!");
     }
 }
