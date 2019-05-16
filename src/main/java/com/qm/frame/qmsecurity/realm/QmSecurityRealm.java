@@ -37,9 +37,7 @@ public interface QmSecurityRealm {
      * @param response   HttpServletResponse
      * @return
      */
-    QmUserInfo authorizationUserInfo(QmUserInfo qmUserInfo,
-                                     HttpServletRequest request,
-                                     HttpServletResponse response);
+    QmUserInfo authorizationUserInfo(QmUserInfo qmUserInfo, HttpServletRequest request, HttpServletResponse response);
 
     /**
      * 当安全检测不通过时回调该接口
