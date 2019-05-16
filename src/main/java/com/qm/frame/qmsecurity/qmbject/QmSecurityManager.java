@@ -31,7 +31,7 @@ public class QmSecurityManager implements Qmbject {
     /**
      * 注入相关Spring依赖
      */
-    public QmSecurityManager() {
+    private QmSecurityManager() {
         if (request == null) {
             request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         }
