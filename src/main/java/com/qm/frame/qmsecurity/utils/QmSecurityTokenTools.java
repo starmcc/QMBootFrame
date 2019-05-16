@@ -163,7 +163,7 @@ public class QmSecurityTokenTools {
             long expTemp = 0;
             String expInfinite = "shdhwaxnlxhueicn";
             if (!expInfinite.equals(exp)) {
-                expTemp = Integer.parseInt(exp) / 1000;
+                expTemp = Long.parseLong(exp) / 1000;
             }
             qmUserInfo.setTokenExpireTime(expTemp);
 
