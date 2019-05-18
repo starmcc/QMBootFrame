@@ -26,11 +26,20 @@ public class QmUserInfo {
     /**
      * 登录缓存多久后销毁 (秒)
      */
-    private long loginExpireTime;
+    private long loginExpireTime = 60L * 30;
     /**
      * token多久后失效 (秒) 0无限
      */
-    private long tokenExpireTime;
+    private long tokenExpireTime = 60L * 10;
+    /**
+     * 是否单点登录
+     */
+    private boolean singleSignOn;
+
+    /**
+     * URI缓存失效时间-影响权限刷新时间(秒)
+     */
+    private long matchUriExpireTime = 60L * 3;
     /**
      * 签发token保存
      */
@@ -74,6 +83,22 @@ public class QmUserInfo {
 
     public void setSignTime(Date signTime) {
         this.signTime = new Date(signTime.getTime());
+    }
+
+    public boolean isSingleSignOn() {
+        return singleSignOn;
+    }
+
+    public void setSingleSignOn(boolean singleSignOn) {
+        this.singleSignOn = singleSignOn;
+    }
+
+    public long getMatchUriExpireTime() {
+        return matchUriExpireTime;
+    }
+
+    public void setMatchUriExpireTime(long matchUriExpireTime) {
+        this.matchUriExpireTime = matchUriExpireTime;
     }
 
     public String getToken() {

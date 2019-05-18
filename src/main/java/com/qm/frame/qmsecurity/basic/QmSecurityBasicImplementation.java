@@ -3,6 +3,7 @@ package com.qm.frame.qmsecurity.basic;
 import com.qm.frame.qmsecurity.config.QmSecurityContent;
 import com.qm.frame.qmsecurity.entity.QmUserInfo;
 import com.qm.frame.qmsecurity.exception.QmSecurityAnalysisTokenException;
+import com.qm.frame.qmsecurity.exception.QmSecurityCacheException;
 import com.qm.frame.qmsecurity.exception.QmSecurityCreateTokenException;
 import com.qm.frame.qmsecurity.qmbject.QmSecurityManager;
 import com.qm.frame.qmsecurity.utils.QmSecurityTokenTools;
@@ -49,7 +50,11 @@ public class QmSecurityBasicImplementation implements QmSecurityBasic {
             return false;
         }
         // 从缓存中获取该用户的登录信息。
-        qmUserInfo = (QmUserInfo) QmSecurityContent.qmSecurityCache.get(USER_KEY + qmUserInfo.getIdentify());
+        try {
+            qmUserInfo = (QmUserInfo) QmSecurityContent.qmSecurityCache.get(USER_KEY + qmUserInfo.getIdentify());
+        } catch (Exception e) {
+            throw new QmSecurityCacheException(e);
+        }
         if (qmUserInfo == null || !token.equals(qmUserInfo.getToken())) {
             LOG.info("※用户登录已过期※");
             QmSecurityContent.realm.noPassCallBack(3, request, response);
@@ -58,7 +63,7 @@ public class QmSecurityBasicImplementation implements QmSecurityBasic {
         LOG.info("※验证token是否过期※");
         long exp = qmUserInfo.getTokenExpireTime();
         long signTime = qmUserInfo.getSignTime().getTime();
-        if (!QmSecurityTokenTools.verifyTokenExp(exp, signTime)) {
+        if (!QmSecurityTokenTools.verifyExp(exp, signTime)) {
             try {
                 // 尝试重新签发token
                 LOG.info("※尝试重新签发token※");
@@ -85,8 +90,12 @@ public class QmSecurityBasicImplementation implements QmSecurityBasic {
         // 保存到作用域中提供框架调用
         request.setAttribute(QmUserInfo.class.getName(), qmUserInfo);
         // 缓存 token 活跃期
-        QmSecurityContent.qmSecurityCache.put(USER_KEY + qmUserInfo.getIdentify(),
-                qmUserInfo, qmUserInfo.getLoginExpireTime());
+        try {
+            QmSecurityContent.qmSecurityCache.put(USER_KEY + qmUserInfo.getIdentify(),
+                    qmUserInfo, qmUserInfo.getLoginExpireTime());
+        } catch (Exception e) {
+            throw new QmSecurityCacheException(e);
+        }
         // 该判断为如果标注了@QmPass且needLogin为true时，则isPerssions为false，就不会进入授权匹配了。
         if (isPerssions) {
             LOG.info("※正在进行授权URI验证※");
@@ -131,7 +140,11 @@ public class QmSecurityBasicImplementation implements QmSecurityBasic {
      */
     private QmUserInfo restartAuth(HttpServletResponse response, QmUserInfo qmUserInfo) throws Exception {
         // 先删除该缓存的token值
-        QmSecurityContent.qmSecurityCache.remove(USER_KEY + qmUserInfo.getIdentify());
+        try {
+            QmSecurityContent.qmSecurityCache.remove(USER_KEY + qmUserInfo.getIdentify());
+        } catch (Exception e) {
+            throw new QmSecurityCacheException(e);
+        }
         // 进行重新签发token
         String token = QmSecurityTokenTools.createToken(qmUserInfo);
         // headers放行获取token的key

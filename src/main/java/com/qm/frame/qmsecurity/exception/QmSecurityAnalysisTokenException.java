@@ -9,19 +9,13 @@ package com.qm.frame.qmsecurity.exception;
  */
 public class QmSecurityAnalysisTokenException extends Exception {
 
+    private static final String MSG = "解密token失败！";
+
     public QmSecurityAnalysisTokenException() {
-        super();
-    }
-
-    public QmSecurityAnalysisTokenException(String message) {
-        super(message);
-    }
-
-    public QmSecurityAnalysisTokenException(String message, Throwable cause) {
-        super(message, cause);
+        super(MSG);
     }
 
     public QmSecurityAnalysisTokenException(Throwable cause) {
-        super(cause);
+        super(MSG, cause);
     }
 }

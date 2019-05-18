@@ -9,19 +9,13 @@ package com.qm.frame.qmsecurity.exception;
  */
 public class QmSecurityCreateTokenException extends Exception {
 
+    private static final String MSG = "签发token未知错误!";
+
     public QmSecurityCreateTokenException() {
-        super();
-    }
-
-    public QmSecurityCreateTokenException(String message) {
-        super(message);
-    }
-
-    public QmSecurityCreateTokenException(String message, Throwable cause) {
-        super(message, cause);
+        super(MSG);
     }
 
     public QmSecurityCreateTokenException(Throwable cause) {
-        super(cause);
+        super(MSG, cause);
     }
 }

@@ -21,6 +21,7 @@ public class UserServiceImpl implements UserService {
 	public User login(String username, String password) {
 		User user = new User();
 		user.setUserName(username);
+		user.setPassword(password);
 		return qmBase.autoSelectOne(user,User.class);
 	}
 }

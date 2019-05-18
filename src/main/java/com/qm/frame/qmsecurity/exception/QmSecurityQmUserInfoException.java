@@ -9,11 +9,13 @@ package com.qm.frame.qmsecurity.exception;
  */
 public class QmSecurityQmUserInfoException extends Exception {
 
-    public QmSecurityQmUserInfoException(String message) {
-        super(message);
+    private static final String MSG = "请检查qmUserInfo的参数是否完整！";
+
+    public QmSecurityQmUserInfoException() {
+        super(MSG);
     }
 
-    public QmSecurityQmUserInfoException(String message, Throwable cause) {
-        super(message, cause);
+    public QmSecurityQmUserInfoException(Throwable cause) {
+        super(MSG, cause);
     }
 }

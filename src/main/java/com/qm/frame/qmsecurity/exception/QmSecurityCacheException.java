@@ -7,20 +7,15 @@ package com.qm.frame.qmsecurity.exception;
  * @date 2019/5/12 5:30
  * @Description 缓存异常
  */
-public class QmSecurityCacheException extends Exception {
+public class QmSecurityCacheException extends RuntimeException {
+
+    private static final String MSG = "Cache发生了一个异常！";
+
     public QmSecurityCacheException() {
-        super();
-    }
-
-    public QmSecurityCacheException(String message) {
-        super(message);
-    }
-
-    public QmSecurityCacheException(String message, Throwable cause) {
-        super(message, cause);
+        super(MSG);
     }
 
     public QmSecurityCacheException(Throwable cause) {
-        super(cause);
+        super(MSG, cause);
     }
 }

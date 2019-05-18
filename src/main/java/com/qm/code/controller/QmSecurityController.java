@@ -60,6 +60,8 @@ public class QmSecurityController extends QmController {
         qmUserInfo.setLoginExpireTime(60 * 60);
         // 设置token失效时间 (秒) 10分钟token失效
         qmUserInfo.setTokenExpireTime(60 * 10);
+        // 是否单点登录，如果为true，登录状态只能存在一个。
+        qmUserInfo.setSingleSignOn(true);
         // 调用login方法，并设置他的过期时间，生成token
         String token = null;
         try {
