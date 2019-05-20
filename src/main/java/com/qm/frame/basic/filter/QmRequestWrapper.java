@@ -1,7 +1,7 @@
 package com.qm.frame.basic.filter;
 
 import com.alibaba.fastjson.JSONObject;
-import com.qm.frame.basic.config.QmFrameContent;
+import com.qm.frame.basic.config.QmFrameConstants;
 import com.qm.frame.basic.util.AesUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,8 +66,8 @@ public class QmRequestWrapper extends HttpServletRequestWrapper {
             return body;
         }
         JSONObject jsonObject = JSONObject.parseObject(body);
-        String json = jsonObject.getString(QmFrameContent.REQUEST_DATA_KEY);
-        if (QmFrameContent.AES_START) {
+        String json = jsonObject.getString(QmFrameConstants.REQUEST_DATA_KEY);
+        if (QmFrameConstants.AES_START) {
             try {
                 json = AesUtil.decryptAES(json);
             } catch (Exception e) {

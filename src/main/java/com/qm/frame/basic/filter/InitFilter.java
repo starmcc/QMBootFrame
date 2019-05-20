@@ -1,17 +1,14 @@
 package com.qm.frame.basic.filter;
 
-import com.qm.frame.basic.config.QmFrameContent;
+import com.qm.frame.basic.config.QmFrameConstants;
 import com.qm.frame.basic.controller.QmCode;
 import com.qm.frame.basic.controller.QmController;
 import com.qm.frame.basic.util.QmSpringManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.*;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -87,7 +84,7 @@ public class InitFilter extends QmController implements Filter {
      * @return
      */
     private boolean verifySpecialURI(HttpServletRequest request) {
-        for (String uri : QmFrameContent.REQUEST_SPECIAL_URI) {
+        for (String uri : QmFrameConstants.REQUEST_SPECIAL_URI) {
             if (QmSpringManager.verifyMatchURI(uri, request.getRequestURI())) {
                 return true;
             }
@@ -104,18 +101,18 @@ public class InitFilter extends QmController implements Filter {
      */
     private boolean verifyVersion(HttpServletRequest request) throws IOException {
         //不开启版本控制
-        if (!QmFrameContent.VERSION_START) {return true;};
+        if (!QmFrameConstants.VERSION_START) {return true;};
         //目前版本号
         String versionRequest = request.getHeader("version");
         LOG.info("※※※请求版本号：" + versionRequest + "※※※");
-        LOG.info("※※※当前版本号：" + QmFrameContent.VERSION_NOW + "※※※");
-        if (QmFrameContent.VERSION_NOW.equals(versionRequest)) {
+        LOG.info("※※※当前版本号：" + QmFrameConstants.VERSION_NOW + "※※※");
+        if (QmFrameConstants.VERSION_NOW.equals(versionRequest)) {
             //通过
             return true;
         }
         LOG.debug("※※※进入版本控制判断※※※");
-        if (QmFrameContent.VERSION_ALLOWS != null && QmFrameContent.VERSION_ALLOWS.size() > 0) {
-            for (String version : QmFrameContent.VERSION_ALLOWS) {
+        if (QmFrameConstants.VERSION_ALLOWS != null && QmFrameConstants.VERSION_ALLOWS.size() > 0) {
+            for (String version : QmFrameConstants.VERSION_ALLOWS) {
                 if (version.equals(versionRequest)) {
                     //通过
                     return true;

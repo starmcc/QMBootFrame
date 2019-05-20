@@ -1,6 +1,6 @@
 package com.qm.frame.basic.aop;
 
-import com.qm.frame.basic.config.QmFrameContent;
+import com.qm.frame.basic.config.QmFrameConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -24,7 +24,7 @@ public class LoggerWholeAop {
 
     private static final Logger LOG = LoggerFactory.getLogger(LoggerWholeAop.class);
 
-    private final static QmOutMethod QM_OUT_METHOD = getQmOutMethod();
+    private static final QmOutMethod QM_OUT_METHOD = getQmOutMethod();
 
     /**
      * 获取QmResponseOut
@@ -33,10 +33,10 @@ public class LoggerWholeAop {
      */
     private final static QmOutMethod getQmOutMethod() {
         try {
-            if (StringUtils.isEmpty(QmFrameContent.LOGGER_AOP_EXTEND_CLASS) == false) {
+            if (StringUtils.isEmpty(QmFrameConstants.LOGGER_AOP_EXTEND_CLASS) == false) {
                 return null;
             }
-            return (QmOutMethod) Class.forName(QmFrameContent.LOGGER_AOP_EXTEND_CLASS).newInstance();
+            return (QmOutMethod) Class.forName(QmFrameConstants.LOGGER_AOP_EXTEND_CLASS).newInstance();
         } catch (Exception e) {
         }
         return null;

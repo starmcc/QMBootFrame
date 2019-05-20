@@ -1,6 +1,6 @@
 package com.qm.frame.basic.util;
 
-import com.qm.frame.basic.config.QmFrameContent;
+import com.qm.frame.basic.config.QmFrameConstants;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,8 +29,8 @@ public class AesUtil {
     public static String encryptAES(String data) throws Exception {
         Date date = new Date();
         String str = data;
-        for (int i = 0; i < QmFrameContent.AES_NUMBER; i++) {
-            str = encryptAES(str, QmFrameContent.AES_KEY);
+        for (int i = 0; i < QmFrameConstants.AES_NUMBER; i++) {
+            str = encryptAES(str, QmFrameConstants.AES_KEY);
         }
         LOG.debug("加密用时：" + (System.currentTimeMillis() - date.getTime()));
         return str;
@@ -46,8 +46,8 @@ public class AesUtil {
     public static String decryptAES(String data) throws Exception {
         Date date = new Date();
         String str = data;
-        for (int i = 0; i < QmFrameContent.AES_NUMBER; i++) {
-            str = decryptAES(str, QmFrameContent.AES_KEY);
+        for (int i = 0; i < QmFrameConstants.AES_NUMBER; i++) {
+            str = decryptAES(str, QmFrameConstants.AES_KEY);
         }
         LOG.debug("解密用时：" + (System.currentTimeMillis() - date.getTime()));
         return str;
@@ -64,14 +64,14 @@ public class AesUtil {
     private static String encryptAES(String data, String key) throws Exception {
         KeyGenerator kgen = KeyGenerator.getInstance("AES");
         SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
-        secureRandom.setSeed(key.getBytes(QmFrameContent.AES_ENCODING));
+        secureRandom.setSeed(key.getBytes(QmFrameConstants.AES_ENCODING));
         kgen.init(128, secureRandom);
         SecretKey skey = kgen.generateKey();
         byte[] raw = skey.getEncoded();
         SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
-        byte[] encryptedData = cipher.doFinal(data.getBytes(QmFrameContent.AES_ENCODING));
+        byte[] encryptedData = cipher.doFinal(data.getBytes(QmFrameConstants.AES_ENCODING));
         String hexStr = Base64.encodeBase64String(encryptedData);
         return hexStr;
     }
@@ -88,7 +88,7 @@ public class AesUtil {
     private static String decryptAES(String data, String key) throws Exception {
         KeyGenerator kgen = KeyGenerator.getInstance("AES");
         SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
-        secureRandom.setSeed(key.getBytes(QmFrameContent.AES_ENCODING));
+        secureRandom.setSeed(key.getBytes(QmFrameConstants.AES_ENCODING));
         kgen.init(128, secureRandom);
         SecretKey skey = kgen.generateKey();
         byte[] raw = skey.getEncoded();
@@ -96,7 +96,7 @@ public class AesUtil {
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.DECRYPT_MODE, skeySpec);
         byte[] decryptedData = cipher.doFinal(Base64.decodeBase64(data));
-        String respStr = new String(decryptedData, QmFrameContent.AES_ENCODING);
+        String respStr = new String(decryptedData, QmFrameConstants.AES_ENCODING);
         return respStr;
     }
 

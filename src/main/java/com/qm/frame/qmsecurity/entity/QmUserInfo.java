@@ -1,5 +1,6 @@
 package com.qm.frame.qmsecurity.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -9,7 +10,7 @@ import java.util.Date;
  * @date 2018/12/22 19:58
  * @Description 框架用户对象
  */
-public class QmUserInfo {
+public class QmUserInfo implements Serializable {
 
     /**
      * 身份校验唯一标识

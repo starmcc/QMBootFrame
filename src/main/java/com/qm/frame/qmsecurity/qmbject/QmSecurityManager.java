@@ -1,8 +1,8 @@
 package com.qm.frame.qmsecurity.qmbject;
 
+import com.qm.frame.qmsecurity.config.QmSecurityConstants;
 import com.qm.frame.qmsecurity.config.QmSecurityContent;
 import com.qm.frame.qmsecurity.entity.QmUserInfo;
-import com.qm.frame.qmsecurity.exception.QmSecurityCacheException;
 import com.qm.frame.qmsecurity.exception.QmSecurityCreateTokenException;
 import com.qm.frame.qmsecurity.exception.QmSecurityQmUserInfoException;
 import com.qm.frame.qmsecurity.utils.QmSecurityTokenTools;
@@ -28,14 +28,6 @@ public class QmSecurityManager implements Qmbject {
      * logger
      */
     private static final Logger LOG = LoggerFactory.getLogger(QmSecurityManager.class);
-    /**
-     * 框架缓存用户前缀key
-     */
-    private static final String USER_KEY = "Qmbject_";
-    /**
-     * 框架缓存权限前缀key
-     */
-    private static final String MATCHING_KEY = "matchingUrls_";
 
     /**
      * rquest对象
@@ -69,14 +61,12 @@ public class QmSecurityManager implements Qmbject {
             throw new QmSecurityQmUserInfoException();
         }
         QmUserInfo qmUserInfoCache = null;
-        try {
-            // 从缓存中获取该账号是否已登录
-            qmUserInfoCache = (QmUserInfo) QmSecurityContent.qmSecurityCache.get(USER_KEY + qmUserInfo.getIdentify());
-            // 从缓存中清空该账号权限
-            QmSecurityContent.qmSecurityCache.remove(MATCHING_KEY + qmUserInfo.getIdentify());
-        } catch (Exception e) {
-            throw new QmSecurityCacheException(e);
-        }
+        // 从缓存中获取该账号是否已登录
+        qmUserInfoCache = (QmUserInfo) QmSecurityContent.qmSecurityCache.get(
+                QmSecurityConstants.USER_KEY + qmUserInfo.getIdentify());
+        // 从缓存中清空该账号权限
+        QmSecurityContent.qmSecurityCache.remove(
+                QmSecurityConstants.MATCHING_KEY + qmUserInfo.getIdentify());
         // 如果緩存中存在用户并判断是否为单点登录
         if (qmUserInfoCache != null && !qmUserInfoCache.isSingleSignOn()) {
             // 如果单点登录是false，则获取缓存中的token。
@@ -84,19 +74,16 @@ public class QmSecurityManager implements Qmbject {
         }
         // 创建token
         try {
+            qmUserInfo.setSignTime(new Date());
             String token = QmSecurityTokenTools.createToken(qmUserInfo);
             qmUserInfo.setToken(token);
         } catch (Exception e) {
             throw new QmSecurityCreateTokenException(e);
         }
         // 缓存用户对象
-        try {
-            QmSecurityContent.qmSecurityCache.put(
-                    USER_KEY + qmUserInfo.getIdentify(),
-                    qmUserInfo, qmUserInfo.getLoginExpireTime());
-        } catch (Exception e) {
-            throw new QmSecurityCacheException(e);
-        }
+        QmSecurityContent.qmSecurityCache.put(
+                QmSecurityConstants.USER_KEY + qmUserInfo.getIdentify(),
+                qmUserInfo, qmUserInfo.getLoginExpireTime());
         return qmUserInfo.getToken();
     }
 
@@ -113,18 +100,15 @@ public class QmSecurityManager implements Qmbject {
     @Override
     public void setUserInfo(QmUserInfo qmUserInfo) {
         String identify = qmUserInfo.getIdentify();
-        try {
-            QmSecurityContent.qmSecurityCache.put(
-                    USER_KEY + identify,
-                    qmUserInfo, qmUserInfo.getLoginExpireTime());
-        } catch (Exception e) {
-            throw new QmSecurityCacheException(e);
-        }
+        QmSecurityContent.qmSecurityCache.put(
+                QmSecurityConstants.USER_KEY + identify,
+                qmUserInfo, qmUserInfo.getLoginExpireTime());
     }
 
     @Override
     public QmUserInfo getUserInfo(String identify) {
-        return (QmUserInfo) QmSecurityContent.qmSecurityCache.get(USER_KEY + identify);
+        return (QmUserInfo) QmSecurityContent.qmSecurityCache.get(
+                QmSecurityConstants.USER_KEY + identify);
     }
 
     @Override
@@ -132,23 +116,17 @@ public class QmSecurityManager implements Qmbject {
         QmUserInfo qmUserInfo = this.getUserInfo();
         // 首先获取缓存中当前用户的许可URI
         List<String> matchingUrls = null;
-        try {
-            matchingUrls = (List<String>)
-                    QmSecurityContent.qmSecurityCache.get(MATCHING_KEY + qmUserInfo.getIdentify());
-        } catch (Exception e) {
-            throw new QmSecurityCacheException(e);
-        }
+        matchingUrls = (List<String>)
+                QmSecurityContent.qmSecurityCache.get(
+                        QmSecurityConstants.MATCHING_KEY + qmUserInfo.getIdentify());
         // 获取
         long matchUriExp = qmUserInfo.getMatchUriExpireTime();
         if (isNew || matchingUrls == null) {
             matchingUrls = QmSecurityContent.realm.authorizationMatchingURI(qmUserInfo);
-            try {
-                // 缓存权限URI
-                QmSecurityContent.qmSecurityCache.put(
-                        MATCHING_KEY + qmUserInfo.getIdentify(), matchingUrls, matchUriExp);
-            } catch (Exception e) {
-                throw new QmSecurityCacheException(e);
-            }
+            // 缓存权限URI
+            QmSecurityContent.qmSecurityCache.put(
+                    QmSecurityConstants.MATCHING_KEY + qmUserInfo.getIdentify(),
+                    matchingUrls, matchUriExp);
         }
         return matchingUrls;
     }
@@ -158,23 +136,16 @@ public class QmSecurityManager implements Qmbject {
         QmUserInfo qmUserInfo = this.getUserInfo(identify);
         // 首先获取缓存中当前用户的许可URI
         List<String> matchingUrls = null;
-        try {
-            matchingUrls = (List<String>)
-                    QmSecurityContent.qmSecurityCache.get(MATCHING_KEY + qmUserInfo.getIdentify());
-        } catch (Exception e) {
-            throw new QmSecurityCacheException(e);
-        }
+        matchingUrls = (List<String>) QmSecurityContent.qmSecurityCache.get(
+                QmSecurityConstants.MATCHING_KEY + qmUserInfo.getIdentify());
         // 获取
         long matchUriExp = qmUserInfo.getMatchUriExpireTime();
         if (isNew || matchingUrls == null) {
             matchingUrls = QmSecurityContent.realm.authorizationMatchingURI(qmUserInfo);
-            try {
-                // 缓存权限URI
-                QmSecurityContent.qmSecurityCache.put(
-                        MATCHING_KEY + qmUserInfo.getIdentify(), matchingUrls, matchUriExp);
-            } catch (Exception e) {
-                throw new QmSecurityCacheException(e);
-            }
+            // 缓存权限URI
+            QmSecurityContent.qmSecurityCache.put(
+                    QmSecurityConstants.MATCHING_KEY + qmUserInfo.getIdentify(),
+                    matchingUrls, matchUriExp);
         }
         return matchingUrls;
     }
@@ -203,13 +174,11 @@ public class QmSecurityManager implements Qmbject {
         if ("".equals(identify)) {
             return false;
         }
-        try {
-            if (!QmSecurityContent.qmSecurityCache.remove(USER_KEY + identify)) {
-                return false;
-            }
-            return QmSecurityContent.qmSecurityCache.remove(MATCHING_KEY + identify);
-        } catch (Exception e) {
-            throw new QmSecurityCacheException(e);
+        if (!QmSecurityContent.qmSecurityCache.remove(
+                QmSecurityConstants.USER_KEY + identify)) {
+            return false;
         }
+        return QmSecurityContent.qmSecurityCache.remove(
+                QmSecurityConstants.MATCHING_KEY + identify);
     }
 }

@@ -1,5 +1,6 @@
 package com.qm.frame.qmsecurity.utils;
 
+import com.qm.frame.qmsecurity.config.QmSecurityConstants;
 import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.Cipher;
@@ -18,32 +19,22 @@ import java.security.SecureRandom;
 public class QmAesEncDecTools {
 
     /**
-     * 底层加解密编码格式
-     */
-    private static final String ENCODING = "UTF-8";
-
-    /**
-     * 加解密类型
-     */
-    private static final String ENC_DEC_TYPE = "AES";
-
-    /**
      * @param data
      * @param key
      * @return
      * @throws Exception
      */
     public static String encrypt(String data, String key) throws Exception {
-        KeyGenerator kgen = KeyGenerator.getInstance(ENC_DEC_TYPE);
+        KeyGenerator kgen = KeyGenerator.getInstance(QmSecurityConstants.ENC_DEC_TYPE);
         SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
-        secureRandom.setSeed(key.getBytes(ENCODING));
+        secureRandom.setSeed(key.getBytes(QmSecurityConstants.ENC_DEC_ENCODING));
         kgen.init(128, secureRandom);
         SecretKey skey = kgen.generateKey();
         byte[] raw = skey.getEncoded();
-        SecretKeySpec skeySpec = new SecretKeySpec(raw, ENC_DEC_TYPE);
-        Cipher cipher = Cipher.getInstance(ENC_DEC_TYPE);
+        SecretKeySpec skeySpec = new SecretKeySpec(raw, QmSecurityConstants.ENC_DEC_TYPE);
+        Cipher cipher = Cipher.getInstance(QmSecurityConstants.ENC_DEC_TYPE);
         cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
-        byte[] encryptedData = cipher.doFinal(data.getBytes(ENCODING));
+        byte[] encryptedData = cipher.doFinal(data.getBytes(QmSecurityConstants.ENC_DEC_ENCODING));
         return Base64.encodeBase64String(encryptedData);
     }
 
@@ -55,16 +46,16 @@ public class QmAesEncDecTools {
      * @throws Exception
      */
     public static String decrypt(String data, String key) throws Exception {
-        KeyGenerator kgen = KeyGenerator.getInstance(ENC_DEC_TYPE);
+        KeyGenerator kgen = KeyGenerator.getInstance(QmSecurityConstants.ENC_DEC_TYPE);
         SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
-        secureRandom.setSeed(key.getBytes(ENCODING));
+        secureRandom.setSeed(key.getBytes(QmSecurityConstants.ENC_DEC_ENCODING));
         kgen.init(128, secureRandom);
         SecretKey skey = kgen.generateKey();
         byte[] raw = skey.getEncoded();
-        SecretKeySpec skeySpec = new SecretKeySpec(raw, ENC_DEC_TYPE);
-        Cipher cipher = Cipher.getInstance(ENC_DEC_TYPE);
+        SecretKeySpec skeySpec = new SecretKeySpec(raw, QmSecurityConstants.ENC_DEC_TYPE);
+        Cipher cipher = Cipher.getInstance(QmSecurityConstants.ENC_DEC_TYPE);
         cipher.init(Cipher.DECRYPT_MODE, skeySpec);
         byte[] decryptedData = cipher.doFinal(Base64.decodeBase64(data));
-        return new String(decryptedData, ENCODING);
+        return new String(decryptedData, QmSecurityConstants.ENC_DEC_ENCODING);
     }
 }

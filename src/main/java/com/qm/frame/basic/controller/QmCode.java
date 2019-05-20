@@ -1,6 +1,6 @@
 package com.qm.frame.basic.controller;
 
-import com.qm.frame.basic.config.QmFrameContent;
+import com.qm.frame.basic.config.QmFrameConstants;
 
 /**
  * @author 状态码工具类
@@ -119,6 +119,6 @@ public enum QmCode {
      * @return msg
      */
     public static final String getMsg(QmCode code) {
-        return "cn".equalsIgnoreCase(QmFrameContent.RESPONSE_MESSAGE_LANG) ? code.cnMsg : code.enMsg;
+        return "cn".equalsIgnoreCase(QmFrameConstants.RESPONSE_MESSAGE_LANG) ? code.cnMsg : code.enMsg;
     }
 }
