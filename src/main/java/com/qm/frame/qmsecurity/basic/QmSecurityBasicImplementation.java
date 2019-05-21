@@ -65,7 +65,7 @@ public class QmSecurityBasicImplementation implements QmSecurityBasic {
                 LOG.info("※用户在其他地方进行登录※");
                 QmSecurityContent.realm.noPassCallBack(4, request, response);
                 return false;
-            }else {
+            } else {
                 LOG.info("※用户token已过期※");
                 QmSecurityContent.realm.noPassCallBack(5, request, response);
                 return false;
@@ -77,15 +77,18 @@ public class QmSecurityBasicImplementation implements QmSecurityBasic {
                 qmUserInfo.getTokenExpireTime(),
                 qmUserInfo.getSignTime().getTime())) {
             // ===================token已过期进入==================
+            String newToken = null;
             if (tokenContainer == null) {
                 LOG.info("※尝试重新签发token※");
                 qmUserInfo.setSignTime(new Date());
-                String newToken = QmSecurityTokenTools.restartAuth(qmUserInfo);
+                newToken = QmSecurityTokenTools.restartAuth(qmUserInfo);
                 qmUserInfo.setToken(newToken);
                 QmSecurityTokenTools.insertTokenContainer(token, newToken, qmUserInfo.getIdentify());
                 LOG.info("※重新签发token成功※");
+            }else {
+                newToken = tokenContainer.getNewToken();
             }
-            QmSecurityTokenTools.sendResponseToken(response, tokenContainer.getNewToken());
+            QmSecurityTokenTools.sendResponseToken(response, newToken);
         }
         // 提供给调度者授权调用,可修改用户对象信息。如果返回空,则认为授权失败！否则需调度者返回实质上的用户对象。
         LOG.info("※进入授权验证※");
