@@ -3,6 +3,7 @@ package com.qm.frame.qmsecurity.basic;
 import com.qm.frame.qmsecurity.config.QmSecurityConstants;
 import com.qm.frame.qmsecurity.config.QmSecurityContent;
 import com.qm.frame.qmsecurity.entity.QmUserInfo;
+import com.qm.frame.qmsecurity.entity.TokenContainer;
 import com.qm.frame.qmsecurity.exception.QmSecurityAnalysisTokenException;
 import com.qm.frame.qmsecurity.qmbject.QmSecurityManager;
 import com.qm.frame.qmsecurity.utils.QmSecurityTokenTools;
@@ -37,57 +38,61 @@ public class QmSecurityBasicImplementation implements QmSecurityBasic {
             QmSecurityContent.realm.noPassCallBack(1, request, response);
             return false;
         }
-        QmUserInfo qmUserInfo = null;
+        String identify = null;
         try {
             LOG.info("※分析并提取token信息※");
-            qmUserInfo = QmSecurityTokenTools.analysisToken(token);
+            identify = QmSecurityTokenTools.analysisToken(token);
         } catch (QmSecurityAnalysisTokenException e) {
             LOG.info("※提取token失败※");
             QmSecurityContent.realm.noPassCallBack(2, request, response);
             return false;
         }
         // 从缓存中获取该用户的登录信息。
-        qmUserInfo = (QmUserInfo) QmSecurityContent.qmSecurityCache.get(
-                QmSecurityConstants.USER_KEY + qmUserInfo.getIdentify());
+        QmUserInfo qmUserInfo = (QmUserInfo)
+                QmSecurityContent.qmSecurityCache.get(QmSecurityConstants.USER_KEY + identify);
         if (qmUserInfo == null) {
             LOG.info("※用户登录已过期※");
             QmSecurityContent.realm.noPassCallBack(3, request, response);
             return false;
         }
-        if (!token.equals(qmUserInfo.getToken())) {
+        // 从缓存中获取token签发容器。
+        TokenContainer tokenContainer = QmSecurityTokenTools.getTokenContainer(qmUserInfo.getIdentify());
+        if (!token.equals(qmUserInfo.getToken()) && tokenContainer == null) {
             // 1.如果请求token和缓存token不一致时进入该层
-            // 2.寻找token签发容器中的旧token是否存在
-            String tokenTemp = QmSecurityTokenTools.tokenCo(token, qmUserInfo.getIdentify());
-            // 3. 不存在则认为该用户的重新授权时效已过期
-            if (tokenTemp == null) {
-                LOG.info("※重新授权时效已过期※");
+            // 2.寻找token签发容器是否存在
+            // 3. 不存在则认为该用户的token已过期
+            if (qmUserInfo.isReplaceLogin()) {
+                LOG.info("※用户在其他地方进行登录※");
                 QmSecurityContent.realm.noPassCallBack(4, request, response);
                 return false;
-            } else {
-                QmSecurityTokenTools.setResponseToken(response, tokenTemp);
+            }else {
+                LOG.info("※用户token已过期※");
+                QmSecurityContent.realm.noPassCallBack(5, request, response);
+                return false;
             }
-        } else {
-            LOG.info("※验证token是否过期※");
-            if (!QmSecurityTokenTools.verifyExp(
-                    qmUserInfo.getTokenExpireTime(),
-                    qmUserInfo.getSignTime().getTime())) {
-                // ===================token已过期进入==================
-                String newToken = QmSecurityTokenTools.tokenCo(token, qmUserInfo.getIdentify());
-                if (newToken == null) {
-                    LOG.info("※尝试重新签发token※");
-                    qmUserInfo.setSignTime(new Date());
-                    newToken = QmSecurityTokenTools.restartAuth(qmUserInfo);
-                    qmUserInfo.setToken(newToken);
-                    LOG.info("※重新签发token成功※");
-                }
-                QmSecurityTokenTools.setResponseToken(response, newToken);
+
+        }
+        // token过期时进行重新签发token
+        if (!QmSecurityTokenTools.verifyExp(
+                qmUserInfo.getTokenExpireTime(),
+                qmUserInfo.getSignTime().getTime())) {
+            // ===================token已过期进入==================
+            if (tokenContainer == null) {
+                LOG.info("※尝试重新签发token※");
+                qmUserInfo.setSignTime(new Date());
+                String newToken = QmSecurityTokenTools.restartAuth(qmUserInfo);
+                qmUserInfo.setToken(newToken);
+                QmSecurityTokenTools.insertTokenContainer(token, newToken, qmUserInfo.getIdentify());
+                LOG.info("※重新签发token成功※");
             }
+            QmSecurityTokenTools.sendResponseToken(response, tokenContainer.getNewToken());
         }
         // 提供给调度者授权调用,可修改用户对象信息。如果返回空,则认为授权失败！否则需调度者返回实质上的用户对象。
         LOG.info("※进入授权验证※");
         qmUserInfo = QmSecurityContent.realm.authorizationUserInfo(qmUserInfo, request, response);
         if (qmUserInfo == null) {
-            QmSecurityContent.realm.noPassCallBack(5, request, response);
+            LOG.info("※授权验证拦截※");
+            QmSecurityContent.realm.noPassCallBack(6, request, response);
             return false;
         }
         LOG.info("※通过授权验证※");
@@ -101,7 +106,7 @@ public class QmSecurityBasicImplementation implements QmSecurityBasic {
         if (isPerssions) {
             if (!this.verifyPermission(request)) {
                 LOG.info("※权限不足,拒绝访问※");
-                QmSecurityContent.realm.noPassCallBack(6, request, response);
+                QmSecurityContent.realm.noPassCallBack(7, request, response);
                 return false;
             }
         }

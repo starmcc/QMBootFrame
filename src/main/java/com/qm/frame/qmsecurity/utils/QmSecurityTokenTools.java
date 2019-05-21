@@ -1,5 +1,6 @@
 package com.qm.frame.qmsecurity.utils;
 
+import com.alibaba.fastjson.JSON;
 import com.qm.frame.qmsecurity.config.QmSecurityConstants;
 import com.qm.frame.qmsecurity.config.QmSecurityContent;
 import com.qm.frame.qmsecurity.entity.QmUserInfo;
@@ -58,12 +59,11 @@ public class QmSecurityTokenTools {
      * token签发方法
      *
      * @param qmUserInfo
-     * @return
+     * @return token
      * @throws Exception
      */
     public static String createToken(QmUserInfo qmUserInfo) throws Exception {
         Date date = new Date();
-        StringBuffer stringBuffer = new StringBuffer();
         String identity = qmUserInfo.getIdentify();
         String tokenExp = QmSecurityConstants.TOKEN_EXP_INFINITE;
         String matchExp = QmSecurityConstants.MATCHURI_EXP_INFINITE;
@@ -74,21 +74,33 @@ public class QmSecurityTokenTools {
             matchExp = String.valueOf(qmUserInfo.getMatchUriExpireTime() * 1000);
         }
         String signTime = String.valueOf(qmUserInfo.getSignTime().getTime());
-        stringBuffer.append(QmAesEncDecTools.encrypt(identity, QmSecurityConstants.BASIC_KEY));
-        stringBuffer.append("%@header@%");
-        String user = QmSerializeTools.serializeToString(qmUserInfo.getUser());
-        stringBuffer.append(QmAesEncDecTools.encrypt(user, QmSecurityConstants.BASIC_KEY));
-        stringBuffer.append("%@body@%");
-        stringBuffer.append(QmAesEncDecTools.encrypt(tokenExp, QmSecurityConstants.BASIC_KEY));
-        stringBuffer.append("%@tokenExp@%");
-        stringBuffer.append(QmAesEncDecTools.encrypt(matchExp, QmSecurityConstants.BASIC_KEY));
-        stringBuffer.append("%@matchExp@%");
-        stringBuffer.append(QmAesEncDecTools.encrypt(signTime, QmSecurityConstants.BASIC_KEY));
-        stringBuffer.append("%@signTime@%");
-        String sign = QmSignTools.signMD5(stringBuffer.toString());
-        stringBuffer.append(sign);
+        String singleSignOn = String.valueOf(String.valueOf(qmUserInfo.isSingleSignOn()));
+        // 开始签名
+        StringBuffer token = new StringBuffer();
+        token.append(QmAesEncDecTools.encrypt(identity, QmSecurityConstants.BASIC_KEY));
+        token.append("%@header@%");
+        String user = JSON.toJSONString(qmUserInfo.getUser());
+        token.append(QmAesEncDecTools.encrypt(user, QmSecurityConstants.BASIC_KEY));
+        token.append("%@body@%");
+        token.append(QmAesEncDecTools.encrypt(tokenExp, QmSecurityConstants.BASIC_KEY));
+        token.append("%@tokenExp@%");
+        token.append(QmAesEncDecTools.encrypt(matchExp, QmSecurityConstants.BASIC_KEY));
+        token.append("%@matchExp@%");
+        token.append(QmAesEncDecTools.encrypt(singleSignOn, QmSecurityConstants.BASIC_KEY));
+        token.append("%@singleSignOn@%");
+        token.append(QmAesEncDecTools.encrypt(signTime, QmSecurityConstants.BASIC_KEY));
+        token.append("%@signTime@%");
+        StringBuffer signBf = new StringBuffer();
+        signBf.append(identity);
+        signBf.append(user);
+        signBf.append(tokenExp);
+        signBf.append(matchExp);
+        signBf.append(singleSignOn);
+        signBf.append(signTime);
+        String sign = QmSecurityTokenTools.signUserInfo(identity, user, tokenExp, matchExp, singleSignOn, signTime);
+        token.append(sign);
         LOG.info("※※※Token签发耗时：" + (System.currentTimeMillis() - date.getTime()) + "/ms※※※");
-        return encryptWhile(stringBuffer.toString()).split("==")[0];
+        return encryptWhile(token.toString()).split("=")[0];
     }
 
 
@@ -116,16 +128,15 @@ public class QmSecurityTokenTools {
      * 解析token
      *
      * @param token
-     * @return
+     * @return identify 用户唯一识别
      * @throws Exception
      */
-    public static QmUserInfo analysisToken(String token) throws QmSecurityAnalysisTokenException {
+    public static String analysisToken(String token) throws QmSecurityAnalysisTokenException {
         try {
             // 解密
-            token = decryptWhile(token + "==");
+            token = decryptWhile(token + "=");
             String tokenTemp = token;
-            String[] temp = null;
-            temp = tokenTemp.split("%@header@%");
+            String[] temp = tokenTemp.split("%@header@%");
             String identify = QmAesEncDecTools.decrypt(temp[0], QmSecurityConstants.BASIC_KEY);
             tokenTemp = temp[1];
             temp = tokenTemp.split("%@body@%");
@@ -137,47 +148,49 @@ public class QmSecurityTokenTools {
             temp = tokenTemp.split("%@matchExp@%");
             String matchExp = QmAesEncDecTools.decrypt(temp[0], QmSecurityConstants.BASIC_KEY);
             tokenTemp = temp[1];
+            temp = tokenTemp.split("%@singleSignOn@%");
+            String singleSignOn = QmAesEncDecTools.decrypt(temp[0], QmSecurityConstants.BASIC_KEY);
+            tokenTemp = temp[1];
             temp = tokenTemp.split("%@signTime@%");
             String signTime = QmAesEncDecTools.decrypt(temp[0], QmSecurityConstants.BASIC_KEY);
-            // 组装对象
-            QmUserInfo qmUserInfo = new QmUserInfo();
-            qmUserInfo.setIdentify(identify);
-            qmUserInfo.setUser(QmSerializeTools.deserializeToObject(userJson));
-            long tokenExpTemp = 0;
-            long matchUriExpTemp = 0;
-            if (!QmSecurityConstants.TOKEN_EXP_INFINITE.equals(tokenExp)) {
-                tokenExpTemp = Long.parseLong(tokenExp) / 1000;
-            }
-            if (!QmSecurityConstants.MATCHURI_EXP_INFINITE.equals(matchExp)) {
-                matchUriExpTemp = Long.parseLong(matchExp) / 1000;
-            }
-            qmUserInfo.setTokenExpireTime(tokenExpTemp);
-            qmUserInfo.setMatchUriExpireTime(matchUriExpTemp);
-            qmUserInfo.setSignTime(new Date(Long.parseLong(signTime)));
-            String sign = token.split("%@signTime@%")[1];
-            String tokenReadSign = token.split("%@signTime@%")[0] + "%@signTime@%";
-            if (verifySign(sign, tokenReadSign) == false) {
+            String sign = temp[1];
+            // 解析无限时间
+            String signTemp = QmSecurityTokenTools.signUserInfo(
+                    identify, userJson, tokenExp, matchExp, singleSignOn, signTime);
+            if (!sign.equals(signTemp)) {
                 throw new QmSecurityAnalysisTokenException();
             }
-            return qmUserInfo;
+            return identify;
         } catch (Exception e) {
             throw new QmSecurityAnalysisTokenException(e);
         }
     }
 
     /**
-     * 校验token签名
+     * 签名
      *
-     * @param sign
-     * @param token
+     * @param identity
+     * @param user
+     * @param tokenExp
+     * @param matchExp
+     * @param singleSignOn
+     * @param signTime
      * @return
      */
-    private static boolean verifySign(String sign, String token) {
-        String signTemp = QmSignTools.signMD5(token);
-        if (sign.trim().equals(signTemp)) {
-            return true;
-        }
-        return false;
+    private static String signUserInfo(String identity,
+                                       String user,
+                                       String tokenExp,
+                                       String matchExp,
+                                       String singleSignOn,
+                                       String signTime) {
+        StringBuffer signBf = new StringBuffer();
+        signBf.append(identity);
+        signBf.append(user);
+        signBf.append(tokenExp);
+        signBf.append(matchExp);
+        signBf.append(singleSignOn);
+        signBf.append(signTime);
+        return QmSignTools.signMD5(signBf.toString());
     }
 
     /**
@@ -191,10 +204,7 @@ public class QmSecurityTokenTools {
         QmSecurityContent.qmSecurityCache.remove(
                 QmSecurityConstants.USER_KEY + qmUserInfo.getIdentify());
         // 进行重新签发token
-        String token = QmSecurityTokenTools.createToken(qmUserInfo);
-        // 设置新旧token替换周期
-        insertTokenContainer(qmUserInfo.getToken(), token, qmUserInfo.getIdentify());
-        return token;
+        return QmSecurityTokenTools.createToken(qmUserInfo);
     }
 
 
@@ -204,30 +214,27 @@ public class QmSecurityTokenTools {
      * @param response
      * @param token
      */
-    public static void setResponseToken(HttpServletResponse response, String token) {
+    public static void sendResponseToken(HttpServletResponse response, String token) {
         // headers放行获取token的key
         String headerKey = "Access-Control-Expose-Headers";
         String typeName = "Content-Type," + QmSecurityContent.headerTokenKeyName;
         response.addHeader(headerKey, typeName);
         // 保存到响应头response的headers中
         response.setHeader(QmSecurityContent.headerTokenKeyName, token);
+        LOG.info("设置了Response " + QmSecurityContent.headerTokenKeyName + "响应头");
     }
 
 
     /**
      * token容器对象获取
      *
-     * @param token
      * @param identify
      * @return
      */
-    public static String tokenCo(String token, String identify) {
+    public static TokenContainer getTokenContainer(String identify) {
         TokenContainer tokenContainer = (TokenContainer)
                 QmSecurityContent.qmSecurityCache.get(QmSecurityConstants.RESTART_SIGN_KEY + identify);
-        if (tokenContainer != null && tokenContainer.getOldToken().equals(token)) {
-            return tokenContainer.getNewToken();
-        }
-        return null;
+        return tokenContainer;
     }
 
     /**
@@ -242,8 +249,8 @@ public class QmSecurityTokenTools {
         TokenContainer tokenContainer = new TokenContainer();
         tokenContainer.setNewToken(newToken);
         tokenContainer.setOldToken(oldToken);
-        QmSecurityContent.qmSecurityCache.put(
-                QmSecurityConstants.RESTART_SIGN_KEY + identify, tokenContainer, QmSecurityConstants.RESTART_SIGN_TIME);
+        QmSecurityContent.qmSecurityCache.put(QmSecurityConstants.RESTART_SIGN_KEY + identify,
+                tokenContainer, QmSecurityConstants.RESTART_SIGN_TIME);
     }
 
 

@@ -70,6 +70,10 @@ public class QmSecurityManager implements Qmbject {
         // 如果緩存中存在用户并判断是否为单点登录
         if (qmUserInfoCache != null && !qmUserInfoCache.isSingleSignOn()) {
             // 如果单点登录是false，则获取缓存中的token。
+            // 缓存用户对象
+            QmSecurityContent.qmSecurityCache.put(
+                    QmSecurityConstants.USER_KEY + qmUserInfoCache.getIdentify(),
+                    qmUserInfoCache, qmUserInfoCache.getLoginExpireTime());
             return qmUserInfoCache.getToken();
         }
         // 创建token
@@ -81,6 +85,7 @@ public class QmSecurityManager implements Qmbject {
             throw new QmSecurityCreateTokenException(e);
         }
         // 缓存用户对象
+        qmUserInfo.setReplaceLogin(qmUserInfoCache != null);
         QmSecurityContent.qmSecurityCache.put(
                 QmSecurityConstants.USER_KEY + qmUserInfo.getIdentify(),
                 qmUserInfo, qmUserInfo.getLoginExpireTime());

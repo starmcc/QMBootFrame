@@ -10,8 +10,7 @@ import java.util.Date;
  * @date 2018/12/22 19:58
  * @Description 框架用户对象
  */
-public class QmUserInfo implements Serializable {
-
+public class QmUserInfo {
     /**
      * 身份校验唯一标识
      */
@@ -41,6 +40,11 @@ public class QmUserInfo implements Serializable {
      * URI缓存失效时间-影响权限刷新时间(秒)
      */
     private long matchUriExpireTime = 60L * 3;
+
+    /**
+     * 是否为替换登录(禁止设置)
+     */
+    private boolean replaceLogin;
     /**
      * 签发token保存
      */
@@ -100,6 +104,14 @@ public class QmUserInfo implements Serializable {
 
     public void setMatchUriExpireTime(long matchUriExpireTime) {
         this.matchUriExpireTime = matchUriExpireTime;
+    }
+
+    public boolean isReplaceLogin() {
+        return replaceLogin;
+    }
+
+    public void setReplaceLogin(boolean replaceLogin) {
+        this.replaceLogin = replaceLogin;
     }
 
     public String getToken() {
