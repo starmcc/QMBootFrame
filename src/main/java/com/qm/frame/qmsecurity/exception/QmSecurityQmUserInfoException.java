@@ -5,7 +5,7 @@ package com.qm.frame.qmsecurity.exception;
  *
  * @author 浅梦
  * @date 2019/5/6 21:50
- * @Description 登录异常
+ * @Description qmUserInfo的参数不完整
  */
 public class QmSecurityQmUserInfoException extends Exception {
 

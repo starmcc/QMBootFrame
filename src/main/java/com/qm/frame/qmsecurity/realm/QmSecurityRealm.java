@@ -43,7 +43,7 @@ public interface QmSecurityRealm {
      * 当安全检测不通过时回调该接口
      * 回调该接口最好的处理方式是处理相关业务并推送错误信息。
      *
-     * @param type     1=检测不到token拒绝访问 | 2=非法token,token提取失败 | 3=用户登录已过期 | 4=重新签发Token异常 | 5=realm返回空对象 | 6=权限不足,拒绝访问
+     * @param type     1=检测不到token拒绝访问 | 2=非法token,token提取失败 | 3=授权验证拦截 | 4=权限不足,拒绝访问
      * @param request  HttpServletRequest
      * @param response HttpServletResponse
      * @throws Exception

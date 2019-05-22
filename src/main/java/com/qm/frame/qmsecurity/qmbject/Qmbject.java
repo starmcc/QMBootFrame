@@ -31,8 +31,7 @@ public interface Qmbject {
      * @throws QmSecurityQmUserInfoException
      * @throws QmSecurityCreateTokenException
      */
-    String login(QmUserInfo qmUserInfo)
-            throws QmSecurityQmUserInfoException, QmSecurityCreateTokenException;
+    String login(QmUserInfo qmUserInfo) throws QmSecurityQmUserInfoException, QmSecurityCreateTokenException;
 
     /**
      * 获取当前登录用户对象
@@ -40,14 +39,6 @@ public interface Qmbject {
      * @return
      */
     QmUserInfo getUserInfo();
-
-    /**
-     * 根据唯一表示获取登录用户对象
-     *
-     * @param identify
-     * @return
-     */
-    QmUserInfo getUserInfo(String identify);
 
     /**
      * 更新当前登录用户对象
@@ -68,28 +59,4 @@ public interface Qmbject {
      * @return List<String> 返回角色权限集合
      */
     List<String> extractMatchingURI(boolean isNew);
-
-
-    /**
-     * 动态获取角色权限
-     * isNew=false：
-     * 则缓存中如果不存在的情况下，通过自定义的realm的authorizationMatchingURI方法获取最新数据。
-     * 如果存在则直接获取该对象。
-     * isNew=true：
-     * 则无论如何都从自定义的realm的authorizationMatchingURI中获取最新数据，并更新到缓存中。
-     *
-     * @param identify 用户唯一标识
-     * @param isNew 是否一定获取最新信息
-     * @return List<String> 返回角色权限集合
-     */
-    List<String> extractMatchingURI(String identify,boolean isNew);
-
-    /**
-     * 注销用户
-     *
-     * @param identify
-     * @return
-     */
-    boolean logout(String identify);
-
 }

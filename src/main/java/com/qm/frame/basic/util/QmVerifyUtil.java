@@ -88,7 +88,7 @@ public class QmVerifyUtil {
      */
     public static String getErrorMsg(String node){
         try {
-            String msg = PRO.getProperty(node + ".error.msg");
+            String msg = PRO.getProperty(node + ".errorMsg");
             if (msg == null) {
                 return node + "校验失败!";
             }

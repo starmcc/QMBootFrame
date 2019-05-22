@@ -175,12 +175,6 @@
 		    <artifactId>commons-io</artifactId>
 		    <version>2.6</version>
 		</dependency>
-		<!-- filter封装部分依赖 -->
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <version>1.55</version>
-        </dependency>
         <!-- 框架依赖包End -->
 	<!-- 开发依赖下面进行粘贴 -->
 	<!-- 	xxxxx

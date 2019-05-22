@@ -15,13 +15,6 @@ spring:
   resources:
     #不要为我们工程中的资源文件建立映射
     add-mappings: false
-  #※※※Ehcache缓存配置※※※
-  cache:
-    #配置ehcache缓存名
-    type: 'ehcache'
-    ehcache:
-      #指定ehcache配置文件路径
-      config: 'classpath:ehcache.xml'
   #配置thymeleaf 官方推荐模板引擎
   thymeleaf:
     prefix: 'classpath:/views/'

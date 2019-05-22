@@ -8,39 +8,10 @@ package com.qm.frame.qmsecurity.config;
  * @Description QmSecurity常量储存类
  */
 public class QmSecurityConstants {
-
-    /**
-     * 框架缓存用户前缀key
-     */
-    public static final String USER_KEY = "Qmbject_";
-    /**
-     * 框架缓存权限前缀key
-     */
-    public static final String MATCHING_KEY = "matchingUrls_";
     /**
      * 底层加解密key
      */
     public static final String BASIC_KEY = "hfsdnvfjdmfkl";
-    /**
-     * token无限期伪装字符串
-     */
-    public static final String TOKEN_EXP_INFINITE = "shdhwaxnlxhueicn";
-    /**
-     * 权限缓存无限时间伪装字符串
-     */
-    public static final String MATCHURI_EXP_INFINITE = "asdhiuesnd31270ccb";
-    /**
-     * 重新签发token缓冲储存key
-     */
-    public static final String RESTART_SIGN_KEY = "TokenContainer_";
-    /**
-     * 重新签发token缓冲时间(秒)
-     */
-    public static final long RESTART_SIGN_TIME = 60;
-    /**
-     * 序列化编码格式 此处只能是ISO-8859-1,但是不会影响中文使用
-     */
-    public static final String SERIALIZE_CHARSET = "ISO-8859-1";
     /**
      * 底层加解密编码格式
      */

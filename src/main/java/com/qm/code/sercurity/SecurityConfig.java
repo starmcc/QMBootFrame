@@ -9,6 +9,9 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistration
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Copyright © 2018浅梦工作室}. All rights reserved.
  *
@@ -22,24 +25,22 @@ public class SecurityConfig implements WebMvcConfigurer {
     @Autowired
     private MyRealm myRealm;
 
-    @Bean
-    public MyRealm settingRealm() {
-        return new MyRealm();
-    }
-
     // 初始化QmSecurity安全框架
     // 重写WebMvcConfigurer的addInterceptors方法
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         // setTokenSecret 设置token加密秘钥
-        QmSecurityContent.tokenSecret = "key2018s2312tarmcc";
-        // 设置加密次数
-        QmSecurityContent.encryptNumber = 1;
-        // 设置自定义的realm
-        // (这里需要注意的是,自定义的realm如果需要spring注入内容的话最好在上方用Bean注入后，在Spring中拿出来放进去)
-        QmSecurityContent.realm = myRealm;
-        // 设置redis缓存 注意如果不设置，则默认使用mapcache进行缓存。建议设置为redis缓存。
-        QmSecurityContent.qmSecurityCache = new SecurityRedisCache();
+        QmSecurityContent.setTokenSecret("shdioadnscoi21s90nbjio");
+        // 设置请求头和响应头中携带token的字段名 默认为token
+        QmSecurityContent.setHeaderTokenKeyName("token");
+        // 设置加密次数 默认2次
+        QmSecurityContent.setEncryptNumber(2);
+        // 设置自定义的realm (这里需要注意的是,自定义的realm如果需要spring注入内容请交由Spring管理)
+        QmSecurityContent.setRealm(myRealm);
+        // 设置排除URI校验集合
+        List<String> passUris = new ArrayList<>();
+        //passUris.add("/**");
+        QmSecurityContent.setPassUris(passUris);
         // 把框架添加到拦截器队列中,设置接管所有访问路径。
         QmSecurityInterceptor qmSecurityInterceptor = new QmSecurityInterceptor();
         // 添加拦截器

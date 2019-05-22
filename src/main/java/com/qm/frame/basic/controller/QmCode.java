@@ -69,6 +69,10 @@ public enum QmCode {
      */
     _104(104, "无访问权限", "Permission denied"),
     /**
+     * 您的账号已在其他地方登录!
+     */
+    _105(105,"您的账号已在其他地方登录!","Your account has been logged in elsewhere"),
+    /**
      * 请求404,找不到资源
      */
     _404(404, "资源丢失啦", "Can't find resources"),

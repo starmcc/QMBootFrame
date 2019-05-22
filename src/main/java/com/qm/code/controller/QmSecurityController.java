@@ -1,12 +1,12 @@
 package com.qm.code.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.qm.code.entity.User;
 import com.qm.code.service.UserService;
 import com.qm.frame.basic.body.QmBody;
 import com.qm.frame.basic.controller.QmCode;
 import com.qm.frame.basic.controller.QmController;
 import com.qm.frame.qmsecurity.entity.QmUserInfo;
-import com.qm.frame.qmsecurity.exception.QmSecurityCacheException;
 import com.qm.frame.qmsecurity.exception.QmSecurityCreateTokenException;
 import com.qm.frame.qmsecurity.exception.QmSecurityQmUserInfoException;
 import com.qm.frame.qmsecurity.note.QmPass;
@@ -35,12 +35,12 @@ public class QmSecurityController extends QmController {
 
     /**
      * 登录示例
-     *
+     * 增加该@QmPass注解表示该方法不校验登录和权限。
      * @param username
      * @param password
      * @return
      */
-    @QmPass // 增加该注解表示该方法不校验登录和权限。
+    @QmPass
     @PostMapping("/login")
     public String login(@QmBody String username, @QmBody String password) {
         User user = userService.login(username, password);
@@ -55,13 +55,9 @@ public class QmSecurityController extends QmController {
         // identify为必须字段，用户唯一识别
         qmUserInfo.setIdentify(user.getUserName());
         // 设置用户缓存对象
-        qmUserInfo.setUser(user);
-        // 设置多久会失效 (秒) 1小时活跃登录失效
-        qmUserInfo.setLoginExpireTime(60 * 60);
+        qmUserInfo.setUser(JSON.toJSONString(user));
         // 设置token失效时间 (秒) 10分钟token失效
         qmUserInfo.setTokenExpireTime(60 * 10);
-        // 是否单点登录，如果为true，登录状态只能存在一个。
-        qmUserInfo.setSingleSignOn(true);
         // 调用login方法，并设置他的过期时间，生成token
         String token = null;
         try {
@@ -70,10 +66,6 @@ public class QmSecurityController extends QmController {
             // qmUserInfo参数异常
             e.printStackTrace();
             return super.sendJSON(QmCode._3, "qmUserInfo参数异常!", null);
-        } catch (QmSecurityCacheException e) {
-            // 缓存异常!
-            e.printStackTrace();
-            return super.sendJSON(QmCode._4, "缓存异常!", null);
         } catch (QmSecurityCreateTokenException e) {
             // 签发token时发生了异常
             e.printStackTrace();

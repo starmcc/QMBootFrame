@@ -1,6 +1,5 @@
 package com.qm.frame.qmsecurity.entity;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -10,8 +9,7 @@ import java.util.Date;
  * @date 2018/12/22 19:58
  * @Description 框架用户对象
  */
-public class QmUserInfo implements Serializable {
-
+public class QmUserInfo {
     /**
      * 身份校验唯一标识
      */
@@ -19,32 +17,16 @@ public class QmUserInfo implements Serializable {
     /**
      * 用户对象
      */
-    private Object user;
+    private String user;
     /**
      * 签发token时间
      */
     private Date signTime;
     /**
-     * 登录缓存多久后销毁 (秒)
-     */
-    private long loginExpireTime = 60L * 30;
-    /**
      * token多久后失效 (秒) 0无限
      */
     private long tokenExpireTime = 60L * 10;
-    /**
-     * 是否单点登录
-     */
-    private boolean singleSignOn;
 
-    /**
-     * URI缓存失效时间-影响权限刷新时间(秒)
-     */
-    private long matchUriExpireTime = 60L * 3;
-    /**
-     * 签发token保存
-     */
-    private String token;
 
     public String getIdentify() {
         return identify;
@@ -54,20 +36,20 @@ public class QmUserInfo implements Serializable {
         this.identify = identify;
     }
 
-    public Object getUser() {
+    public String getUser() {
         return user;
     }
 
-    public void setUser(Object user) {
+    public void setUser(String user) {
         this.user = user;
     }
 
-    public long getLoginExpireTime() {
-        return loginExpireTime;
+    public Date getSignTime() {
+        return signTime;
     }
 
-    public void setLoginExpireTime(long loginExpireTime) {
-        this.loginExpireTime = loginExpireTime;
+    public void setSignTime(Date signTime) {
+        this.signTime = signTime;
     }
 
     public long getTokenExpireTime() {
@@ -76,37 +58,5 @@ public class QmUserInfo implements Serializable {
 
     public void setTokenExpireTime(long tokenExpireTime) {
         this.tokenExpireTime = tokenExpireTime;
-    }
-
-    public Date getSignTime() {
-        return new Date(this.signTime.getTime());
-    }
-
-    public void setSignTime(Date signTime) {
-        this.signTime = new Date(signTime.getTime());
-    }
-
-    public boolean isSingleSignOn() {
-        return singleSignOn;
-    }
-
-    public void setSingleSignOn(boolean singleSignOn) {
-        this.singleSignOn = singleSignOn;
-    }
-
-    public long getMatchUriExpireTime() {
-        return matchUriExpireTime;
-    }
-
-    public void setMatchUriExpireTime(long matchUriExpireTime) {
-        this.matchUriExpireTime = matchUriExpireTime;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
     }
 }
