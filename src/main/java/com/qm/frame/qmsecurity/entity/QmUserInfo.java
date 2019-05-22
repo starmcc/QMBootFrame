@@ -25,7 +25,7 @@ public class QmUserInfo {
     /**
      * token多久后失效 (秒) 0无限
      */
-    private long tokenExpireTime = 60L * 10;
+    private long tokenExpireTime = 60L * 30;
 
 
     public String getIdentify() {

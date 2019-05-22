@@ -81,19 +81,9 @@ public class QmSecurityManager implements Qmbject {
         }
     }
 
-    @Override
-    public void setUserInfo(QmUserInfo qmUserInfo) {
-        try {
-            QmSecurityTokenTools.restartCreateToken(qmUserInfo, response);
-            request.setAttribute(QmUserInfo.class.getName(), qmUserInfo);
-        } catch (QmSecurityCreateTokenException e) {
-            e.printStackTrace();
-        }
-    }
-
 
     @Override
-    public List<String> extractMatchingURI(boolean isNew) {
+    public List<String> extractMatchingURI() {
         QmUserInfo qmUserInfo = this.getUserInfo();
         return QmSecurityContent.getRealm().authorizationMatchingURI(qmUserInfo);
     }
