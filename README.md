@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 # QMBootFrame v0.9.9
-=======
-# QMBootFrame v0.9.84
->>>>>>> 269debb06cbb3783ae4277700f0ead2207637c94
 
 > 最新发布：[QmBootFrame](https://github.com/starmcc/QMBootFrame)
 
