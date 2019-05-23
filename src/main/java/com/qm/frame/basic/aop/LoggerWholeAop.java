@@ -27,7 +27,7 @@ public class LoggerWholeAop {
     private static final QmOutMethod QM_OUT_METHOD = getQmOutMethod();
 
     /**
-     * 获取QmResponseOut
+     * 获取QmResponseOut 
      *
      * @return
      */
