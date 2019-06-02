@@ -4,23 +4,20 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
 import com.qm.frame.basic.exception.QmFrameException;
-import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 
-import javax.sql.DataSource;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.util.Properties;
 
 /**
- * Copyright © 2019浅梦工作室. All rights reserved.
+ * QmDataSourceFactory
  *
- * @author 浅梦
- * @date 2019/5/1 15:46
- * @Description QmDataSourceFactory
+ * @Author qm
+ * @Date 2019/5/1 15:46
  */
-public class QmDataSourceFactory {
+public final class QmDataSourceFactory {
 
     /**
      * properties 配置读取
@@ -29,8 +26,7 @@ public class QmDataSourceFactory {
     /**
      * // 连接池类型
      */
-    private static String typeName = getProString("type-name", "dbcp2");
-    private static String driverClassName = getProString("driver-class-name", "com.mysql.jdbc.Driver");
+    private static String driverClassName = getProString("driver-class-name", "com.mysql.cj.jdbc.Driver");
     private static String url = getProString("url", "");
     private static String userName = getProString("username", "root");
     private static String password = getProString("password", "");
@@ -80,55 +76,13 @@ public class QmDataSourceFactory {
         return filterFilterRegistrationBean;
     }
 
-
-    /**
-     * 构建一个datasource配置
-     */
-    public static DataSource getDataSource() {
-        DataSource dataSource = null;
-        final String[] typeFinal = {"druid", "dbcp2"};
-        try {
-            // if druid
-            if (typeFinal[0].equalsIgnoreCase(typeName)) {
-                dataSource = initDruidDataSource();
-                // if dbcp2
-            } else if (typeFinal[1].equalsIgnoreCase(typeName)) {
-                dataSource = initDbcp2DataSource();
-            } else {
-                dataSource = null;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return dataSource;
-    }
-
-    /**
-     * 配置dbcp2数据源
-     *
-     * @return
-     */
-    private static BasicDataSource initDbcp2DataSource() {
-        BasicDataSource basicDataSource = new BasicDataSource();
-        basicDataSource.setDriverClassName(driverClassName);
-        basicDataSource.setUrl(url);
-        basicDataSource.setUsername(userName);
-        basicDataSource.setPassword(password);
-        basicDataSource.setMaxWaitMillis(getProInt("dbcp2.max-wait-millis", 10000));
-        basicDataSource.setMinIdle(getProInt("dbcp2.min-idle", 5));
-        basicDataSource.setInitialSize(getProInt("dbcp2.initial-size", 5));
-        basicDataSource.setValidationQuery(getProString("dbcp2.validation-query", "SELECT 1 FROM DUAL"));
-        basicDataSource.setConnectionProperties(getProString("dbcp2.connection-properties", "characterencoding=utf8"));
-        return basicDataSource;
-    }
-
     /**
      * 配置Druid数据源
      *
      * @return
      * @throws SQLException
      */
-    private static DruidDataSource initDruidDataSource() throws SQLException {
+    public final static DruidDataSource getDruidDataSource() throws SQLException {
         DruidDataSource druidDataSource = new DruidDataSource();
         druidDataSource.setDriverClassName(driverClassName);
         druidDataSource.setUrl(url);
@@ -149,11 +103,10 @@ public class QmDataSourceFactory {
         druidDataSource.setFilters(getProString("druid.filters", "stat,wall"));
         druidDataSource.setConnectionProperties(getProString("druid.connectionProperties", "stat.mergeSql=true;stat.slowSqlMillis=5000"));
         druidDataSource.setUseGlobalDataSourceStat(getProBoolean("druid.useGlobalDataSourceStat", true));
-
         return druidDataSource;
     }
 
-    private static Properties getProperties() {
+    private final static Properties getProperties() {
         try {
             Properties properties = new Properties();
             // 读取properties文件,使用InputStreamReader字符流防止文件中出现中文导致乱码
@@ -168,27 +121,27 @@ public class QmDataSourceFactory {
         }
     }
 
-    private static boolean getProBoolean(String key) {
+    private final static boolean getProBoolean(String key) {
         return Boolean.parseBoolean(PRO.getProperty(key, "false"));
     }
 
-    private static boolean getProBoolean(String key, boolean defaultVal) {
+    private final static boolean getProBoolean(String key, boolean defaultVal) {
         return Boolean.parseBoolean(PRO.getProperty(key, String.valueOf(defaultVal)));
     }
 
-    private static int getProInt(String key) {
+    private final static int getProInt(String key) {
         return Integer.parseInt(PRO.getProperty(key, "0"));
     }
 
-    private static int getProInt(String key, int defaultVal) {
+    private final static int getProInt(String key, int defaultVal) {
         return Integer.parseInt(PRO.getProperty(key, String.valueOf(defaultVal)));
     }
 
-    private static String getProString(String key) {
+    private final static String getProString(String key) {
         return PRO.getProperty(key);
     }
 
-    private static String getProString(String key, String defaultVal) {
+    private final static String getProString(String key, String defaultVal) {
         return PRO.getProperty(key, defaultVal);
     }
 

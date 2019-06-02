@@ -4,6 +4,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import com.qm.frame.basic.body.JsonPathArgumentResolver;
+import com.qm.frame.basic.exception.QmFrameException;
 import com.qm.frame.basic.filter.InitFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +42,20 @@ public class QmFrameConfig implements WebMvcConfigurer {
         // addResourceLocations指的是文件放置的目录，addResoureHandler指的是对外暴露的访问路径
         registry.addResourceHandler("/views/**").addResourceLocations("classpath:/views/src/");
         WebMvcConfigurer.super.addResourceHandlers(registry);
+    }
+
+    /**
+     * 注入该DataSource
+     *
+     * @return 数据源
+     */
+    @Bean(initMethod = "init", destroyMethod = "close")
+    public DataSource settingDataSource() {
+        try {
+            return (DataSource) QmDataSourceFactory.getDruidDataSource();
+        } catch (SQLException e) {
+            throw new QmFrameException("数据源配置异常!", e);
+        }
     }
 
     /**
@@ -113,16 +129,5 @@ public class QmFrameConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
         argumentResolvers.add(new JsonPathArgumentResolver());
-    }
-
-    /**
-     * 注入该DataSource
-     *
-     * @return DataSource
-     */
-    @Bean(destroyMethod = "close", initMethod = "init")
-    public DataSource settingDataSource() {
-        DataSource dataSource = QmDataSourceFactory.getDataSource();
-        return dataSource;
     }
 }
